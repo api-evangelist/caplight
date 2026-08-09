@@ -1,0 +1,146 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Caplight REST API
+  version: 1.0.0
+extends: openapi/caplight-rest-api-openapi-original.json
+x-generated: '2026-08-09'
+x-method: generated
+x-note: Enhancements authored by API Evangelist. Not published by Caplight. The original harvested spec is never
+  mutated.
+actions:
+- target: $.info
+  description: Record API Evangelist provenance for this profile.
+  update:
+    x-apievangelist-profile: https://apis.io/provider/caplight/
+    x-apievangelist-harvested: '2026-08-09'
+    x-apievangelist-source: https://us-central1-caplight-prod.cloudfunctions.net/api/v2/spec
+- target: $.paths['/v1/companies'].get
+  description: Spec declares no operationId for GET /v1/companies; propose a stable one so agents and generators
+    can address the operation.
+  update:
+    operationId: getV1Companies
+- target: $.paths['/v1/companies/all-with-data'].get
+  description: Spec declares no operationId for GET /v1/companies/all-with-data; propose a stable one so agents
+    and generators can address the operation.
+  update:
+    operationId: getV1CompaniesAllWithData
+- target: $.paths['/v1/all-marketprices'].get
+  description: Spec declares no operationId for GET /v1/all-marketprices; propose a stable one so agents and generators
+    can address the operation.
+  update:
+    operationId: getV1AllMarketprices
+- target: $.paths['/v1/market-price-history'].get
+  description: Spec declares no operationId for GET /v1/market-price-history; propose a stable one so agents and
+    generators can address the operation.
+  update:
+    operationId: getV1MarketPriceHistory
+- target: $.paths['/v1/live-orderbook'].get
+  description: Spec declares no operationId for GET /v1/live-orderbook; propose a stable one so agents and generators
+    can address the operation.
+  update:
+    operationId: getV1LiveOrderbook
+- target: $.paths['/v1/companies/quarterly-market-summary'].get
+  description: Spec declares no operationId for GET /v1/companies/quarterly-market-summary; propose a stable one
+    so agents and generators can address the operation.
+  update:
+    operationId: getV1CompaniesQuarterlyMarketSummary
+- target: $.paths['/v1/fund-marks'].get
+  description: Spec declares no operationId for GET /v1/fund-marks; propose a stable one so agents and generators
+    can address the operation.
+  update:
+    operationId: getV1FundMarks
+- target: $.paths['/v1/news'].get
+  description: Spec declares no operationId for GET /v1/news; propose a stable one so agents and generators can
+    address the operation.
+  update:
+    operationId: getV1News
+- target: $.paths['/v1/trade-history'].get
+  description: Spec declares no operationId for GET /v1/trade-history; propose a stable one so agents and generators
+    can address the operation.
+  update:
+    operationId: getV1TradeHistory
+- target: $.paths['/v1/order-history'].get
+  description: Spec declares no operationId for GET /v1/order-history; propose a stable one so agents and generators
+    can address the operation.
+  update:
+    operationId: getV1OrderHistory
+- target: $.paths['/v1/market-price-fixed-eod'].get
+  description: Spec declares no operationId for GET /v1/market-price-fixed-eod; propose a stable one so agents and
+    generators can address the operation.
+  update:
+    operationId: getV1MarketPriceFixedEod
+- target: $.paths['/v1/stock-splits'].get
+  description: Spec declares no operationId for GET /v1/stock-splits; propose a stable one so agents and generators
+    can address the operation.
+  update:
+    operationId: getV1StockSplits
+- target: $.paths['/v1/filings/cois/all'].get
+  description: Spec declares no operationId for GET /v1/filings/cois/all; propose a stable one so agents and generators
+    can address the operation.
+  update:
+    operationId: getV1FilingsCoisAll
+- target: $.paths['/v1/filings/cois/get-download-urls'].get
+  description: Spec declares no operationId for GET /v1/filings/cois/get-download-urls; propose a stable one so
+    agents and generators can address the operation.
+  update:
+    operationId: getV1FilingsCoisGetDownloadUrls
+- target: $.paths['/v1/filings/cois/download-stats'].get
+  description: Spec declares no operationId for GET /v1/filings/cois/download-stats; propose a stable one so agents
+    and generators can address the operation.
+  update:
+    operationId: getV1FilingsCoisDownloadStats
+- target: $.paths['/v1/comps-performance'].get
+  description: Spec declares no operationId for GET /v1/comps-performance; propose a stable one so agents and generators
+    can address the operation.
+  update:
+    operationId: getV1CompsPerformance
+- target: $.paths['/v2/companies/{companyId}/funding-rounds'].get
+  description: Spec declares no operationId for GET /v2/companies/{companyId}/funding-rounds; propose a stable one
+    so agents and generators can address the operation.
+  update:
+    operationId: getV2CompaniesByCompanyIdFundingRounds
+- target: $.paths['/v2/companies'].get
+  description: Spec declares no operationId for GET /v2/companies; propose a stable one so agents and generators
+    can address the operation.
+  update:
+    operationId: getV2Companies
+- target: $.paths['/v2/companies/{companyId}'].get
+  description: Spec declares no operationId for GET /v2/companies/{companyId}; propose a stable one so agents and
+    generators can address the operation.
+  update:
+    operationId: getV2CompaniesByCompanyId
+- target: $.paths['/v2/funding-rounds/updates'].get
+  description: Spec declares no operationId for GET /v2/funding-rounds/updates; propose a stable one so agents and
+    generators can address the operation.
+  update:
+    operationId: getV2FundingRoundsUpdates
+- target: $.paths['/v2/funding-rounds/{roundId}'].get
+  description: Spec declares no operationId for GET /v2/funding-rounds/{roundId}; propose a stable one so agents
+    and generators can address the operation.
+  update:
+    operationId: getV2FundingRoundsByRoundId
+- target: $.paths['/v2/companies/{companyId}/comps'].get
+  description: Spec declares no operationId for GET /v2/companies/{companyId}/comps; propose a stable one so agents
+    and generators can address the operation.
+  update:
+    operationId: getV2CompaniesByCompanyIdComps
+- target: $.paths['/v2/companies/{companyId}/investors'].get
+  description: Spec declares no operationId for GET /v2/companies/{companyId}/investors; propose a stable one so
+    agents and generators can address the operation.
+  update:
+    operationId: getV2CompaniesByCompanyIdInvestors
+- target: $.paths['/v2/composite-index'].get
+  description: Spec declares no operationId for GET /v2/composite-index; propose a stable one so agents and generators
+    can address the operation.
+  update:
+    operationId: getV2CompositeIndex
+- target: $.paths['/v2/composite-index/sectors'].get
+  description: Spec declares no operationId for GET /v2/composite-index/sectors; propose a stable one so agents
+    and generators can address the operation.
+  update:
+    operationId: getV2CompositeIndexSectors
+- target: $.paths['/v2/composite-index/verticals'].get
+  description: Spec declares no operationId for GET /v2/composite-index/verticals; propose a stable one so agents
+    and generators can address the operation.
+  update:
+    operationId: getV2CompositeIndexVerticals

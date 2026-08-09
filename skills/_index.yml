@@ -1,0 +1,43 @@
+generated: '2026-08-09'
+method: generated
+source: openapi/caplight-rest-api-openapi-original.json
+note: >-
+  Skills authored by API Evangelist from Caplight's public OpenAPI 3.1.0 and documentation. Caplight
+  publishes no AGENTS.md or skill files of its own. The spec declares no operationId on any of its 26
+  operations, so every skill addresses operations as METHOD + path — the way the spec itself identifies
+  them. Proposed operationIds are in overlays/caplight-rest-api-overlay.yaml and are ours, not Caplight's.
+skills:
+- file: caplight-price-a-private-company.md
+  name: Price a private company on the Caplight secondary market
+  api: openapi/caplight-rest-api-openapi-original.json
+  operations:
+  - GET /v2/companies
+  - GET /v1/companies
+  - GET /v1/all-marketprices
+  - GET /v1/market-price-history
+  - GET /v1/market-price-fixed-eod
+  - GET /v1/live-orderbook
+  - GET /v1/trade-history
+  - GET /v1/order-history
+- file: caplight-track-funding-rounds-and-investors.md
+  name: Track funding rounds and investors, and keep a local copy fresh
+  api: openapi/caplight-rest-api-openapi-original.json
+  operations:
+  - GET /v2/companies
+  - GET /v2/companies/{companyId}
+  - GET /v2/companies/{companyId}/funding-rounds
+  - GET /v2/funding-rounds/{roundId}
+  - GET /v2/funding-rounds/updates
+  - GET /v2/companies/{companyId}/investors
+  - GET /v1/fund-marks
+- file: caplight-benchmark-with-comps-and-indices.md
+  name: Benchmark a private company with comps and composite indices
+  api: openapi/caplight-rest-api-openapi-original.json
+  operations:
+  - GET /v2/companies
+  - GET /v2/companies/{companyId}/comps
+  - GET /v1/comps-performance
+  - GET /v2/composite-index/sectors
+  - GET /v2/composite-index/verticals
+  - GET /v2/composite-index
+  - GET /v1/companies/quarterly-market-summary

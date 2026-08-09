@@ -1,0 +1,89 @@
+generated: '2026-08-09'
+method: derived
+source: openapi/caplight-rest-api-openapi-original.json
+format: custom-json
+rfc9457: false
+envelope:
+  spec_schema: ErrorResponse
+  fields:
+  - name: status
+    type: string
+    example: error
+  - name: error
+    type: string
+    example: sector or vertical query param is required
+  gateway_shape:
+    fields:
+    - name: message
+      type: string
+    example: '{"message":"Invalid/missing API key. Please set request header api_key with your provided API key"}'
+    observed:
+      url: https://us-central1-caplight-prod.cloudfunctions.net/api/public/v1/companies?domain=stripe.com
+      http_status: 401
+      fetched: '2026-08-09'
+  note: >-
+    The API does not use application/problem+json and publishes no error type URIs or machine-readable
+    error codes. Every error response is application/json carrying a human-readable string.
+status_summary:
+  '200': 26
+  '400': 5
+  '404': 4
+  '401': 2
+  '403': 2
+problems:
+- status: 400
+  title: Invalid date parameters
+  detail: Missing dateAfter/dateBefore or the range exceeds 31 days
+  source_operation: GET /v1/news
+- status: 400
+  title: Limit reached or invalid request
+  detail: COI download limit reached for the account, or the request was malformed
+  source_operation: GET /v1/filings/cois/get-download-urls
+- status: 404
+  title: COI filing not found
+  source_operation: GET /v1/filings/cois/get-download-urls
+- status: 400
+  title: No identifier supplied, or more than 50 identifiers in one request
+  detail: The company-lookup resolver accepts at most 50 identifiers per call
+  source_operation: GET /v2/companies
+- status: 401
+  title: Missing or invalid API key
+  source_operation: GET /v2/companies
+- status: 403
+  title: Account does not have Companies V2 API access
+  source_operation: GET /v2/companies
+- status: 401
+  title: Missing or invalid API key
+  source_operation: GET /v2/companies/{companyId}
+- status: 403
+  title: Account does not have Companies V2 API access, or company is outside whitelist / over annual cap
+  source_operation: GET /v2/companies/{companyId}
+- status: 404
+  title: Company not found
+  source_operation: GET /v2/companies/{companyId}
+- status: 400
+  title: Invalid date parameters
+  detail: e.g. missing or invalid updatedSince
+  source_operation: GET /v2/funding-rounds/updates
+- status: 404
+  title: Funding round not found or not accessible
+  detail: >-
+    Conflates "does not exist" with "outside your entitlement" — the response does not distinguish the two.
+  source_operation: GET /v2/funding-rounds/{roundId}
+- status: 400
+  title: Invalid or unsupported parameters
+  detail: >-
+    The endpoint accepts only the documented parameters; unknown parameters are rejected rather than
+    ignored.
+  source_operation: GET /v2/composite-index
+- status: 404
+  title: No companies found for the given filter
+  source_operation: GET /v2/composite-index
+gaps:
+- >-
+  Only 11 of 26 operations declare any 4xx response; 15 operations declare a 200 only, so an agent cannot
+  learn their failure modes from the spec.
+- No stable machine-readable error code or type URI is published for any condition.
+- >-
+  401 is declared on only 2 operations even though the api_key header is required by every operation and
+  the live host returns 401 for all of them.

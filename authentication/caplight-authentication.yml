@@ -1,0 +1,77 @@
+generated: '2026-08-09'
+method: searched
+source: openapi/caplight-rest-api-openapi-original.json
+docs: https://platform.caplight.com/api/documentation.html
+summary:
+  types:
+  - apiKey
+  - oauth2
+  api_key_in:
+  - header
+  oauth2_flows:
+  - authorizationCode
+  notes: >-
+    Two independent auth models across two surfaces. The REST API uses a static api_key request header
+    (no OAuth, no scopes). The hosted MCP server uses OAuth 2.1 authorization code + PKCE with dynamic
+    client registration, and explicitly requires no API key — a Caplight account is the credential.
+schemes:
+- name: api_key
+  type: apiKey
+  in: header
+  parameter: api_key
+  surface: Caplight REST API
+  description: >-
+    Caplight API authentication is managed through an api_key header value. Please contact us if you do
+    not yet have an API key. API access is a paid add-on to Caplight Data; keys are issued on request to
+    contact@caplight.com.
+  sources:
+  - openapi/caplight-rest-api-openapi-original.json
+  x-evidence:
+    fetched: '2026-08-09'
+    url: https://us-central1-caplight-prod.cloudfunctions.net/api/public/v1/companies?domain=stripe.com
+    http_status: 401
+    body: '{"message":"Invalid/missing API key. Please set request header api_key with your provided API key"}'
+- name: mcp_oauth
+  type: oauth2
+  surface: Caplight MCP Server
+  description: >-
+    OAuth 2.1 authorization-code flow protecting https://platform.caplight.com/mcp. Advertised through
+    RFC 8414 authorization-server metadata and RFC 9728 protected-resource metadata. Bearer token in the
+    Authorization header. No scopes are advertised in the metadata document.
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://platform.caplight.com/mcp/authorize
+    tokenUrl: https://platform.caplight.com/mcp/token
+    registrationUrl: https://platform.caplight.com/mcp/register
+    grant_types:
+    - authorization_code
+    - refresh_token
+    code_challenge_methods:
+    - S256
+    scopes: []
+  bearer_methods_supported:
+  - header
+  sources:
+  - well-known/caplight-oauth-authorization-server.json
+  - well-known/caplight-oauth-protected-resource.json
+  x-evidence:
+    fetched: '2026-08-09'
+    url: https://platform.caplight.com/mcp
+    http_status: 401
+    body: '{"error":"Unauthorized","message":"Valid authentication required. Use the OAuth flow to obtain an access token."}'
+authorization:
+  model: per-account entitlements
+  description: >-
+    Beyond authentication, v2 company-scoped endpoints enforce per-account access control documented in
+    the OpenAPI description: an optional whitelist of permitted companies, an optional annual cap on
+    distinct companies accessed (repeat access to the same company counts once), and field-level
+    restrictions. When a field is restricted it is omitted from the response and named in the
+    restricted.fields array on the funding round object. Restricted fields may include amounts,
+    valuation, pps, participants and citations.
+  error_codes:
+  - status: 401
+    meaning: Missing or invalid API key
+  - status: 403
+    meaning: >-
+      Account does not have Companies V2 API access, or the company is outside the whitelist / over the
+      annual cap

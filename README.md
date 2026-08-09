@@ -42,5 +42,14 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Caplight is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://forgeglobal.com/caplight_stock/
+Caplight Technologies is a San Francisco private-markets data and trading platform for institutional
+investors, covering 50,000+ VC-backed private companies with secondary-market pricing, a live
+institutional order book, trade and order history, funding rounds, investor participation, SEC-derived
+fund marks, COI filings, comparables and composite indices. Caplight exposes the dataset through a
+versioned REST API documented with a public OpenAPI 3.1.0 definition, a hosted OAuth-protected MCP
+server for Claude, and a one-line embeddable widget.
+
+- Website: https://www.caplight.com/
+- API reference: https://platform.caplight.com/api/documentation.html
+- OpenAPI: https://us-central1-caplight-prod.cloudfunctions.net/api/v2/spec
+- MCP server: https://platform.caplight.com/mcp

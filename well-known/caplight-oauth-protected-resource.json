@@ -1,0 +1,9 @@
+{
+  "resource": "https://platform.caplight.com/mcp",
+  "authorization_servers": [
+    "https://platform.caplight.com/mcp"
+  ],
+  "bearer_methods_supported": [
+    "header"
+  ]
+}

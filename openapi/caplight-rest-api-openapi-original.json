@@ -1,0 +1,4403 @@
+{
+  "openapi": "3.1.0",
+  "servers": [
+    {
+      "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "description": "Production"
+    },
+    {
+      "url": "//us-central1-caplight-staging.cloudfunctions.net/api/public",
+      "description": "Staging/Sandbox"
+    }
+  ],
+  "info": {
+    "version": "2.0.0",
+    "title": "Caplight REST API",
+    "description": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` \u2014 it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n",
+    "termsOfService": "https://platform.caplight.com/terms",
+    "contact": {
+      "name": "Contact: Caplight Engineering",
+      "email": "engineering@caplight.com"
+    },
+    "x-logo": {
+      "url": "https://storage.googleapis.com/caplight-prod.appspot.com/caplight-logos/api-logo.png",
+      "altText": "Caplight logo"
+    }
+  },
+  "tags": [
+    {
+      "name": "Company"
+    },
+    {
+      "name": "Companies"
+    },
+    {
+      "name": "MarketPrice",
+      "description": "Caplight's proprietary MarketPrice estimate, calculated using executed trades, company primary rounds, bids/offers, fund marks, 409a valuations, and comps performance."
+    },
+    {
+      "name": "Live Orderbook"
+    },
+    {
+      "name": "company_model",
+      "x-displayName": "Company Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/Company\" />\n"
+    },
+    {
+      "name": "order_model",
+      "x-displayName": "Order Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/Order\" />\n"
+    },
+    {
+      "name": "market_price_model",
+      "x-displayName": "MarketPrice Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/MarketPrice\" />\n"
+    },
+    {
+      "name": "Trade History"
+    },
+    {
+      "name": "Order History"
+    },
+    {
+      "name": "Company Filings",
+      "description": "COI (Certificate of Incorporation) filings and related company documents"
+    },
+    {
+      "name": "Stock Splits"
+    },
+    {
+      "name": "Fund Marks",
+      "description": "Mutual fund mark-to-market valuations from SEC filings"
+    },
+    {
+      "name": "News",
+      "description": "Company news articles with sentiment analysis"
+    },
+    {
+      "name": "trade_model",
+      "x-displayName": "Trade Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/Trade\" />\n"
+    },
+    {
+      "name": "409a_valuation_model",
+      "x-displayName": "409a Valuation Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/409a\" />\n"
+    },
+    {
+      "name": "fund_mark_model",
+      "x-displayName": "Fund Mark Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/FundMark\" />\n"
+    },
+    {
+      "name": "comp_model",
+      "x-displayName": "Comp Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/Comp\" />\n"
+    },
+    {
+      "name": "stock_split_model",
+      "x-displayName": "Stock Split Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/StockSplit\" />\n"
+    },
+    {
+      "name": "coi_model",
+      "x-displayName": "COI Filing Model",
+      "description": "<SchemaDefinition schemaRef=\"#/components/schemas/COI\" />\n"
+    },
+    {
+      "name": "Funding Rounds",
+      "description": "Funding round data including amounts, valuations, participants, and citations"
+    },
+    {
+      "name": "Investors",
+      "description": "Investor participation data for companies"
+    },
+    {
+      "name": "Company Lookup",
+      "description": "Resolves company domains, PitchBook IDs and v1 company IDs to v2 company IDs, in batches."
+    },
+    {
+      "name": "Company Details",
+      "description": "Canonical Company resource: identity (name, legal name, location), descriptions, and the latest LLM-generated firmographic tags (sectors / verticals / keywords with attribution)."
+    },
+    {
+      "name": "Comps",
+      "description": "LLM-discovered comparable companies with an overall similarity score, a per-dimension breakdown, a classification, and a short rationale."
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "V1",
+      "tags": [
+        "Company",
+        "Companies",
+        "MarketPrice",
+        "Live Orderbook",
+        "Trade History",
+        "Order History",
+        "Company Filings",
+        "Stock Splits",
+        "Fund Marks",
+        "News",
+        "company_model",
+        "order_model",
+        "market_price_model",
+        "trade_model",
+        "409a_valuation_model",
+        "fund_mark_model",
+        "comp_model",
+        "stock_split_model",
+        "coi_model"
+      ]
+    },
+    {
+      "name": "V2",
+      "tags": [
+        "Funding Rounds",
+        "Investors",
+        "Company Lookup",
+        "Company Details",
+        "Comps"
+      ]
+    }
+  ],
+  "paths": {
+    "/v1/companies": {
+      "get": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "Get company",
+        "description": "Returns matching companies by lookup field. One (and only one) lookup field must be provided.",
+        "parameters": [
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId.",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "stripe.com"
+          },
+          {
+            "name": "caplightId",
+            "in": "query",
+            "description": "Company Caplight Id",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "134591n9dfk519kl"
+          },
+          {
+            "name": "pitchbookId",
+            "in": "query",
+            "description": "Company Pitchbook Id",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "54782-29"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/companies/all-with-data": {
+      "get": {
+        "tags": [
+          "Companies"
+        ],
+        "summary": "Get all companies with either orders or trades",
+        "description": "Returns a paginated list of companies with at least one order or trade. Optional filters: `has409aValuations` and `coisAvailable`.",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          },
+          {
+            "name": "has409aValuations",
+            "in": "query",
+            "description": "Filter to only companies with 409a valuations",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "example": true
+          },
+          {
+            "name": "coisAvailable",
+            "in": "query",
+            "description": "Filter to only companies for which Caplight tracks Certificate of Incorporation (COI) filings",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "example": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllCompaniesWithData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/all-marketprices": {
+      "get": {
+        "tags": [
+          "MarketPrice"
+        ],
+        "summary": "All MarketPrices",
+        "description": "Returns the latest MarketPrice for all companies where a Caplight MarketPrice exists. Each company's best-available price model is returned (secondaryMarket by default, falling back to fundMarks); the priceModel field on each row indicates which model produced it.",
+        "parameters": [
+          {
+            "name": "x-price-model",
+            "in": "header",
+            "description": "Optional. Filters the response to companies whose latest MarketPrice was produced by the given model. Allowed values (case-insensitive): \"secondaryMarket\" or \"fundMarks\". When omitted, every company's best-available MarketPrice is returned. An unrecognized value returns HTTP 400.",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "secondaryMarket",
+                "fundMarks"
+              ]
+            },
+            "example": "secondaryMarket"
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "number"
+            },
+            "example": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllMarketPrices"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/market-price-history": {
+      "get": {
+        "tags": [
+          "MarketPrice"
+        ],
+        "summary": "MarketPrice history",
+        "description": "Returns MarketPrice estimate history for a company by lookup field. One (and only one) lookup field must be provided. By default the best-available price model is returned for the company: the secondaryMarket model, automatically falling back to the fundMarks model when the company has no secondaryMarket series or its secondary-market data has gone stale. Use the x-price-model header to pin a specific model. The returned series is recomputed on each model run, so the set of dates returned for a company can change between requests.",
+        "parameters": [
+          {
+            "name": "x-price-model",
+            "in": "header",
+            "description": "Optional. Pins the MarketPrice model used to build the series. Allowed values (case-insensitive): \"secondaryMarket\" or \"fundMarks\". When omitted, the best-available model is served (secondaryMarket by default, falling back to fundMarks). Pin \"secondaryMarket\" to always receive the secondary-market series where one exists. An unrecognized value returns HTTP 400.",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "secondaryMarket",
+                "fundMarks"
+              ]
+            },
+            "example": "secondaryMarket"
+          },
+          {
+            "name": "caplightId",
+            "in": "query",
+            "description": "Company Caplight Id",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "134591n9dfk519kl"
+          },
+          {
+            "name": "fixed",
+            "in": "query",
+            "description": "Whether to return the fixed (unrevised) MarketPrice history. For most use-cases do NOT supply this parameter. Only honored for the secondaryMarket price model; combining fixed=true with x-price-model=fundMarks returns HTTP 400.",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "example": true
+          },
+          {
+            "name": "pitchbookId",
+            "in": "query",
+            "description": "Company Pitchbook Id",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "54782-29"
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "number"
+            },
+            "example": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketPriceHistory"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/live-orderbook": {
+      "get": {
+        "tags": [
+          "Live Orderbook"
+        ],
+        "summary": "All live orders",
+        "description": "Returns all live orders on the Caplight platform.",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveOrderbook"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/companies/quarterly-market-summary": {
+      "get": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "Get Quarterly Market Summary",
+        "description": "Returns quarterly market summary for a company by Caplight ID.",
+        "parameters": [
+          {
+            "name": "caplightId",
+            "in": "query",
+            "description": "Company Caplight Id",
+            "schema": {
+              "type": "string"
+            },
+            "example": "134591n9dfk519kl"
+          },
+          {
+            "name": "pitchbookId",
+            "in": "query",
+            "description": "Company Pitchbook Id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "54782-29"
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "stripe.com"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuarterlyMarketSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/fund-marks": {
+      "get": {
+        "tags": [
+          "Fund Marks"
+        ],
+        "summary": "Get company fund marks",
+        "description": "Returns mutual fund mark-to-market valuations for a company from SEC filings. Fund marks represent the fair value prices reported by mutual funds in their quarterly holdings disclosures (N-PORT filings). These are valuable data points for gauging private company valuations as assessed by institutional investors.",
+        "parameters": [
+          {
+            "name": "caplightId",
+            "in": "query",
+            "description": "Company Caplight Id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "134591n9dfk519kl"
+          },
+          {
+            "name": "pitchbookId",
+            "in": "query",
+            "description": "Company Pitchbook Id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "54782-29"
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "stripe.com"
+          },
+          {
+            "name": "quarter",
+            "in": "query",
+            "description": "Filter to a specific quarter (e.g. 1Q2024). Mutually exclusive with quarterFrom/quarterTo.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1Q2024"
+          },
+          {
+            "name": "quarterFrom",
+            "in": "query",
+            "description": "Filter to quarters starting from this quarter (inclusive). Use with quarterTo for a range.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1Q2023"
+          },
+          {
+            "name": "quarterTo",
+            "in": "query",
+            "description": "Filter to quarters up to this quarter (inclusive). Use with quarterFrom for a range.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "4Q2024"
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundMarksResponse"
+                },
+                "example": {
+                  "companyMeta": {
+                    "name": "Stripe",
+                    "domain": "stripe.com",
+                    "caplightId": "abc123xyz",
+                    "pitchbookId": "54782-29"
+                  },
+                  "pagination": {
+                    "pageNumber": 1,
+                    "numPages": 3,
+                    "totalRecords": 45
+                  },
+                  "fundMarks": [
+                    {
+                      "fundFamily": "T. Rowe Price",
+                      "fundName": "T. Rowe Price Global Technology Fund",
+                      "fundEdgarId": "0001127110",
+                      "quarter": "4Q2024",
+                      "filingDate": "2025-01-15",
+                      "reportingDate": "2024-12-31",
+                      "adsh": "0001127110-25-000123",
+                      "assetName": "Stripe Inc",
+                      "assetDescription": "Stripe Inc Series I Preferred Stock",
+                      "pricePerShare": 27.5,
+                      "numberOfShares": 500000,
+                      "positionSize": 13750000,
+                      "shareClass": "Series I",
+                      "shareSeries": "Preferred",
+                      "assetType": "Preferred Stock",
+                      "edgarFilingURL": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001127110&type=N-PORT"
+                    },
+                    {
+                      "fundFamily": "Fidelity",
+                      "fundName": "Fidelity Contrafund",
+                      "fundEdgarId": "0000315066",
+                      "quarter": "4Q2024",
+                      "filingDate": "2025-01-20",
+                      "reportingDate": "2024-12-31",
+                      "adsh": "0000315066-25-000456",
+                      "assetName": "Stripe Inc",
+                      "assetDescription": "Stripe Inc Common Stock",
+                      "pricePerShare": 25,
+                      "numberOfShares": 1000000,
+                      "positionSize": 25000000,
+                      "shareClass": null,
+                      "shareSeries": null,
+                      "assetType": "Common Stock",
+                      "edgarFilingURL": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000315066&type=N-PORT"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/news": {
+      "get": {
+        "tags": [
+          "News"
+        ],
+        "summary": "Get company news",
+        "description": "Returns news articles for a company within a specified date range. Articles include sentiment classification (positive, negative, neutral) and a highlighted flag indicating high-relevance news. Maximum date range is 31 days per request.",
+        "parameters": [
+          {
+            "name": "caplightId",
+            "in": "query",
+            "description": "Company Caplight Id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "134591n9dfk519kl"
+          },
+          {
+            "name": "pitchbookId",
+            "in": "query",
+            "description": "Company Pitchbook Id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "54782-29"
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "stripe.com"
+          },
+          {
+            "name": "dateAfter",
+            "in": "query",
+            "description": "Start of date range (ISO 8601 date). Required.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2024-01-01"
+          },
+          {
+            "name": "dateBefore",
+            "in": "query",
+            "description": "End of date range (ISO 8601 date). Required. Maximum 31 days from dateAfter.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2024-01-31"
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsResponse"
+                },
+                "example": {
+                  "companyMeta": {
+                    "name": "Stripe",
+                    "domain": "stripe.com",
+                    "caplightId": "abc123xyz",
+                    "pitchbookId": "54782-29"
+                  },
+                  "pagination": {
+                    "pageNumber": 1,
+                    "numPages": 2,
+                    "totalRecords": 28
+                  },
+                  "news": [
+                    {
+                      "id": 12345,
+                      "groupId": "news-group-abc123",
+                      "title": "Stripe launches new AI-powered fraud detection tool",
+                      "url": "https://techcrunch.com/2024/01/15/stripe-ai-fraud-detection",
+                      "publishedAt": "2024-01-15T14:30:00.000Z",
+                      "publication": "TechCrunch",
+                      "sentiment": "positive",
+                      "highlighted": "true"
+                    },
+                    {
+                      "id": 12346,
+                      "groupId": "news-group-def456",
+                      "title": "Stripe expands European operations with new Dublin office",
+                      "url": "https://www.reuters.com/technology/stripe-dublin-expansion",
+                      "publishedAt": "2024-01-10T09:00:00.000Z",
+                      "publication": "Reuters",
+                      "sentiment": "positive",
+                      "highlighted": "false"
+                    },
+                    {
+                      "id": 12347,
+                      "groupId": "news-group-ghi789",
+                      "title": "Fintech sector faces regulatory scrutiny in 2024",
+                      "url": "https://www.ft.com/content/fintech-regulation-2024",
+                      "publishedAt": "2024-01-05T16:45:00.000Z",
+                      "publication": "Financial Times",
+                      "sentiment": "neutral",
+                      "highlighted": "false"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid date parameters (missing dateAfter/dateBefore or range exceeds 31 days)"
+          }
+        }
+      }
+    },
+    "/v1/trade-history": {
+      "get": {
+        "tags": [
+          "Trade History"
+        ],
+        "summary": "Company trade history",
+        "description": "Returns full trade history for a company, paginated. Either caplightId or pitchbookId must be provided.",
+        "parameters": [
+          {
+            "name": "caplightId",
+            "in": "query",
+            "description": "Company Caplight Id",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "134591n9dfk519kl"
+          },
+          {
+            "name": "pitchbookId",
+            "in": "query",
+            "description": "Company Pitchbook Id",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "54782-29"
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "number"
+            },
+            "example": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TradeHistory"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/order-history": {
+      "get": {
+        "tags": [
+          "Order History"
+        ],
+        "summary": "Company order history",
+        "description": "Returns 3 months of order (bid/offer) history for a company. These orders do not represent closed (completed) transactions. Either caplightId or pitchbookId must be provided.",
+        "parameters": [
+          {
+            "name": "caplightId",
+            "in": "query",
+            "description": "Company Caplight Id",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "134591n9dfk519kl"
+          },
+          {
+            "name": "pitchbookId",
+            "in": "query",
+            "description": "Company Pitchbook Id",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "54782-29"
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderHistory"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/market-price-fixed-eod": {
+      "get": {
+        "tags": [
+          "MarketPrice"
+        ],
+        "summary": "MarketPrice end-of-day history",
+        "description": "Returns MarketPrice estimate history generated at a set hour of day; handles one company at a time; returns either interpolated time series generated on a given day or a time series of point-in-time estimates for the date of generation.",
+        "parameters": [
+          {
+            "name": "caplightId",
+            "in": "query",
+            "description": "Company Caplight Id",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "134591n9dfk519kl"
+          },
+          {
+            "name": "pitchbookId",
+            "in": "query",
+            "description": "Company Pitchbook Id",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "54782-29"
+          },
+          {
+            "name": "utcHour",
+            "in": "query",
+            "description": "Selected UTC hour at which MarketPrice was generated on each day (0, 4, 8, 12, 16, and 20 are supported)",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "number"
+            },
+            "example": 0
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "number"
+            },
+            "example": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketPriceEODHistory"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/stock-splits": {
+      "get": {
+        "tags": [
+          "Stock Splits"
+        ],
+        "summary": "Get Stock Splits",
+        "description": "Returns all stock splits for all companies, ordered by most recently added/revised to the Caplight database",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockSplits"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/filings/cois/all": {
+      "get": {
+        "tags": [
+          "Company Filings"
+        ],
+        "summary": "All COI Filings",
+        "description": "Returns all COI filings in the Caplight database, ordered by most recently added/updated",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "deprecated": false,
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllCOIsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/filings/cois/get-download-urls": {
+      "get": {
+        "tags": [
+          "Company Filings"
+        ],
+        "summary": "Get COI Download URLs",
+        "description": "Generates short-lived download URLs for a COI filing. Increments the account's monthly COI download count. Re-downloading a previously downloaded COI does not consume a download slot. This endpoint is only available upon request and may include additional pricing.",
+        "parameters": [
+          {
+            "name": "filingId",
+            "in": "query",
+            "description": "COI filing ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "allowOverage",
+            "in": "query",
+            "description": "Pass \"true\" to accept overage charges when the monthly limit is reached (only applies to accounts with overage enabled)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/COIDownloadLinks"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Limit reached or invalid request"
+          },
+          "404": {
+            "description": "COI filing not found"
+          }
+        }
+      }
+    },
+    "/v1/filings/cois/download-stats": {
+      "get": {
+        "tags": [
+          "Company Filings"
+        ],
+        "summary": "COI Download Stats",
+        "description": "Returns the authenticated account's COI download usage for the current calendar month (UTC).",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/COIDownloadStats"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/comps-performance": {
+      "get": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "Get Comparable Performance",
+        "description": "Returns a time series of public comparable performance data as a daily percentage change relative to the beginning of a time period for a private company",
+        "parameters": [
+          {
+            "name": "caplightId",
+            "in": "query",
+            "description": "Company Caplight Id",
+            "schema": {
+              "type": "string"
+            },
+            "example": "134591n9dfk519kl"
+          },
+          {
+            "name": "pitchbookId",
+            "in": "query",
+            "description": "Company Pitchbook Id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "54782-29"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Start date and base line for public comparable performance",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Date"
+            },
+            "example": "2025-01-01"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date for public comparable performance",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Date"
+            },
+            "example": "2025-12-31"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComparablePerformance"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/companies/{companyId}/funding-rounds": {
+      "get": {
+        "tags": [
+          "Funding Rounds"
+        ],
+        "summary": "Get company funding rounds",
+        "description": "Returns a paginated, sortable list of funding rounds for a company. Results are sorted by `roundDate` ascending by default.",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "example": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of results per page (default 50, max 200)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "minimum": 1,
+              "maximum": 200
+            },
+            "example": 50
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Field to sort results by. `roundDate` sorts by the best available date for the round, using the first non-null value from: completedAt, the round's internal date, then announcedAt. `updatedAt` sorts by the last update timestamp. Rounds with a null sort value are placed at the end regardless of sort order.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "roundDate",
+                "updatedAt"
+              ],
+              "default": "roundDate"
+            },
+            "example": "roundDate"
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Sort direction: `asc` for ascending (oldest first), `desc` for descending (newest first).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            },
+            "example": "asc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundingRoundsResponse"
+                },
+                "example": {
+                  "fundingRounds": [
+                    {
+                      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "company": {
+                        "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                        "name": "Acme Inc",
+                        "domain": "acme.com",
+                        "pitchbookId": "41339-53",
+                        "caplightIds": {
+                          "v2Id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                          "v1Id": "abc123xyz"
+                        }
+                      },
+                      "status": "completed",
+                      "isDeleted": false,
+                      "announcedAt": "2024-03-15",
+                      "completedAt": "2024-06-01",
+                      "roundName": "Series B",
+                      "amounts": {
+                        "total": {
+                          "amount": 50000000,
+                          "currency": "USD",
+                          "amountUsd": 50000000
+                        },
+                        "equity": {
+                          "amount": 50000000,
+                          "currency": "USD",
+                          "amountUsd": 50000000
+                        },
+                        "debt": {
+                          "amount": null,
+                          "currency": "USD",
+                          "amountUsd": null
+                        }
+                      },
+                      "valuation": {
+                        "preMoney": {
+                          "amount": 200000000,
+                          "currency": "USD",
+                          "amountUsd": 200000000
+                        },
+                        "postMoney": {
+                          "amount": 250000000,
+                          "currency": "USD",
+                          "amountUsd": 250000000
+                        }
+                      },
+                      "pps": {
+                        "amount": 12.5,
+                        "currency": "USD",
+                        "amountUsd": 12.5
+                      },
+                      "participants": [
+                        {
+                          "id": "f1a2b3c4-d5e6-7890-abcd-111111111111",
+                          "investor": {
+                            "id": "11111111-aaaa-bbbb-cccc-111111111111",
+                            "type": "firm",
+                            "name": "Sequoia Capital"
+                          },
+                          "role": "lead"
+                        },
+                        {
+                          "id": "f1a2b3c4-d5e6-7890-abcd-222222222222",
+                          "investor": {
+                            "id": "22222222-aaaa-bbbb-cccc-222222222222",
+                            "type": "firm",
+                            "name": "a16z"
+                          },
+                          "role": "participant"
+                        }
+                      ],
+                      "citations": [
+                        {
+                          "id": "c1a2b3c4-d5e6-7890-abcd-333333333333",
+                          "type": "press_release",
+                          "url": "https://example.com/press",
+                          "sourceName": "Company Blog",
+                          "publishedAt": "2024-06-01"
+                        }
+                      ],
+                      "updatedAt": "2024-06-15T14:30:00.000Z"
+                    },
+                    {
+                      "id": "d4e5f6a7-b8c9-0123-def0-456789abcdef",
+                      "company": {
+                        "id": "e5f6a7b8-c9d0-1234-ef01-56789abcdef0",
+                        "name": "Beta Corp",
+                        "domain": "betacorp.io",
+                        "pitchbookId": null,
+                        "caplightIds": {
+                          "v2Id": "e5f6a7b8-c9d0-1234-ef01-56789abcdef0",
+                          "v1Id": null
+                        }
+                      },
+                      "status": "announced",
+                      "isDeleted": false,
+                      "announcedAt": "2024-07-01",
+                      "completedAt": null,
+                      "roundName": "Series C",
+                      "restricted": {
+                        "fields": [
+                          "amounts",
+                          "valuation",
+                          "participants"
+                        ]
+                      },
+                      "updatedAt": "2024-07-05T11:00:00.000Z"
+                    }
+                  ],
+                  "pagination": {
+                    "pageNumber": 1,
+                    "numPages": 3,
+                    "totalRecords": 12
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/companies": {
+      "get": {
+        "tags": [
+          "Company Lookup"
+        ],
+        "summary": "Look up company IDs",
+        "description": "Resolves company domains, PitchBook IDs and v1 company IDs to v2 company IDs \u2014 including for companies added recently.\n\n**Batching:** each parameter may be repeated, e.g. `?domain=clickhouse.com&domain=neros.tech&v1Id=abc123xyz`. At most 50 identifiers in total across all three parameters; more returns 400.\n\n**Results:** one entry per identifier requested, echoing it back in `query` so responses line up with requests. Entries are grouped by identifier type in the order `domain`, `pitchbookId`, `v1Id` \u2014 not in query-string order. An identifier that matches nothing comes back with an empty `matches` array rather than a 404.\n\nA domain can match more than one company, because subsidiaries, acquired shells and stale duplicates share one. Every candidate is returned, best match first: not acquired, then an exact website match, then an active business status, then companies carrying market data, then the highest last known funding round valuation.\n\n**Access:** requires Companies V2 API access. Unlike the other v2 company endpoints, lookup does not enforce per-company access control and does not count toward your annual distinct-company limit \u2014 it returns identity only. `pitchbookId` is not included on matches; read it from `GET /v2/companies/{companyId}` once you have access to the company.",
+        "parameters": [
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "Company website domain or URL. The root domain is extracted and lowercased before matching, so `https://www.clickhouse.com/docs` and `clickhouse.com` behave identically. Repeatable.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "example": [
+              "clickhouse.com",
+              "neros.tech"
+            ]
+          },
+          {
+            "name": "pitchbookId",
+            "in": "query",
+            "description": "PitchBook company ID. Repeatable.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "example": [
+              "41339-53"
+            ]
+          },
+          {
+            "name": "v1Id",
+            "in": "query",
+            "description": "v1 company ID \u2014 the same value the v1 endpoints return as `caplightId`. Repeatable.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "example": [
+              "abc123xyz"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicCompanyLookupResponse"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "query": {
+                        "type": "domain",
+                        "value": "clickhouse.com"
+                      },
+                      "matches": [
+                        {
+                          "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                          "name": "ClickHouse",
+                          "domain": "clickhouse.com",
+                          "caplightIds": {
+                            "v2Id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                            "v1Id": "abc123xyz"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "query": {
+                        "type": "domain",
+                        "value": "neros.tech"
+                      },
+                      "matches": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No identifier supplied, or more than 50 identifiers in one request"
+          },
+          "401": {
+            "description": "Missing or invalid API key"
+          },
+          "403": {
+            "description": "Account does not have Companies V2 API access"
+          }
+        }
+      }
+    },
+    "/v2/companies/{companyId}": {
+      "get": {
+        "tags": [
+          "Company Details"
+        ],
+        "summary": "Get company details",
+        "description": "Returns the canonical Company resource: identity (name, legal name, location), descriptions, and the latest LLM-generated firmographic tags (sectors / verticals / keywords with attribution). Empty tag arrays and `tags.generatedAt: null` when the company has never been tagged.",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicCompanyDetails"
+                },
+                "example": {
+                  "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                  "name": "Acme Inc",
+                  "domain": "acme.com",
+                  "pitchbookId": "41339-53",
+                  "caplightIds": {
+                    "v2Id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                    "v1Id": "abc123xyz"
+                  },
+                  "legalName": "Acme Incorporated",
+                  "description": "Acme builds developer tools for AI agents.",
+                  "shortDescription": "Developer tools for AI.",
+                  "location": {
+                    "country": "United States",
+                    "state": "California",
+                    "city": "San Francisco"
+                  },
+                  "tags": {
+                    "sectors": [
+                      {
+                        "name": "Artificial Intelligence",
+                        "confidence": 0.92,
+                        "attribution": 0.7
+                      },
+                      {
+                        "name": "Developer Tools",
+                        "confidence": 0.85,
+                        "attribution": 0.3
+                      }
+                    ],
+                    "verticals": [
+                      {
+                        "name": "ML Infrastructure",
+                        "confidence": 0.81,
+                        "attribution": 1
+                      }
+                    ],
+                    "keywords": [
+                      {
+                        "keyword": "machine learning",
+                        "attribution": 0.5
+                      },
+                      {
+                        "keyword": "agents",
+                        "attribution": 0.3
+                      },
+                      {
+                        "keyword": "open source",
+                        "attribution": 0.2
+                      }
+                    ],
+                    "generatedAt": "2026-01-15T10:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key"
+          },
+          "403": {
+            "description": "Account does not have Companies V2 API access, or company is outside whitelist / over annual cap"
+          },
+          "404": {
+            "description": "Company not found"
+          }
+        }
+      }
+    },
+    "/v2/funding-rounds/updates": {
+      "get": {
+        "tags": [
+          "Funding Rounds"
+        ],
+        "summary": "Get funding round updates",
+        "description": "Returns funding rounds that have been updated within a date range. Use this for sync/incremental ingestion. Only returns rounds for companies your account has access to.\n\n**Window:** Rounds are returned where `updatedSince < updated_at <= upTo` (updatedSince is exclusive, upTo is inclusive).\n\n**Ordering:** Results are ordered by `updated_at` ascending, then `id` ascending.\n\n**Pagination:** For the first request, omit `upTo` or set it to bound your query. The response includes an `upTo` value. For pages 2 through N of the same batch, pass that same `upTo` as the `upTo` query param so pagination stays consistent.\n\n**Checkpointing:** After fetching all pages for a batch, advance your checkpoint by setting the next request's `updatedSince` to the `upTo` value from the previous response.\n\n**Deleted rounds:** Rounds deleted within the query range are included with `isDeleted: true`.",
+        "parameters": [
+          {
+            "name": "updatedSince",
+            "in": "query",
+            "description": "ISO 8601 date \u2014 exclusive lower bound. Return rounds with updated_at strictly after this time. Use the previous response's upTo to checkpoint for the next batch.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2024-01-01T00:00:00.000Z"
+          },
+          {
+            "name": "upTo",
+            "in": "query",
+            "description": "ISO 8601 date \u2014 inclusive upper bound. Return rounds with updated_at <= this time. Omit for first request (defaults to now). For pages 2..N, reuse the upTo value from the first page response.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "example": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of results per page (default 50, max 200)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "minimum": 1,
+              "maximum": 200
+            },
+            "example": 50
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundingRoundUpdatesResponse"
+                },
+                "example": {
+                  "updatedSince": "2024-06-01T00:00:00.000Z",
+                  "upTo": "2024-06-15T23:59:59.999Z",
+                  "fundingRounds": [
+                    {
+                      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "company": {
+                        "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                        "name": "Acme Inc",
+                        "domain": "acme.com",
+                        "pitchbookId": "41339-53",
+                        "caplightIds": {
+                          "v2Id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                          "v1Id": "abc123xyz"
+                        }
+                      },
+                      "status": "completed",
+                      "isDeleted": false,
+                      "announcedAt": "2024-03-15",
+                      "completedAt": "2024-06-01",
+                      "roundName": "Series B",
+                      "amounts": {
+                        "total": {
+                          "amount": 50000000,
+                          "currency": "USD",
+                          "amountUsd": 50000000
+                        },
+                        "equity": {
+                          "amount": 50000000,
+                          "currency": "USD",
+                          "amountUsd": 50000000
+                        },
+                        "debt": {
+                          "amount": null,
+                          "currency": "USD",
+                          "amountUsd": null
+                        }
+                      },
+                      "valuation": {
+                        "preMoney": {
+                          "amount": 200000000,
+                          "currency": "USD",
+                          "amountUsd": 200000000
+                        },
+                        "postMoney": {
+                          "amount": 250000000,
+                          "currency": "USD",
+                          "amountUsd": 250000000
+                        }
+                      },
+                      "pps": {
+                        "amount": 12.5,
+                        "currency": "USD",
+                        "amountUsd": 12.5
+                      },
+                      "participants": [
+                        {
+                          "id": "f1a2b3c4-d5e6-7890-abcd-111111111111",
+                          "investor": {
+                            "id": "11111111-aaaa-bbbb-cccc-111111111111",
+                            "type": "firm",
+                            "name": "Sequoia Capital"
+                          },
+                          "role": "lead"
+                        }
+                      ],
+                      "citations": [],
+                      "updatedAt": "2024-06-10T09:00:00.000Z"
+                    }
+                  ],
+                  "pagination": {
+                    "pageNumber": 1,
+                    "numPages": 1,
+                    "totalRecords": 1
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid date parameters (e.g. missing or invalid updatedSince)"
+          }
+        }
+      }
+    },
+    "/v2/funding-rounds/{roundId}": {
+      "get": {
+        "tags": [
+          "Funding Rounds"
+        ],
+        "summary": "Get funding round by ID",
+        "description": "Returns a single funding round by its round ID. Returns 404 if the round is not accessible to your account.",
+        "parameters": [
+          {
+            "name": "roundId",
+            "in": "path",
+            "description": "Round ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundingRoundSnapshot"
+                },
+                "example": {
+                  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                  "company": {
+                    "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                    "name": "Acme Inc",
+                    "domain": "acme.com",
+                    "pitchbookId": "41339-53",
+                    "caplightIds": {
+                      "v2Id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                      "v1Id": "abc123xyz"
+                    }
+                  },
+                  "status": "completed",
+                  "isDeleted": false,
+                  "announcedAt": "2024-03-15",
+                  "completedAt": "2024-06-01",
+                  "roundName": "Series B",
+                  "amounts": {
+                    "total": {
+                      "amount": 50000000,
+                      "currency": "USD",
+                      "amountUsd": 50000000
+                    },
+                    "equity": {
+                      "amount": 50000000,
+                      "currency": "USD",
+                      "amountUsd": 50000000
+                    },
+                    "debt": {
+                      "amount": null,
+                      "currency": "USD",
+                      "amountUsd": null
+                    }
+                  },
+                  "valuation": {
+                    "preMoney": {
+                      "amount": 200000000,
+                      "currency": "USD",
+                      "amountUsd": 200000000
+                    },
+                    "postMoney": {
+                      "amount": 250000000,
+                      "currency": "USD",
+                      "amountUsd": 250000000
+                    }
+                  },
+                  "pps": {
+                    "amount": 12.5,
+                    "currency": "USD",
+                    "amountUsd": 12.5
+                  },
+                  "participants": [
+                    {
+                      "id": "f1a2b3c4-d5e6-7890-abcd-111111111111",
+                      "investor": {
+                        "id": "11111111-aaaa-bbbb-cccc-111111111111",
+                        "type": "firm",
+                        "name": "Sequoia Capital"
+                      },
+                      "role": "lead"
+                    },
+                    {
+                      "id": "f1a2b3c4-d5e6-7890-abcd-222222222222",
+                      "investor": {
+                        "id": "22222222-aaaa-bbbb-cccc-222222222222",
+                        "type": "firm",
+                        "name": "Andreessen Horowitz"
+                      },
+                      "role": "participant"
+                    },
+                    {
+                      "id": "f1a2b3c4-d5e6-7890-abcd-444444444444",
+                      "investor": {
+                        "id": "44444444-aaaa-bbbb-cccc-444444444444",
+                        "type": "individual",
+                        "name": "Jane Smith"
+                      },
+                      "role": "participant"
+                    }
+                  ],
+                  "citations": [
+                    {
+                      "id": "c1a2b3c4-d5e6-7890-abcd-555555555555",
+                      "type": "press_release",
+                      "url": "https://acme.com/series-b",
+                      "sourceName": "Acme Blog",
+                      "publishedAt": "2024-06-01"
+                    },
+                    {
+                      "id": "c1a2b3c4-d5e6-7890-abcd-666666666666",
+                      "type": "sec_filing",
+                      "url": null,
+                      "sourceName": "Form D",
+                      "publishedAt": "2024-06-15"
+                    }
+                  ],
+                  "updatedAt": "2024-06-15T14:30:00.000Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Funding round not found or not accessible"
+          }
+        }
+      }
+    },
+    "/v2/companies/{companyId}/comps": {
+      "get": {
+        "tags": [
+          "Comps"
+        ],
+        "summary": "Get company comps",
+        "description": "Returns the LLM-discovered comparable companies (\"comps\") for a company, each with an overall similarity score (0-1), a per-dimension similarity breakdown, a classification, and a short rationale. Comps are ordered by similarity in descending order. Requires comps API access.",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "example": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of results per page (default 50, max 200). Most companies return all comparables in a single page.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "minimum": 1,
+              "maximum": 200
+            },
+            "example": 50
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComparablesResponse"
+                },
+                "example": {
+                  "company": {
+                    "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                    "name": "Acme Inc",
+                    "domain": "acme.com",
+                    "pitchbookId": "41339-53",
+                    "caplightIds": {
+                      "v2Id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                      "v1Id": "abc123xyz"
+                    }
+                  },
+                  "comparables": [
+                    {
+                      "name": "Globex Corp",
+                      "domain": "globex.com",
+                      "caplightIds": {
+                        "v2Id": "c3d4e5f6-a7b8-9012-cdef-234567890123",
+                        "v1Id": "def456uvw"
+                      },
+                      "ticker": null,
+                      "isPublic": false,
+                      "productName": null,
+                      "subsidiaryName": null,
+                      "classification": "pure_play",
+                      "similarity": 0.82,
+                      "similarityExplanation": "Same product category, overlapping customers.",
+                      "similarityBreakdown": [
+                        {
+                          "key": "product",
+                          "label": "Product overlap",
+                          "score": 0.9,
+                          "reasoning": "Both operate two-sided payment networks."
+                        },
+                        {
+                          "key": "customer",
+                          "label": "Customer overlap",
+                          "score": 0.8,
+                          "reasoning": "Shared enterprise customer base."
+                        }
+                      ],
+                      "description": "A close competitor in the enterprise widget space.",
+                      "generatedAt": "2026-01-15T12:00:00.000Z"
+                    }
+                  ],
+                  "pagination": {
+                    "pageNumber": 1,
+                    "numPages": 1,
+                    "totalRecords": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/companies/{companyId}/investors": {
+      "get": {
+        "tags": [
+          "Investors"
+        ],
+        "summary": "Get company investors",
+        "description": "Returns a paginated list of investors who have participated in funding rounds for a company.\n\n**Undisclosed round investors:** Some investors are known to have invested in a company but the specific round details are not available (e.g., due to confidential filings or incomplete data). These investors have `isUndisclosedRoundInvestor: true` and their `roundsInvested` array will be empty.",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Page number (1-based). First page is 1.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "example": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of results per page (default 50, max 200)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "minimum": 1,
+              "maximum": 200
+            },
+            "example": 50
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyInvestorsResponse"
+                },
+                "example": {
+                  "investors": [
+                    {
+                      "id": "11111111-aaaa-bbbb-cccc-111111111111",
+                      "type": "firm",
+                      "name": "Sequoia Capital",
+                      "roundsInvested": [
+                        {
+                          "roundId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                          "wasLead": true,
+                          "leadPartners": []
+                        }
+                      ],
+                      "isUndisclosedRoundInvestor": false
+                    },
+                    {
+                      "id": "22222222-aaaa-bbbb-cccc-222222222222",
+                      "type": "firm",
+                      "name": "Andreessen Horowitz",
+                      "roundsInvested": [
+                        {
+                          "roundId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                          "wasLead": false,
+                          "leadPartners": [
+                            {
+                              "id": "11111111-aaaa-bbbb-cccc-111111111111",
+                              "type": "firm",
+                              "name": "Sequoia Capital"
+                            }
+                          ]
+                        }
+                      ],
+                      "isUndisclosedRoundInvestor": false
+                    },
+                    {
+                      "id": "44444444-aaaa-bbbb-cccc-444444444444",
+                      "type": "individual",
+                      "name": "Jane Smith",
+                      "roundsInvested": [],
+                      "isUndisclosedRoundInvestor": true
+                    }
+                  ],
+                  "pagination": {
+                    "pageNumber": 1,
+                    "numPages": 2,
+                    "totalRecords": 4
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/composite-index": {
+      "get": {
+        "tags": [
+          "Composite Index"
+        ],
+        "summary": "Get composite index timeseries",
+        "description": "Returns a market-cap weighted composite index timeseries for private companies in a given sector or vertical, or the overall Caplight Top 20 (`scope=overall`). The index is rebased to 100 on the start date; each day includes the constituent list and weights. Companies that exit the private market (M&A, IPO, or wind-down) are excluded after their exit date. Only the parameters documented below are accepted \u2014 any other parameter is rejected with a 400 so index values are never silently computed under non-standard settings.",
+        "parameters": [
+          {
+            "name": "sector",
+            "in": "query",
+            "description": "Sector name to build the index from. Provide exactly one of `sector`, `vertical`, or `scope=overall`. Use `/composite-index/sectors` for valid names.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Cybersecurity"
+          },
+          {
+            "name": "vertical",
+            "in": "query",
+            "description": "Vertical name to build the index from. Provide exactly one of `sector`, `vertical`, or `scope=overall`. Use `/composite-index/verticals` for valid names.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Endpoint Security"
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "description": "Set to `overall` for the Caplight Top 20 \u2014 the flagship private-market index across all sectors (the 20 most liquid private companies, price-per-share weighted, monthly rebalance). Cannot be combined with `sector` or `vertical`.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "overall"
+              ]
+            },
+            "example": "overall"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Start date for the timeseries. Defaults to 1 year ago.",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Date"
+            },
+            "example": "2025-04-01"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date for the timeseries. Defaults to yesterday.",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Date"
+            },
+            "example": "2026-04-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompositeIndexResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or unsupported parameters. The endpoint accepts only the parameters documented above; unknown parameters are rejected rather than ignored.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No companies found for the given filter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/composite-index/sectors": {
+      "get": {
+        "tags": [
+          "Composite Index"
+        ],
+        "summary": "List available sectors",
+        "description": "Returns a list of all active sector names that can be used with the composite index endpoint.",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "AI, Data & Cloud Infrastructure",
+                    "Consumer & Commerce",
+                    "Crypto & Web3",
+                    "Cybersecurity",
+                    "Energy & Sustainability",
+                    "Enterprise Software",
+                    "FinTech",
+                    "Frontier & Industrial Tech",
+                    "Healthcare & Life Sciences",
+                    "Media, Entertainment & Gaming",
+                    "Mobility, Transportation & Logistics",
+                    "Real Estate & PropTech",
+                    "Telecommunications & Networking"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/composite-index/verticals": {
+      "get": {
+        "tags": [
+          "Composite Index"
+        ],
+        "summary": "List available verticals",
+        "description": "Returns a list of all active verticals with their parent sector names. Optionally filter by sector.",
+        "parameters": [
+          {
+            "name": "sector",
+            "in": "query",
+            "description": "Filter verticals by sector name. Must be a valid sector (use /composite-index/sectors to list).",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Cybersecurity"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "sectorName": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "name": "Cloud Infrastructure",
+                      "sectorName": "AI, Data & Cloud Infrastructure"
+                    },
+                    {
+                      "name": "ML Platforms",
+                      "sectorName": "AI, Data & Cloud Infrastructure"
+                    },
+                    {
+                      "name": "Endpoint Security",
+                      "sectorName": "Cybersecurity"
+                    },
+                    {
+                      "name": "Cloud Security",
+                      "sectorName": "Cybersecurity"
+                    },
+                    {
+                      "name": "Payments",
+                      "sectorName": "FinTech"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Company": {
+        "description": "Caplight Company model",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Company name",
+            "example": "Stripe"
+          },
+          "caplightId": {
+            "type": "string",
+            "description": "Caplight Company ID",
+            "example": "12d3140kjf90"
+          },
+          "caplightIds": {
+            "type": "object",
+            "description": "This company's IDs across API versions, for cross-referencing v1 and v2 endpoints",
+            "properties": {
+              "v2Id": {
+                "type": "string",
+                "nullable": true,
+                "description": "v2 company ID, used by the v2 endpoints. Null when the company has no v2 record.",
+                "example": "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+              },
+              "v1Id": {
+                "type": "string",
+                "description": "v1 company ID, the same value as caplightId",
+                "example": "12d3140kjf90"
+              }
+            }
+          },
+          "pitchbookId": {
+            "type": "string",
+            "description": "Pitchbook Company ID",
+            "example": "54782-29"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Company website domain",
+            "example": "stripe.com"
+          },
+          "status": {
+            "type": "string",
+            "description": "Company status (Private, Public, Acquired, or Out of business)",
+            "example": "Private"
+          },
+          "caplightPageURL": {
+            "type": "string",
+            "description": "Caplight platform URL for the company",
+            "example": "https://platform.caplight.com/companies/38048685"
+          },
+          "hqCountry": {
+            "type": "string",
+            "description": "Headquarters country (ISO name or code as stored)",
+            "nullable": true,
+            "example": "United States"
+          },
+          "countryOfDomicile": {
+            "type": "string",
+            "description": "Country of domicile (ISO code)",
+            "nullable": true,
+            "example": "US"
+          },
+          "industry": {
+            "type": "string",
+            "description": "Caplight primary industry label",
+            "nullable": true,
+            "example": "FinTech"
+          },
+          "legalName": {
+            "type": "string",
+            "description": "Legal entity name when available",
+            "nullable": true,
+            "example": "Stripe, Inc."
+          },
+          "has409aValuations": {
+            "type": "boolean",
+            "description": "Whether the company has at least one 409A valuation on file"
+          },
+          "coisAvailable": {
+            "type": "boolean",
+            "description": "Whether Caplight tracks COI (Certificate of Incorporation) filings for this company"
+          },
+          "marketPriceEstimate": {
+            "$ref": "#/components/schemas/MarketPrice",
+            "description": "Current Caplight MarketPrice estimate"
+          }
+        }
+      },
+      "Companies": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Company"
+        }
+      },
+      "CompanyLite": {
+        "description": "Caplight light Company model",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Company name",
+            "example": "Stripe"
+          },
+          "caplightId": {
+            "type": "string",
+            "description": "Caplight Company ID",
+            "example": "12d3140kjf90"
+          },
+          "caplightIds": {
+            "type": "object",
+            "description": "This company's IDs across API versions, for cross-referencing v1 and v2 endpoints",
+            "properties": {
+              "v2Id": {
+                "type": "string",
+                "nullable": true,
+                "description": "v2 company ID, used by the v2 endpoints. Null when the company has no v2 record.",
+                "example": "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+              },
+              "v1Id": {
+                "type": "string",
+                "description": "v1 company ID, the same value as caplightId",
+                "example": "12d3140kjf90"
+              }
+            }
+          },
+          "pitchbookId": {
+            "type": "string",
+            "description": "Pitchbook Company ID",
+            "example": "54782-29"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Company website domain",
+            "example": "stripe.com"
+          },
+          "status": {
+            "type": "string",
+            "description": "Company status (Private, Public, Acquired, or Out of business)",
+            "example": "Private"
+          },
+          "caplightPageURL": {
+            "type": "string",
+            "description": "Caplight platform URL for the company",
+            "example": "https://platform.caplight.com/companies/38048685"
+          },
+          "hqCountry": {
+            "type": "string",
+            "description": "Headquarters country (ISO name or code as stored)",
+            "nullable": true,
+            "example": "United States"
+          },
+          "countryOfDomicile": {
+            "type": "string",
+            "description": "Country of domicile (ISO code)",
+            "nullable": true,
+            "example": "US"
+          },
+          "industry": {
+            "type": "string",
+            "description": "Caplight primary industry label",
+            "nullable": true,
+            "example": "FinTech"
+          },
+          "legalName": {
+            "type": "string",
+            "description": "Legal entity name when available",
+            "nullable": true,
+            "example": "Stripe, Inc."
+          },
+          "has409aValuations": {
+            "type": "boolean",
+            "description": "Whether the company has at least one 409A valuation on file"
+          },
+          "coisAvailable": {
+            "type": "boolean",
+            "description": "Whether Caplight tracks COI (Certificate of Incorporation) filings for this company"
+          }
+        }
+      },
+      "CompaniesLite": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/CompanyLite"
+        }
+      },
+      "AllCompaniesWithData": {
+        "type": "object",
+        "properties": {
+          "companies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompanyLite"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "MarketPrice": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "description": "Share price USD",
+            "example": 15.9
+          },
+          "estimatedValuation": {
+            "type": "number",
+            "format": "int64",
+            "description": "Estimated valuation in USD (nullable)",
+            "example": 2150000000
+          },
+          "priceStandardError": {
+            "type": "number",
+            "format": "double",
+            "description": "Standard error of MarketPrice price estimate",
+            "example": 1.35
+          },
+          "lastUpdated": {
+            "$ref": "#/components/schemas/Date",
+            "description": "Date the MarketPrice estimate was generated"
+          }
+        }
+      },
+      "AllMarketPrices": {
+        "type": "object",
+        "properties": {
+          "allMarketPrices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompanyMarketPrice"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "MarketPriceHistory": {
+        "type": "object",
+        "properties": {
+          "priceModel": {
+            "type": "string",
+            "enum": [
+              "secondaryMarket",
+              "fundMarks"
+            ],
+            "description": "The MarketPrice model that produced the returned series: \"secondaryMarket\" (secondary-market transaction model) or \"fundMarks\" (fund-marks-based model). Reflects the model selected by default or pinned via the x-price-model request header. Omitted when no series is available for the company.",
+            "example": "secondaryMarket"
+          },
+          "daysSinceLastDataPoint": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "int",
+            "description": "Number of days between the most recent underlying data point (trade, order, funding round, or fund mark) and the latest MarketPrice date. Null when unavailable.",
+            "example": 10
+          },
+          "companyMeta": {
+            "$ref": "#/components/schemas/CompanyMeta"
+          },
+          "marketPriceHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarketPrice"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "LiveOrderbook": {
+        "type": "object",
+        "properties": {
+          "liveOrderbook": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderWithCompanyMeta"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "Order": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique record ID",
+                "example": "okP88RZSS9e1owCq73iD"
+              },
+              "direction": {
+                "type": "string",
+                "enum": [
+                  "bid",
+                  "offer"
+                ],
+                "description": "The type of order (bid/offer)",
+                "example": "bid"
+              },
+              "price": {
+                "type": "number",
+                "format": "double",
+                "description": "Share price USD (does not include split adjustments to today, i.e. reflective of the share count at the time)",
+                "example": 15.9
+              },
+              "valuation": {
+                "type": "number",
+                "format": "double",
+                "description": "Implied valuation USD",
+                "example": 5000000000
+              },
+              "volume": {
+                "type": "number",
+                "format": "double",
+                "deprecated": true,
+                "description": "(Deprecated field - replaced with minVolume). Order volume in USD, minimum amount",
+                "example": 1000000
+              },
+              "minVolume": {
+                "type": "number",
+                "format": "double",
+                "description": "Order volume in USD, minimum amount",
+                "example": 1000000
+              },
+              "maxVolume": {
+                "type": "number",
+                "format": "double",
+                "description": "Order volume in USD, maximum amount",
+                "example": 5000000
+              },
+              "minShares": {
+                "type": "number",
+                "format": "int",
+                "description": "Order share count, minimum amount",
+                "example": 80000
+              },
+              "maxShares": {
+                "type": "number",
+                "format": "int",
+                "description": "Order share count, maximum amount",
+                "example": 100000
+              },
+              "structure": {
+                "type": "string",
+                "enum": [
+                  "unknown",
+                  "direct",
+                  "spv",
+                  "forward",
+                  "call_option",
+                  "put_option",
+                  "swap",
+                  "variable_prepaid_forward",
+                  "exchange_fund"
+                ],
+                "example": "spv"
+              },
+              "isLive": {
+                "type": "boolean",
+                "description": "Whether an order is currently live",
+                "example": true
+              },
+              "managementFee": {
+                "type": "number",
+                "format": "double",
+                "description": "SPV management fee (if exists). Percentage value expressed as a decimal",
+                "example": 0.01
+              },
+              "carry": {
+                "type": "number",
+                "format": "double",
+                "description": "SPV carry (if exists). Percentage value expressed as a decimal",
+                "example": 0.2
+              },
+              "shareClasses": {
+                "type": "array",
+                "description": "May be an empty array or null",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "common",
+                    "preferred",
+                    "unknown"
+                  ]
+                },
+                "example": [
+                  "common"
+                ]
+              },
+              "brokerClientRelationship": {
+                "type": "string",
+                "enum": [
+                  "direct",
+                  "indirect"
+                ],
+                "description": "Broker's relationship with the end-client (investor/shareholder) behind an order. \"indirect\" means the broker is working with a client through another broker.",
+                "example": "direct"
+              },
+              "originationDate": {
+                "description": "Order origination date. This reflects the date the order was originally captured by a Caplight order contributor",
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              "date": {
+                "description": "Latest date of order creation / last update",
+                "$ref": "#/components/schemas/Date"
+              },
+              "lastUpdatedAt": {
+                "description": "Database timestamp when the trade/order data point was created or last updated in the database.",
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              "dealHistory": {
+                "type": "array",
+                "description": "Deals this order is part of. Paid add-on \u2014 available only to accounts with the Deal History add-on enabled; in most cases this requires a subscription upgrade. Email contact@caplight.com to enable it. When enabled, an empty array means the order has no deals; when not enabled, the field is omitted.",
+                "items": {
+                  "$ref": "#/components/schemas/OrderDeal"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "OrderDeal": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A stable, unique identifier for the deal.",
+            "example": "okP88RZSS9e1owCq73iD"
+          },
+          "counterpartyOrderId": {
+            "type": "string",
+            "nullable": true,
+            "description": "The id of the order on the other side of this deal. `null` when the other side is not represented by an order.",
+            "example": "aBc123dEf456"
+          },
+          "currentStatus": {
+            "type": "string",
+            "enum": [
+              "introductionRequested",
+              "introduced",
+              "potentialClosing",
+              "inClosing",
+              "closed",
+              "dead",
+              "blocked"
+            ],
+            "description": "The deal's current status.",
+            "example": "introduced"
+          },
+          "currentStatusUpdatedAt": {
+            "description": "When the current status was set.",
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "statusHistory": {
+            "type": "array",
+            "description": "The deal's past status changes, oldest first.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "introductionRequested",
+                    "introduced",
+                    "potentialClosing",
+                    "inClosing",
+                    "closed",
+                    "dead",
+                    "blocked"
+                  ]
+                },
+                "at": {
+                  "$ref": "#/components/schemas/Timestamp"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CompanyMarketPrice": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "company": {
+                "$ref": "#/components/schemas/CompanyMeta"
+              },
+              "priceModel": {
+                "type": "string",
+                "enum": [
+                  "secondaryMarket",
+                  "fundMarks"
+                ],
+                "description": "The MarketPrice model that produced this company's price: \"secondaryMarket\" or \"fundMarks\". Defaults to \"secondaryMarket\".",
+                "example": "secondaryMarket"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/MarketPrice"
+          }
+        ]
+      },
+      "OrderWithCompanyMeta": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "companyMeta": {
+                "$ref": "#/components/schemas/CompanyMeta"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/Order"
+          }
+        ]
+      },
+      "Date": {
+        "type": "string",
+        "description": "ISO formatted date without time",
+        "example": "2022-09-10"
+      },
+      "Timestamp": {
+        "type": "string",
+        "description": "ISO formatted datetime",
+        "example": "2023-01-26T05:56:30 +00:00"
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "description": "Page number (1-based). First page is 1.",
+            "example": 1
+          },
+          "numPages": {
+            "type": "integer",
+            "description": "Total number of pages for the result set",
+            "example": 10
+          },
+          "totalRecords": {
+            "type": "integer",
+            "description": "Total number of records for the result set",
+            "example": 250
+          }
+        }
+      },
+      "CompanyMeta": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Company name",
+            "example": "Stripe"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Company top-level web domain",
+            "example": "stripe.com"
+          },
+          "caplightId": {
+            "type": "string",
+            "description": "Caplight Company ID",
+            "example": "12d3140kjf90"
+          },
+          "pitchbookId": {
+            "type": "string",
+            "description": "Pitchbook Company ID",
+            "example": "54782-29"
+          }
+        }
+      },
+      "QuarterlyMarketSummary": {
+        "type": "object",
+        "properties": {
+          "companyMeta": {
+            "$ref": "#/components/schemas/CompanyMeta"
+          },
+          "currentMarketPricePPS": {
+            "type": "number",
+            "format": "double",
+            "description": "Current market price per share",
+            "example": 25.5,
+            "nullable": true
+          },
+          "currentMarketPriceValuation": {
+            "type": "number",
+            "format": "int64",
+            "description": "Current market price valuation",
+            "example": 2500000000,
+            "nullable": true
+          },
+          "quarterlyMarketData": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuarterlyMarketData"
+            }
+          }
+        }
+      },
+      "QuarterlyMarketData": {
+        "type": "object",
+        "properties": {
+          "quarter": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "quarterStart": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "totalTradeVolume": {
+            "type": "number",
+            "format": "double",
+            "description": "Total volume of trades",
+            "example": 50000,
+            "nullable": true
+          },
+          "totalBidVolume": {
+            "type": "number",
+            "format": "double",
+            "description": "Total volume of bids",
+            "example": 75000,
+            "nullable": true
+          },
+          "totalOfferVolume": {
+            "type": "number",
+            "format": "double",
+            "description": "Total volume of offers",
+            "example": 65000,
+            "nullable": true
+          },
+          "fundMarkVWAPPrice": {
+            "type": "number",
+            "format": "double",
+            "description": "Fund mark VWAP price",
+            "example": 25.5,
+            "nullable": true
+          },
+          "fundMarkCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Count of fund marks",
+            "example": 10,
+            "nullable": true
+          },
+          "marketPricePPSAtStartOfQuarter": {
+            "type": "number",
+            "format": "double",
+            "description": "Market price per share at start of quarter",
+            "example": 20.75,
+            "nullable": true
+          },
+          "marketPriceValuationAtStartOfQuarter": {
+            "type": "number",
+            "format": "int64",
+            "description": "Market price valuation at start of quarter",
+            "example": 2000000000,
+            "nullable": true
+          }
+        }
+      },
+      "FundMarksResponse": {
+        "type": "object",
+        "properties": {
+          "companyMeta": {
+            "$ref": "#/components/schemas/CompanyMeta"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          "fundMarks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FundMark"
+            }
+          }
+        }
+      },
+      "FundMark": {
+        "type": "object",
+        "description": "A mutual fund's mark-to-market valuation from SEC N-PORT filings",
+        "properties": {
+          "fundFamily": {
+            "type": "string",
+            "description": "Name of the fund family (e.g. T. Rowe Price, Fidelity)",
+            "example": "T. Rowe Price"
+          },
+          "fundName": {
+            "type": "string",
+            "description": "Name of the specific fund",
+            "example": "T. Rowe Price Global Technology Fund"
+          },
+          "fundEdgarId": {
+            "type": "string",
+            "description": "SEC EDGAR CIK for the fund",
+            "example": "0001127110"
+          },
+          "quarter": {
+            "type": "string",
+            "description": "Reporting quarter in format QQ[YYYY] (e.g. 1Q2024)",
+            "example": "4Q2024"
+          },
+          "filingDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the SEC filing was submitted",
+            "example": "2025-01-15"
+          },
+          "reportingDate": {
+            "type": "string",
+            "format": "date",
+            "description": "As-of date for the valuation (quarter end)",
+            "example": "2024-12-31"
+          },
+          "adsh": {
+            "type": "string",
+            "description": "SEC accession number for the filing",
+            "example": "0001127110-25-000123"
+          },
+          "assetName": {
+            "type": "string",
+            "description": "Name of the asset/issuer as reported",
+            "example": "Stripe Inc"
+          },
+          "assetDescription": {
+            "type": "string",
+            "description": "Description of the security",
+            "example": "Stripe Inc Series I Preferred Stock"
+          },
+          "pricePerShare": {
+            "type": "number",
+            "format": "double",
+            "description": "Fair value price per share as marked by the fund (USD)",
+            "example": 27.5
+          },
+          "numberOfShares": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Number of shares held by the fund",
+            "example": 500000
+          },
+          "positionSize": {
+            "type": "number",
+            "nullable": true,
+            "description": "Total position value (numberOfShares * pricePerShare) in USD",
+            "example": 13750000
+          },
+          "shareClass": {
+            "type": "string",
+            "nullable": true,
+            "description": "Share class (e.g. Series I, Series A)",
+            "example": "Series I"
+          },
+          "shareSeries": {
+            "type": "string",
+            "nullable": true,
+            "description": "Share series type",
+            "example": "Preferred"
+          },
+          "assetType": {
+            "type": "string",
+            "description": "Type of security (e.g. Common Stock, Preferred Stock)",
+            "example": "Preferred Stock"
+          },
+          "edgarFilingURL": {
+            "type": "string",
+            "description": "URL to the SEC EDGAR filing",
+            "example": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001127110&type=N-PORT"
+          }
+        }
+      },
+      "NewsResponse": {
+        "type": "object",
+        "properties": {
+          "companyMeta": {
+            "$ref": "#/components/schemas/CompanyMeta"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          "news": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NewsItem"
+            }
+          }
+        }
+      },
+      "NewsItem": {
+        "type": "object",
+        "description": "A news article about a company",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique news article ID",
+            "example": 12345
+          },
+          "groupId": {
+            "type": "string",
+            "description": "Grouping ID for related articles",
+            "example": "news-group-abc123"
+          },
+          "title": {
+            "type": "string",
+            "description": "Article headline",
+            "example": "Stripe launches new AI-powered fraud detection tool"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL to the full article",
+            "example": "https://techcrunch.com/2024/01/15/stripe-ai-fraud-detection"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Publication date/time",
+            "example": "2024-01-15T14:30:00.000Z"
+          },
+          "publication": {
+            "type": "string",
+            "description": "Name of the publication source",
+            "example": "TechCrunch"
+          },
+          "sentiment": {
+            "type": "string",
+            "enum": [
+              "positive",
+              "negative",
+              "neutral"
+            ],
+            "description": "Sentiment classification of the article",
+            "example": "positive"
+          },
+          "highlighted": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ],
+            "description": "Whether this is a high-relevance article for the company",
+            "example": "true"
+          }
+        }
+      },
+      "PublicCompanySummary": {
+        "type": "object",
+        "description": "Company summary. Companies have two IDs \u2014 v1 and v2 \u2014 both provided in caplightIds for cross-referencing across API versions.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "v2 company ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Company name"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true,
+            "description": "Company website domain"
+          },
+          "pitchbookId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Pitchbook company ID"
+          },
+          "caplightIds": {
+            "type": "object",
+            "description": "Both company ID formats for cross-referencing v1 and v2 endpoints",
+            "properties": {
+              "v2Id": {
+                "type": "string",
+                "description": "v2 company ID (same as id)"
+              },
+              "v1Id": {
+                "type": "string",
+                "nullable": true,
+                "description": "v1 company ID (for v1 API endpoints)"
+              }
+            }
+          }
+        }
+      },
+      "PublicInvestorSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Investor ID"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "firm",
+              "individual"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "Investor display name"
+          }
+        }
+      },
+      "MoneyAmount": {
+        "type": "object",
+        "description": "A monetary value with original currency and USD equivalent",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "nullable": true,
+            "description": "Amount in the original currency"
+          },
+          "currency": {
+            "type": "string",
+            "description": "ISO 4217 currency code (e.g. USD, EUR)"
+          },
+          "amountUsd": {
+            "type": "number",
+            "nullable": true,
+            "description": "Amount converted to USD"
+          }
+        }
+      },
+      "FundingRoundParticipant": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Participation record ID"
+          },
+          "investor": {
+            "$ref": "#/components/schemas/PublicInvestorSummary"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "lead",
+              "participant",
+              "unknown"
+            ],
+            "description": "Investor role in the round"
+          }
+        }
+      },
+      "FundingRoundCitation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "url",
+              "coi",
+              "press_release",
+              "sec_filing",
+              "news",
+              "other"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceName": {
+            "type": "string",
+            "nullable": true
+          },
+          "publishedAt": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ApiRestrictedFields": {
+        "type": "object",
+        "description": "Present when one or more fields are omitted due to account field-level restrictions. The fields array lists omitted field names (e.g. amounts, valuation, pps, participants, citations). Always check for this object and handle missing fields in your integration.",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Names of fields omitted from the response due to account permissions"
+          }
+        }
+      },
+      "FundingRoundSnapshot": {
+        "type": "object",
+        "description": "Funding round with amounts, valuation, participants, and citations",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Round ID"
+          },
+          "company": {
+            "$ref": "#/components/schemas/PublicCompanySummary"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "announced",
+              "completed",
+              "cancelled",
+              "rumored",
+              "postponed"
+            ]
+          },
+          "isDeleted": {
+            "type": "boolean",
+            "description": "Soft-deleted flag"
+          },
+          "announcedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Announcement date (YYYY-MM-DD)"
+          },
+          "completedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Completion date (YYYY-MM-DD)"
+          },
+          "roundName": {
+            "type": "string",
+            "description": "Round name as recorded, e.g. \"Series C\" or \"Debt\""
+          },
+          "amounts": {
+            "type": "object",
+            "description": "Funding amounts broken down by total, equity, and debt",
+            "properties": {
+              "total": {
+                "$ref": "#/components/schemas/MoneyAmount",
+                "description": "Total funding amount"
+              },
+              "equity": {
+                "$ref": "#/components/schemas/MoneyAmount",
+                "description": "Equity component"
+              },
+              "debt": {
+                "$ref": "#/components/schemas/MoneyAmount",
+                "description": "Debt component"
+              }
+            }
+          },
+          "valuation": {
+            "type": "object",
+            "description": "Round valuation",
+            "properties": {
+              "preMoney": {
+                "$ref": "#/components/schemas/MoneyAmount",
+                "description": "Pre-money valuation"
+              },
+              "postMoney": {
+                "$ref": "#/components/schemas/MoneyAmount",
+                "description": "Post-money valuation"
+              }
+            }
+          },
+          "pps": {
+            "$ref": "#/components/schemas/MoneyAmount",
+            "description": "Average price per share"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FundingRoundParticipant"
+            }
+          },
+          "citations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FundingRoundCitation"
+            }
+          },
+          "restricted": {
+            "$ref": "#/components/schemas/ApiRestrictedFields"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        }
+      },
+      "FundingRoundsResponse": {
+        "type": "object",
+        "properties": {
+          "fundingRounds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FundingRoundSnapshot"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "ComparableDimension": {
+        "type": "object",
+        "description": "One similarity sub-dimension: a stable key, a human-readable label, a 0-1 score, and a short rationale.",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "product"
+          },
+          "label": {
+            "type": "string",
+            "example": "Product overlap"
+          },
+          "score": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0,
+            "maximum": 1,
+            "example": 0.9
+          },
+          "reasoning": {
+            "type": "string",
+            "nullable": true,
+            "description": "Short LLM rationale for this dimension's score; null when not available.",
+            "example": "Both operate two-sided payment networks with overlapping enterprise customers."
+          }
+        }
+      },
+      "Comparable": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Globex Corp"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true,
+            "example": "globex.com"
+          },
+          "caplightIds": {
+            "type": "object",
+            "nullable": true,
+            "description": "The comparable's Caplight ids (v2 + v1) for cross-referencing into other v2/v1 endpoints; null when the comp isn't resolved to a Caplight company.",
+            "properties": {
+              "v2Id": {
+                "type": "string"
+              },
+              "v1Id": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          },
+          "ticker": {
+            "type": "string",
+            "nullable": true,
+            "description": "Stock ticker for public comparables; null for private companies.",
+            "example": "ACME"
+          },
+          "isPublic": {
+            "type": "boolean",
+            "description": "Whether the comparable is a publicly traded company."
+          },
+          "productName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Set when the comparable is scoped to a specific product."
+          },
+          "subsidiaryName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Set when the comparable is a subsidiary rather than the parent company."
+          },
+          "classification": {
+            "type": "string",
+            "enum": [
+              "pure_play",
+              "incumbent",
+              "challenger"
+            ],
+            "description": "How the comparable relates to the target company."
+          },
+          "similarity": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Overall weighted similarity score.",
+            "example": 0.82
+          },
+          "similarityExplanation": {
+            "type": "string",
+            "description": "Short rationale for why this company is a comparable.",
+            "example": "Same product category, overlapping customers."
+          },
+          "similarityBreakdown": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComparableDimension"
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the comparable company."
+          },
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this comparable set was generated for the target company."
+          }
+        }
+      },
+      "ComparablesResponse": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "$ref": "#/components/schemas/PublicCompanySummary"
+          },
+          "comparables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comparable"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "FundingRoundUpdatesResponse": {
+        "type": "object",
+        "properties": {
+          "updatedSince": {
+            "type": "string",
+            "description": "Exclusive lower bound used for this query"
+          },
+          "upTo": {
+            "type": "string",
+            "description": "Inclusive upper bound used for this query. Reuse this value as up_to when fetching pages 2..N; use as updated_since for the next batch after completing all pages."
+          },
+          "fundingRounds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FundingRoundSnapshot"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "CompanyInvestorRound": {
+        "type": "object",
+        "properties": {
+          "roundId": {
+            "type": "string"
+          },
+          "wasLead": {
+            "type": "boolean"
+          },
+          "leadPartners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicInvestorSummary"
+            }
+          }
+        }
+      },
+      "CompanyInvestor": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PublicInvestorSummary"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "roundsInvested": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CompanyInvestorRound"
+                }
+              },
+              "isUndisclosedRoundInvestor": {
+                "type": "boolean",
+                "description": "True if investor is known to have invested in this company but the specific round details are unavailable. These investors have an empty roundsInvested array."
+              }
+            }
+          }
+        ]
+      },
+      "CompanyInvestorsResponse": {
+        "type": "object",
+        "properties": {
+          "investors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompanyInvestor"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "TradeExVolume": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique record ID",
+            "example": "okP88RZSS9e1owCq73iD"
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "description": "Trade share price USD (does not include split adjustments to today, i.e. reflective of the share count at the time)",
+            "example": 15.9
+          },
+          "valuation": {
+            "type": "number",
+            "format": "double",
+            "description": "Implied valuation USD",
+            "example": 5000000000
+          },
+          "structure": {
+            "type": "string",
+            "enum": [
+              "unknown",
+              "direct",
+              "spv",
+              "forward",
+              "call_option",
+              "put_option",
+              "swap",
+              "exchange_fund",
+              "variable_prepaid_forward"
+            ],
+            "example": "spv"
+          },
+          "hasCarry": {
+            "type": "boolean",
+            "description": "Whether a trade was for an SPV-structure with carried interest",
+            "example": true
+          },
+          "shareClass": {
+            "type": "string",
+            "enum": [
+              "common",
+              "preferred",
+              "unknown"
+            ],
+            "description": "Share class of the transaction (may be undefined)",
+            "example": "preferred"
+          },
+          "shareClassSeries": {
+            "type": "string",
+            "description": "Share class series of the transaction. May be undefined",
+            "example": "Series B Preferred"
+          },
+          "date": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "lastUpdatedAt": {
+            "description": "Database timestamp when the trade/order data point was created or last updated in the database.",
+            "$ref": "#/components/schemas/Timestamp"
+          }
+        }
+      },
+      "Trade": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "volume": {
+                "type": "number",
+                "format": "double",
+                "description": "Trade volume in USD",
+                "example": 5000000
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/TradeExVolume"
+          }
+        ]
+      },
+      "TradeHistory": {
+        "type": "object",
+        "properties": {
+          "companyMeta": {
+            "$ref": "#/components/schemas/CompanyMeta"
+          },
+          "tradeHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Trade"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "OrderHistory": {
+        "type": "object",
+        "properties": {
+          "companyMeta": {
+            "$ref": "#/components/schemas/CompanyMeta"
+          },
+          "orderHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Order"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "MarketPriceEODFixedWithMeta": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "description": "Share price USD, not split adjusted historically",
+            "example": 15.9
+          },
+          "estimatedValuation": {
+            "type": "number",
+            "format": "int64",
+            "description": "Estimated valuation in USD (nullable)",
+            "example": 2150000000
+          },
+          "priceStandardError": {
+            "type": "number",
+            "format": "double",
+            "description": "Standard error of MarketPrice price estimate",
+            "example": 1.35
+          },
+          "generatedAtTimestamp": {
+            "type": "number",
+            "format": "int",
+            "description": "UTC timestamp of MarketPrice generation",
+            "example": 1690000000
+          },
+          "daysSinceLastDataPoint": {
+            "type": "number",
+            "format": "int",
+            "description": "Number of days that passed between the last raw data point (order, trade, funding round) and MarketPrice date",
+            "example": 10
+          },
+          "numberOfPoints6mo": {
+            "type": "number",
+            "format": "int",
+            "description": "Number of raw data points (order, trade, funding round) that were used for MarketPrice construction during 6 months preceding the MarketPrice date",
+            "example": 12
+          },
+          "orderImbalance": {
+            "type": "object",
+            "properties": {
+              "bidContribution": {
+                "type": "number",
+                "format": "double",
+                "description": "Contribution (out of 1.00) of bids into MarketPrice level, derived using the leave-one-out approach",
+                "example": 0.53
+              },
+              "offerContribution": {
+                "type": "number",
+                "format": "double",
+                "description": "Contribution (out of 1.00) of offers into MarketPrice level, derived using the leave-one-out approach",
+                "example": 0.25
+              }
+            }
+          }
+        }
+      },
+      "MarketPriceEODHistory": {
+        "type": "object",
+        "properties": {
+          "companyMeta": {
+            "$ref": "#/components/schemas/CompanyMeta"
+          },
+          "marketPriceData": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarketPriceEODFixedWithMeta"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "StockSplit": {
+        "type": "object",
+        "properties": {
+          "companyMeta": {
+            "$ref": "#/components/schemas/CompanyMeta"
+          },
+          "postSplitShares": {
+            "type": "number",
+            "description": "Post-stock split share count. A post-split value of 10 and pre-split value of 1 implies a 10-to-1 stock split.",
+            "example": 10
+          },
+          "preSplitShares": {
+            "type": "number",
+            "description": "Pre-stock split share count. A post-split value of 10 and pre-split value of 1 implies a 10-to-1 stock split.",
+            "example": 1
+          },
+          "stockSplitDate": {
+            "description": "Caplight's best estimate of the date at which the stock split occurred",
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "createdAt": {
+            "description": "Date when Caplight first captured the stock split information",
+            "$ref": "#/components/schemas/Timestamp"
+          }
+        }
+      },
+      "StockSplits": {
+        "type": "object",
+        "properties": {
+          "stockSplits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StockSplit"
+            }
+          }
+        }
+      },
+      "COI": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique COI ID"
+          },
+          "company": {
+            "$ref": "#/components/schemas/CompanyMeta"
+          },
+          "filingDate": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "fileMeta": {
+            "type": "object",
+            "properties": {
+              "pdfAvailable": {
+                "type": "boolean",
+                "description": "Whether the PDF version of the COI is available"
+              },
+              "htmlAvailable": {
+                "type": "boolean",
+                "description": "Whether the HTML version of the COI is available"
+              },
+              "numberOfPages": {
+                "type": "number",
+                "description": "Number of pages in the COI. May be null"
+              }
+            }
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "updatedAt": {
+            "$ref": "#/components/schemas/Timestamp"
+          }
+        }
+      },
+      "AllCOIsResponse": {
+        "type": "object",
+        "properties": {
+          "cois": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/COI"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "COIDownloadLinks": {
+        "type": "object",
+        "properties": {
+          "coiMeta": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          },
+          "numberOfPages": {
+            "type": "number",
+            "nullable": true
+          },
+          "pdfLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "htmlLink": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "COIDownloadStats": {
+        "type": "object",
+        "properties": {
+          "monthlyLimit": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "unlimited"
+                ]
+              }
+            ]
+          },
+          "netNewDownloads": {
+            "type": "number"
+          },
+          "overageDownloads": {
+            "type": "number"
+          },
+          "remainingDownloads": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "unlimited"
+                ]
+              }
+            ]
+          },
+          "totalDownloads": {
+            "type": "number"
+          }
+        }
+      },
+      "Comp": {
+        "type": "object",
+        "properties": {
+          "companyName": {
+            "type": "string",
+            "description": "Company name",
+            "example": "Paypal"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "public",
+              "private"
+            ],
+            "example": "public"
+          },
+          "ticker": {
+            "type": "string",
+            "description": "Public market ticker",
+            "example": "PYPL"
+          }
+        }
+      },
+      "409a": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "$ref": "#/components/schemas/Date",
+            "description": "Valuation date"
+          },
+          "pricePerShare": {
+            "type": "number",
+            "description": "Valuation price per share",
+            "example": 11.2
+          },
+          "impliedValuation": {
+            "type": "number",
+            "description": "Company valuation inferred from 409a's with a provided price per share",
+            "example": 11000000000
+          },
+          "valuation": {
+            "type": "number",
+            "description": "Company valuation",
+            "example": 11000000000
+          },
+          "impliedPricePerShare": {
+            "type": "number",
+            "description": "Price per share inferred from 409a's with a provided valuation",
+            "example": 11.2
+          }
+        }
+      },
+      "ComparablePerformance": {
+        "type": "object",
+        "properties": {
+          "companyMeta": {
+            "$ref": "#/components/schemas/CompanyMeta"
+          },
+          "compsPerformanceOverTime": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicComparablePerformanceOverTime"
+            }
+          }
+        }
+      },
+      "PublicComparablePerformanceOverTime": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "percentageChangeVsTimePeriodStart": {
+            "type": "number",
+            "description": "Percent change negative or positive since start of time period",
+            "example": 20.5
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "error"
+          },
+          "error": {
+            "type": "string",
+            "example": "sector or vertical query param is required"
+          }
+        }
+      },
+      "CompositeIndexConstituent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Company identifier (UUID). Same as the companyId used in other v2 endpoints."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Company name"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Constituent weight in the index (0-1)"
+          }
+        }
+      },
+      "CompositeIndexTimeseriesPoint": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "index": {
+            "type": "number",
+            "description": "Index value (rebased to 100 on start date)"
+          },
+          "constituents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompositeIndexConstituent"
+            }
+          }
+        }
+      },
+      "CompositeIndexResponse": {
+        "type": "object",
+        "required": [
+          "timeseries",
+          "warnings"
+        ],
+        "properties": {
+          "timeseries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompositeIndexTimeseriesPoint"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Run metadata (whitelisted subset): weighting, top_n, selection_method, rebalance settings, requested date range, and exclusion counts."
+          },
+          "warnings": {
+            "description": "Structured warnings surfaced by the private index and any requested overlays. Callers can filter on `overlay` + `code` without regex-matching the free-form `message`.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompositeIndexWarning"
+            }
+          }
+        }
+      },
+      "CompositeIndexWarning": {
+        "type": "object",
+        "required": [
+          "overlay",
+          "code",
+          "message"
+        ],
+        "properties": {
+          "overlay": {
+            "type": "string",
+            "enum": [
+              "bespoke-public-index",
+              "etf-price-timeseries",
+              "composite-index"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "description": "Structured warning code. `python-warning` propagates a free-form warning from the python server's `warnings[]` field (e.g. 'thin universe', 'coverage warning') regardless of which overlay emitted it. `python-metadata-error` indicates the python server returned HTTP 200 with `metadata.error` set, typically a partial failure. `python-error` is a full overlay failure \u2014 the overlay soft-degraded but the primary index still succeeded. `vertical-not-found` means the ETF overlay caller passed a vertical that doesn't exist in the classification DB.",
+            "enum": [
+              "no-public-tickers",
+              "empty-result",
+              "python-error",
+              "python-warning",
+              "python-metadata-error",
+              "missing-constituents",
+              "etf-mapping-missing",
+              "vertical-not-found"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "PublicCompanyDetails": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "domain",
+          "pitchbookId",
+          "caplightIds",
+          "legalName",
+          "description",
+          "shortDescription",
+          "location",
+          "tags"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "v2 company ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Company name"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true,
+            "description": "Company website domain"
+          },
+          "pitchbookId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Pitchbook company ID"
+          },
+          "caplightIds": {
+            "type": "object",
+            "required": [
+              "v2Id",
+              "v1Id"
+            ],
+            "properties": {
+              "v2Id": {
+                "type": "string"
+              },
+              "v1Id": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          },
+          "legalName": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "shortDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "$ref": "#/components/schemas/FirmographicsLocation"
+          },
+          "tags": {
+            "$ref": "#/components/schemas/FirmographicsTags"
+          }
+        }
+      },
+      "FirmographicsLocation": {
+        "type": "object",
+        "required": [
+          "country",
+          "state",
+          "city"
+        ],
+        "properties": {
+          "country": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "FirmographicsTags": {
+        "type": "object",
+        "required": [
+          "sectors",
+          "verticals",
+          "keywords",
+          "generatedAt"
+        ],
+        "properties": {
+          "sectors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicSectorTag"
+            }
+          },
+          "verticals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicVerticalTag"
+            }
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicKeywordTag"
+            }
+          },
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "ISO timestamp of the latest LLM tagging run; null if the company has never been tagged."
+          }
+        }
+      },
+      "PublicSectorTag": {
+        "type": "object",
+        "required": [
+          "name",
+          "confidence",
+          "attribution"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "attribution": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      },
+      "PublicVerticalTag": {
+        "type": "object",
+        "required": [
+          "name",
+          "confidence",
+          "attribution"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "attribution": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      },
+      "PublicKeywordTag": {
+        "type": "object",
+        "required": [
+          "keyword",
+          "attribution"
+        ],
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "attribution": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      },
+      "PublicCompanyLookupMatch": {
+        "description": "A company matched by a lookup. `pitchbookId` is not included \u2014 read it from `GET /v2/companies/{companyId}`.",
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "domain",
+          "caplightIds"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "v2 company ID",
+            "example": "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+          },
+          "name": {
+            "type": "string",
+            "description": "Company name",
+            "example": "ClickHouse"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true,
+            "description": "Company domain on record, which may differ from the domain queried when the match came from the company's website",
+            "example": "clickhouse.com"
+          },
+          "caplightIds": {
+            "type": "object",
+            "required": [
+              "v2Id",
+              "v1Id"
+            ],
+            "properties": {
+              "v2Id": {
+                "type": "string",
+                "description": "v2 company ID"
+              },
+              "v1Id": {
+                "type": "string",
+                "nullable": true,
+                "description": "v1 company ID, null when the company has no v1 record"
+              }
+            }
+          }
+        }
+      },
+      "PublicCompanyLookupResult": {
+        "description": "The matches for one requested identifier.",
+        "type": "object",
+        "required": [
+          "query",
+          "matches"
+        ],
+        "properties": {
+          "query": {
+            "type": "object",
+            "description": "The identifier this entry answers, echoed back so responses line up with requests",
+            "required": [
+              "type",
+              "value"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "domain",
+                  "pitchbookId",
+                  "v1Id"
+                ]
+              },
+              "value": {
+                "type": "string",
+                "example": "clickhouse.com"
+              }
+            }
+          },
+          "matches": {
+            "type": "array",
+            "description": "Every company matching the identifier, best match first. Empty when nothing matched.",
+            "items": {
+              "$ref": "#/components/schemas/PublicCompanyLookupMatch"
+            }
+          }
+        }
+      },
+      "PublicCompanyLookupResponse": {
+        "type": "object",
+        "required": [
+          "results"
+        ],
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicCompanyLookupResult"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "description": "Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.",
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      }
+    }
+  }
+}

@@ -1,0 +1,68 @@
+generated: '2026-08-09'
+method: searched
+source: live probes of every Caplight host on 2026-08-09
+hosts:
+- host: https://platform.caplight.com
+  role: platform / MCP server / API docs
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    standard: RFC 8414
+    status: 200
+    content_type: application/json
+    file: caplight-oauth-authorization-server.json
+  - path: /.well-known/oauth-protected-resource
+    standard: RFC 9728
+    status: 200
+    content_type: application/json
+    file: caplight-oauth-protected-resource.json
+  - path: /.well-known/oauth-protected-resource/mcp
+    standard: RFC 9728
+    status: 200
+    content_type: application/json
+    file: caplight-oauth-protected-resource-mcp.json
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/security.txt
+    standard: RFC 9116
+    status: 404
+  - path: /.well-known/api-catalog
+    standard: RFC 9727
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    standard: A2A 1.0.0
+    status: 404
+  - path: /.well-known/agent.json
+    standard: A2A legacy
+    status: 404
+- host: https://www.caplight.com
+  role: marketing site
+  documents:
+  - path: /.well-known/security.txt
+    standard: RFC 9116
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://us-central1-caplight-prod.cloudfunctions.net
+  role: REST API production host (Google Cloud Functions)
+  documents:
+  - path: /.well-known/agent-card.json
+    status: 404
+notes: >-
+  Caplight publishes no security.txt, no api-catalog, no OpenID Connect discovery document and no A2A
+  agent card on any host. The only well-known surface is the OAuth 2.1 discovery pair that backs the
+  hosted MCP server, which is fully anonymous and complete: authorization-server metadata (RFC 8414) and
+  protected-resource metadata (RFC 9728) at both the root and the /mcp sub-path.

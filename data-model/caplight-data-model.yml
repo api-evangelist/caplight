@@ -1,0 +1,236 @@
+generated: '2026-08-09'
+method: derived
+source: openapi/caplight-rest-api-openapi-original.json
+summary:
+  schemas: 68
+  core_entities: 12
+  note: >-
+    Derived from component $ref links and id-reference fields in the OpenAPI 3.1.0 document. Company is
+    the hub: nearly every response wraps its payload with a CompanyMeta or PublicCompanySummary block
+    plus a Pagination envelope.
+identifiers:
+  company:
+  - name: caplightId
+    note: v1 company ID, used by /v1/ endpoints
+  - name: v2Id
+    note: v2 company ID, used by /v2/ endpoints
+  - name: v1Id
+    note: v1 ID echoed on v2 objects for cross-referencing
+  - name: pitchbookId
+    note: external PitchBook identifier accepted as a lookup key
+  - name: domain
+    note: company domain accepted as a lookup key on several operations
+  cross_reference_field: caplightIds
+  resolver: GET /v2/companies
+  id_prefixes_published: false
+entities:
+- name: Company
+  schemas: [Company, CompanyLite, CompanyMeta, PublicCompanySummary, PublicCompanyDetails, Companies, CompaniesLite]
+  description: A VC-backed private company; the hub entity of the dataset.
+  operations:
+  - GET /v1/companies
+  - GET /v1/companies/all-with-data
+  - GET /v2/companies
+  - GET /v2/companies/{companyId}
+- name: MarketPrice
+  schemas: [MarketPrice, CompanyMarketPrice, MarketPriceHistory, AllMarketPrices, MarketPriceEODFixedWithMeta, MarketPriceEODHistory]
+  description: Caplight's implied secondary-market price for a company, current and historical.
+  operations:
+  - GET /v1/all-marketprices
+  - GET /v1/market-price-history
+  - GET /v1/market-price-fixed-eod
+- name: Order
+  schemas: [Order, OrderWithCompanyMeta, OrderDeal, OrderHistory, LiveOrderbook]
+  description: A live or historical bid/offer in the institutional secondary order book.
+  operations:
+  - GET /v1/live-orderbook
+  - GET /v1/order-history
+- name: Trade
+  schemas: [Trade, TradeExVolume, TradeHistory]
+  description: A closed secondary transaction.
+  operations:
+  - GET /v1/trade-history
+- name: FundingRound
+  schemas: [FundingRoundSnapshot, FundingRoundsResponse, FundingRoundUpdatesResponse, FundingRoundParticipant, FundingRoundCitation, MoneyAmount]
+  description: A primary funding round with amounts, valuation, participants and source citations.
+  operations:
+  - GET /v2/companies/{companyId}/funding-rounds
+  - GET /v2/funding-rounds/{roundId}
+  - GET /v2/funding-rounds/updates
+- name: Investor
+  schemas: [PublicInvestorSummary, CompanyInvestor, CompanyInvestorRound, CompanyInvestorsResponse]
+  description: A fund, firm or individual participating in a company's rounds.
+  operations:
+  - GET /v2/companies/{companyId}/investors
+- name: FundMark
+  schemas: [FundMark, FundMarksResponse]
+  description: A mutual-fund/SEC-filing derived valuation mark on a private company.
+  operations:
+  - GET /v1/fund-marks
+- name: COIFiling
+  schemas: [COI, AllCOIsResponse, COIDownloadLinks, COIDownloadStats]
+  description: Certificate-of-incorporation filing document and its download entitlements.
+  operations:
+  - GET /v1/filings/cois/all
+  - GET /v1/filings/cois/get-download-urls
+  - GET /v1/filings/cois/download-stats
+- name: Comparable
+  schemas: [Comparable, ComparableDimension, ComparablesResponse, ComparablePerformance, PublicComparablePerformanceOverTime]
+  description: Comparable-company set and its performance over time.
+  operations:
+  - GET /v2/companies/{companyId}/comps
+  - GET /v1/comps-performance
+- name: CompositeIndex
+  schemas: [CompositeIndexResponse, CompositeIndexTimeseriesPoint, CompositeIndexConstituent, CompositeIndexWarning]
+  description: Sector- and vertical-sliced composite index timeseries with its constituents.
+  operations:
+  - GET /v2/composite-index
+  - GET /v2/composite-index/sectors
+  - GET /v2/composite-index/verticals
+- name: NewsItem
+  schemas: [NewsItem, NewsResponse]
+  operations:
+  - GET /v1/news
+- name: StockSplit
+  schemas: [StockSplit, StockSplits]
+  operations:
+  - GET /v1/stock-splits
+- name: QuarterlyMarketSummary
+  schemas: [QuarterlyMarketSummary, QuarterlyMarketData]
+  operations:
+  - GET /v1/companies/quarterly-market-summary
+- name: 409aValuation
+  schemas: ['409a']
+  note: Surfaced through the company record; filtered by the has409aValuations query param.
+shared_envelopes:
+- name: Pagination
+  used_by: [AllCOIsResponse, AllCompaniesWithData, AllMarketPrices, CompanyInvestorsResponse, ComparablesResponse, FundMarksResponse, FundingRoundUpdatesResponse, FundingRoundsResponse, LiveOrderbook, MarketPriceEODHistory, MarketPriceHistory, NewsResponse, OrderHistory, TradeHistory]
+- name: CompanyMeta
+  used_by: [COI, CompanyMarketPrice, ComparablePerformance, FundMarksResponse, MarketPriceEODHistory, MarketPriceHistory, NewsResponse, OrderHistory, OrderWithCompanyMeta, QuarterlyMarketSummary, StockSplit, TradeHistory]
+- name: ApiRestrictedFields
+  used_by: [FundingRoundSnapshot]
+  note: Names the fields omitted from a response because of account-level field restrictions.
+- name: ErrorResponse
+  note: Error envelope, {status,error}.
+relationships:
+- from: Company
+  to: MarketPrice
+  type: has_one
+  via: Company.marketPrice ($ref MarketPrice)
+- from: CompanyMarketPrice
+  to: Company
+  type: belongs_to
+  via: CompanyMeta
+- from: Company
+  to: Order
+  type: has_many
+  via: caplightId on OrderWithCompanyMeta.CompanyMeta
+- from: Company
+  to: Trade
+  type: has_many
+  via: CompanyMeta on TradeHistory
+- from: Company
+  to: FundingRound
+  type: has_many
+  via: 'path param companyId on GET /v2/companies/{companyId}/funding-rounds'
+- from: FundingRound
+  to: Company
+  type: belongs_to
+  via: FundingRoundSnapshot.company ($ref PublicCompanySummary)
+- from: FundingRound
+  to: FundingRoundParticipant
+  type: has_many
+  via: participants
+- from: FundingRound
+  to: FundingRoundCitation
+  type: has_many
+  via: citations
+- from: FundingRound
+  to: MoneyAmount
+  type: has_one
+  via: amounts
+- from: FundingRoundParticipant
+  to: Investor
+  type: belongs_to
+  via: '$ref PublicInvestorSummary'
+- from: Company
+  to: Investor
+  type: has_many
+  via: CompanyInvestorsResponse.investors ($ref CompanyInvestor)
+- from: CompanyInvestor
+  to: CompanyInvestorRound
+  type: has_many
+  via: rounds
+- from: CompanyInvestorRound
+  to: Investor
+  type: belongs_to
+  via: '$ref PublicInvestorSummary'
+- from: Company
+  to: FundMark
+  type: has_many
+  via: CompanyMeta on FundMarksResponse
+- from: Company
+  to: COIFiling
+  type: has_many
+  via: COI.company ($ref CompanyMeta)
+- from: Company
+  to: StockSplit
+  type: has_many
+  via: StockSplit.company ($ref CompanyMeta)
+- from: Company
+  to: NewsItem
+  type: has_many
+  via: CompanyMeta on NewsResponse
+- from: Company
+  to: Comparable
+  type: has_many
+  via: 'path param companyId on GET /v2/companies/{companyId}/comps'
+- from: Comparable
+  to: ComparableDimension
+  type: has_many
+  via: dimensions
+- from: ComparablesResponse
+  to: Company
+  type: belongs_to
+  via: '$ref PublicCompanySummary'
+- from: Company
+  to: QuarterlyMarketSummary
+  type: has_many
+  via: CompanyMeta
+- from: CompositeIndex
+  to: CompositeIndexTimeseriesPoint
+  type: has_many
+  via: timeseries
+- from: CompositeIndexTimeseriesPoint
+  to: CompositeIndexConstituent
+  type: has_many
+  via: constituents
+- from: Order
+  to: OrderDeal
+  type: has_many
+  via: deals
+- from: OrderDeal
+  to: Order
+  type: belongs_to
+  via: counterpartyOrderId
+- from: PublicCompanyDetails
+  to: FirmographicsTags
+  type: has_one
+  via: tags
+- from: PublicCompanyDetails
+  to: FirmographicsLocation
+  type: has_one
+  via: location
+- from: FirmographicsTags
+  to: PublicSectorTag
+  type: has_many
+  via: sectors
+- from: FirmographicsTags
+  to: PublicVerticalTag
+  type: has_many
+  via: verticals
+- from: FirmographicsTags
+  to: PublicKeywordTag
+  type: has_many
+  via: keywords
+render: null

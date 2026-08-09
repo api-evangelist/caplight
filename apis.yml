@@ -1,23 +1,160 @@
 aid: caplight
 name: Caplight
-description: 'Caplight is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Caplight Technologies is a San Francisco private-markets data and trading platform for institutional
+  investors, covering 50,000+ VC-backed private companies with secondary-market pricing, a live
+  institutional order book, trade and order history, funding rounds with valuations and participants,
+  investor participation, SEC-derived fund marks, COI filings, stock splits, news, company signals and
+  comparable-company indices. Its proprietary MarketPrice(TM) estimate is implied from live bids, asks
+  and closed secondary trades. Caplight exposes the dataset through a versioned REST API (v1 and v2,
+  api_key header auth, documented with a public OpenAPI 3.1.0 definition rendered in Redoc), a hosted
+  OAuth-protected MCP server for Claude, and a one-line embeddable widget. Securities are offered
+  through Caplight Markets LLC, member FINRA/SIPC.
+image: https://www.caplight.com/assets/og/og-image-2026.png
 url: https://raw.githubusercontent.com/api-evangelist/caplight/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-09'
 modified: '2026-08-09'
 tags:
-- Company
-apis: []
+- private-markets
+- secondary-market
+- market-data
+- venture-capital
+- company-data
+- investor-data
+- funding-rounds
+- pricing-data
+- financial-data
+- fintech
+- mcp
+- agent-native
+apis:
+- name: Caplight REST API
+  description: >-
+    Versioned REST API over the Caplight private-markets dataset. v1 covers company lookup, MarketPrice
+    and MarketPrice history, the live order book, trade history, order history, quarterly market
+    summaries, fund marks, news, stock splits, COI filings and comparable performance; v2 covers company
+    lookup and details, funding rounds and a funding-round updates feed, investor participation, comps
+    and composite-index timeseries. 26 read-only GET operations, api_key header authentication, page-based
+    pagination, and a separate staging/sandbox host. Sold as a paid add-on to Caplight Data.
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - private-markets
+  - secondary-market
+  - market-data
+  - company-data
+  - investor-data
+  - funding-rounds
+  - pricing-data
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-rest-api-openapi-original.json
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Overlay
+    url: overlays/caplight-rest-api-overlay.yaml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- name: Caplight MCP Server
+  description: >-
+    Hosted, remote MCP server that connects Claude.ai and Claude Desktop to the Caplight dataset. Caplight
+    documents 15 tools spanning live MarketPrice quotes and price history, the secondary order book and
+    trade history, company profiles, COI filings, SEC-derived fund marks, funding rounds with amounts and
+    valuations, investor participation and quarterly market summaries. Added as a custom connector; no API
+    key is required — access is authorized with a Caplight account over OAuth 2.1 (authorization code +
+    PKCE S256, dynamic client registration), advertised via RFC 8414 and RFC 9728 metadata documents.
+  humanURL: https://www.caplight.com/products/mcp
+  baseURL: https://platform.caplight.com/mcp
+  tags:
+  - mcp
+  - agent-native
+  - private-markets
+  - market-data
+  - company-data
+  properties:
+  - type: MCPServer
+    url: mcp/caplight-mcp.yml
+  - type: MCPServer
+    url: https://platform.caplight.com/mcp
+  - type: ToolCrosswalk
+    url: mcp/caplight-tool-crosswalk.yml
+  - type: Documentation
+    url: https://www.caplight.com/products/mcp
+common:
+- type: AgenticAccess
+  url: agentic-access/caplight-agentic-access.yml
+- type: Website
+  url: https://www.caplight.com/
+- type: DeveloperPortal
+  url: https://platform.caplight.com/
+- type: Documentation
+  url: https://platform.caplight.com/api/documentation.html
+- type: APIReference
+  url: https://platform.caplight.com/api/documentation.html
+- type: GettingStarted
+  url: https://www.caplight.com/products/api
+- type: Blog
+  url: https://www.caplight.com/insights
+- type: SignUp
+  url: https://platform.caplight.com/signup
+- type: Login
+  url: https://platform.caplight.com/signin
+- type: TermsOfService
+  url: https://www.caplight.com/legal/terms-of-use
+- type: PrivacyPolicy
+  url: https://www.caplight.com/legal/privacy-policy
+- type: ChangeLog
+  url: https://www.caplight.com/changelog
+- type: ChangeLog
+  url: changelog/caplight-changelog.yml
+- type: Authentication
+  url: authentication/caplight-authentication.yml
+- type: Conventions
+  url: conventions/caplight-conventions.yml
+- type: MCPServer
+  url: mcp/caplight-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/caplight-tool-crosswalk.yml
+- type: WellKnown
+  url: well-known/caplight-well-known.yml
+- type: Conformance
+  url: conformance/caplight-conformance.yml
+- type: Lifecycle
+  url: lifecycle/caplight-lifecycle.yml
+- type: ErrorCatalog
+  url: errors/caplight-problem-types.yml
+- type: DataModel
+  url: data-model/caplight-data-model.yml
+- type: Sandbox
+  url: sandbox/caplight-sandbox.yml
+- type: Components
+  url: components/caplight-components.yml
+- type: DomainSecurity
+  url: security/caplight-domain-security.yml
+- type: LLMsTxt
+  url: llms/caplight-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
-common:
-- type: Website
-  url: https://forgeglobal.com/caplight_stock/
+x-enrichment:
+  date: '2026-08-09'
+  status: enriched
+  artifacts_added: 24
+  pass: local-v1

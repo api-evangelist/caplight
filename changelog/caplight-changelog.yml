@@ -1,0 +1,56 @@
+generated: '2026-08-09'
+method: searched
+source: https://www.caplight.com/changelog
+scheme: dated-entries
+current_api_version: 2.0.0
+scope: >-
+  Platform-wide changelog covering product features, dataset additions and API changes. Entries are dated
+  and categorised with labels (Data Update, API Enhancement); there are no release version numbers.
+started: '2026-04-22'
+window: 2026-04 through 2026-07 (the full published history at time of capture)
+entries:
+- date: '2026-07-16'
+  title: Comps (plus 50k more companies)
+  labels:
+  - Data Update
+  url: https://www.caplight.com/changelog/comps-plus-50k-more-companies
+  breaking: false
+  additions:
+  - Comparables dataset for every VC-backed private company
+  - New Comps API
+  - 50k additional companies
+  highlights: >-
+    Comps let a user see the space a company operates in, the other key players, and how a company is
+    positioned. Caplight states the model was iterated on for months before release. Available on
+    platform company pages and via the new Comps API.
+  api_surface:
+  - GET /v2/companies/{companyId}/comps
+  - GET /v1/comps-performance
+- date: '2026-06-02'
+  title: Company Customers Data
+  labels:
+  - Data Update
+  url: https://www.caplight.com/changelog/company-customers-data
+  breaking: false
+- date: '2026-05-21'
+  title: Revenue and Company Financials
+  labels:
+  - API Enhancement
+  - Data Update
+  url: https://www.caplight.com/changelog/revenue-and-company-financials
+  breaking: false
+  additions:
+  - Private company financials — revenue figures, profit, projections and other financial metrics
+  highlights: Coverage described as over 100 companies at launch.
+- date: '2026-04-22'
+  title: Introducing the Caplight Changelog
+  url: https://www.caplight.com/changelog/introducing-the-caplight-changelog
+  breaking: false
+  highlights: >-
+    First changelog entry. Caplight describes it as a formal changelog for the platform and website so
+    customers can track features and enhancements.
+breaking_changes_in_window: 0
+notes: >-
+  The changelog is product-led rather than API-led: it labels entries "API Enhancement" but does not
+  publish endpoint-level diffs, request/response schema changes, or a deprecation timeline. The OpenAPI
+  document carries no changelog of its own and info.version has been 2.0.0 across this window.

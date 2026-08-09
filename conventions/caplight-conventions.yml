@@ -1,0 +1,129 @@
+generated: '2026-08-09'
+method: searched
+source: >-
+  openapi/caplight-rest-api-openapi-original.json (OpenAPI 3.1.0) +
+  https://platform.caplight.com/api/documentation.html
+api: Caplight REST API
+authentication:
+  style: api-key-header
+  header: api_key
+  scheme_name: api_key
+  bearer: false
+  detail: authentication/caplight-authentication.yml
+  note: >-
+    The MCP server uses a different model (OAuth 2.1 bearer). See authentication/caplight-authentication.yml.
+idempotency:
+  supported: false
+  reason: >-
+    All 26 published operations are GET. The API is read-only, defines no idempotency key header or
+    parameter, and the spec contains no occurrence of "idempoten". No Idempotency pointer is emitted for
+    this provider.
+pagination:
+  style: page-number
+  supported: true
+  request_params:
+  - name: pageNumber
+    in: query
+    description: Page number (1-based). First page is 1.
+    used_by_operations: 14
+  - name: pageSize
+    in: query
+    used_by_operations: 4
+  response_object: Pagination
+  response_fields:
+  - pageNumber
+  - numPages
+  - totalRecords
+  cursor: false
+  note: >-
+    Page-number pagination with a total-record count; the Pagination component is embedded in most list
+    responses (order book, trade history, order history, fund marks, news, COIs, funding rounds,
+    investors, comps, MarketPrice history).
+identifiers:
+  note: >-
+    Companies carry two Caplight ID formats — a v1 company ID used by /v1/ endpoints and a v2 company ID
+    used by /v2/ endpoints. Both are returned in caplightIds on v1 and v2 company responses for
+    cross-referencing. Path and query params that accept a company identifier also accept a PitchBook ID
+    and, where applicable, a company domain.
+  resolver: GET /v2/companies
+  resolver_limit: 50 identifiers per request
+  accepted_identifier_params:
+  - caplightId
+  - pitchbookId
+  - domain
+  - v1Id
+field_restrictions:
+  supported: true
+  response_object: restricted
+  response_field: restricted.fields
+  description: >-
+    Some accounts have field-level restrictions. A restricted field is omitted from the response and its
+    name appears in restricted.fields on the funding round object. Restricted fields may include amounts,
+    valuation, pps, participants and citations. Integrations must check for a restricted object and
+    handle omitted fields.
+entitlements:
+  supported: true
+  description: >-
+    v2 company-scoped endpoints (funding rounds, investors, company details, comps) enforce per-account
+    access control — an optional whitelist of permitted companies, an optional annual limit on distinct
+    companies accessed, or both. Repeat access to the same company counts once toward the limit. The
+    funding-round updates feed returns only rounds for companies the account can access.
+  overage_param: allowOverage
+versioning:
+  scheme: uri-path
+  versions:
+  - v1
+  - v2
+  info_version: 2.0.0
+  description: >-
+    Endpoints are versioned via path prefix — /v1/ for company, MarketPrice and order-book endpoints,
+    /v2/ for company lookup, funding rounds, investors, company details, comps and composite index.
+  detail: lifecycle/caplight-lifecycle.yml
+errors:
+  envelope: non-standard
+  format: json
+  shapes:
+  - fields: [status, error]
+    schema: ErrorResponse
+    example: '{"status":"error","error":"sector or vertical query param is required"}'
+  - fields: [message]
+    observed_on: 401 from the live production host
+    example: '{"message":"Invalid/missing API key. Please set request header api_key with your provided API key"}'
+  rfc9457: false
+  note: >-
+    Two different error envelopes are observable — the ErrorResponse schema in the spec ({status, error})
+    and a bare {message} body returned by the gateway on 401. Neither is application/problem+json.
+  detail: errors/caplight-problem-types.yml
+rate_limiting:
+  documented: false
+  headers_observed: []
+  note: >-
+    No rate-limit policy is published and no X-RateLimit-* or Retry-After headers were returned on an
+    anonymous 401 from the production host. The only usage ceilings documented are entitlement limits —
+    the annual distinct-company cap on v2, the COI download limit ("Limit reached" 400 on
+    /v1/filings/cois/get-download-urls) and the allowOverage flag.
+request_tracing:
+  request_id_header: null
+  observed_response_headers:
+  - x-cloud-trace-context
+  - function-execution-id
+  note: >-
+    Not a documented contract — these are Google Cloud Functions platform headers observed on the
+    production host, not a Caplight-published correlation ID.
+content:
+  media_types:
+  - application/json
+  methods:
+  - GET
+  read_only: true
+custom_headers:
+- name: x-price-model
+  in: header
+  used_by_operations: 2
+  note: Header parameter declared on MarketPrice operations in the spec.
+cross_links:
+  authentication: authentication/caplight-authentication.yml
+  errors: errors/caplight-problem-types.yml
+  lifecycle: lifecycle/caplight-lifecycle.yml
+  sandbox: sandbox/caplight-sandbox.yml
+  data_model: data-model/caplight-data-model.yml

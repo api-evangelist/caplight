@@ -1,0 +1,144 @@
+generated: '2026-08-09'
+method: derived
+source: mcp/caplight-mcp.yml + openapi/caplight-rest-api-openapi-original.json
+surfaces:
+  openapi:
+    file: openapi/caplight-rest-api-openapi-original.json
+    spec: OpenAPI 3.1.0
+    source_url: https://us-central1-caplight-prod.cloudfunctions.net/api/v2/spec
+    operations: 26
+    gated: false
+    note: >-
+      The spec declares no operationId on any operation, so every REST binding below is expressed as
+      METHOD + path, which is how the spec itself identifies its operations. overlays/caplight-rest-api-overlay.yaml
+      proposes operationIds as an API Evangelist enhancement; they are not Caplight's.
+  mcp:
+    url: https://platform.caplight.com/mcp
+    gated: true
+    note: tools/list returns HTTP 401 without an OAuth access token; live tool names and inputSchemas were not observable.
+  graphql: null
+binding_basis: >-
+  Caplight publishes the MCP tool COUNT (15) and the capability areas the tools cover, but not the tool
+  names. Each row below is therefore a capability-area binding, not a name binding: it maps a documented
+  MCP capability to the REST operation(s) that serve the same data, so an agent inherits a real input
+  contract from the spec. Confidence is capped at medium for every row because no tool name was observed.
+crosswalk:
+- tool: null
+  capability: live MarketPrice quotes
+  category: pricing
+  rest:
+  - GET /v1/all-marketprices
+  - GET /v1/companies
+  binding: rest
+  confidence: medium
+  note: >-
+    Company MarketPrice is returned both in bulk by /v1/all-marketprices and embedded on the Company
+    object from /v1/companies.
+- tool: null
+  capability: MarketPrice price history
+  category: pricing
+  rest:
+  - GET /v1/market-price-history
+  - GET /v1/market-price-fixed-eod
+  binding: rest
+  confidence: medium
+  note: Two history shapes — continuous history and fixed end-of-day series.
+- tool: null
+  capability: secondary order book
+  category: market
+  rest:
+  - GET /v1/live-orderbook
+  - GET /v1/order-history
+  binding: rest
+  confidence: medium
+- tool: null
+  capability: trade history
+  category: market
+  rest:
+  - GET /v1/trade-history
+  binding: rest
+  confidence: medium
+- tool: null
+  capability: company profiles
+  category: company
+  rest:
+  - GET /v2/companies/{companyId}
+  - GET /v2/companies
+  - GET /v1/companies
+  - GET /v1/companies/all-with-data
+  binding: rest
+  confidence: medium
+  note: v2 carries firmographics and details; v1 carries the pricing-linked company record and ID lookup.
+- tool: null
+  capability: COI filings
+  category: filings
+  rest:
+  - GET /v1/filings/cois/all
+  - GET /v1/filings/cois/get-download-urls
+  - GET /v1/filings/cois/download-stats
+  binding: rest
+  confidence: medium
+- tool: null
+  capability: fund marks from SEC filings
+  category: valuation
+  rest:
+  - GET /v1/fund-marks
+  binding: rest
+  confidence: medium
+- tool: null
+  capability: funding rounds with amounts and valuations
+  category: funding
+  rest:
+  - GET /v2/companies/{companyId}/funding-rounds
+  - GET /v2/funding-rounds/{roundId}
+  - GET /v2/funding-rounds/updates
+  binding: rest
+  confidence: medium
+- tool: null
+  capability: investor participation
+  category: investors
+  rest:
+  - GET /v2/companies/{companyId}/investors
+  binding: rest
+  confidence: medium
+- tool: null
+  capability: quarterly market summaries
+  category: market
+  rest:
+  - GET /v1/companies/quarterly-market-summary
+  binding: rest
+  confidence: medium
+mcp_only: []
+rest_only:
+- operation: GET /v1/stock-splits
+  capability: corporate actions
+  note: Stock splits are not named among the documented MCP capability areas.
+- operation: GET /v1/news
+  capability: news
+  note: >-
+    Company news with sentiment is a REST operation and a marketed platform dataset, but is not named in
+    the MCP capability list.
+- operation: GET /v1/comps-performance
+  capability: comparables
+- operation: GET /v2/companies/{companyId}/comps
+  capability: comparables
+- operation: GET /v2/composite-index
+  capability: indices
+- operation: GET /v2/composite-index/sectors
+  capability: indices
+- operation: GET /v2/composite-index/verticals
+  capability: indices
+coverage:
+  mcp_tools_documented: 15
+  mcp_tool_names_published: 0
+  capability_areas_documented: 10
+  capability_areas_bound: 10
+  mcp_only: 0
+  rest_operations_total: 26
+  rest_operations_mapped_to_a_capability: 19
+  rest_operations_unmapped: 7
+divergence_note: >-
+  Comps and the composite-index family (added to the REST API in the July 2026 Comps release) and the
+  news and stock-split operations have no counterpart in Caplight's published MCP capability list. That
+  is a real surface divergence: the REST API is currently the broader surface. Whether the 15 live tools
+  cover them cannot be confirmed without an authenticated tools/list.

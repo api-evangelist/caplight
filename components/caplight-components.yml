@@ -1,0 +1,42 @@
+generated: '2026-08-09'
+method: searched
+source: >-
+  https://www.caplight.com/products/api + openapi/caplight-rest-api-openapi-original.json info.description
+summary: >-
+  Caplight ships one client-side embeddable surface — the Embed API — that renders live Caplight data
+  inside a customer's own application from a single script tag, with auth, refresh and entitlements
+  handled server-side by Caplight. It is distinct from the REST API (no first-party server SDKs exist).
+families:
+- name: Embed API
+  kind: embeddable-widget
+  loader: https://embed.caplight.com/v1.js
+  install: >-
+    <script src="https://embed.caplight.com/v1.js" data-company="northwind-ai"></script>
+  install_note: >-
+    Loader URL and snippet are quoted verbatim from the Caplight API product page; the data-company value
+    shown there ("northwind-ai") is Caplight's own placeholder example, not a real company slug.
+  datasets_rendered:
+  - live MarketPrice quotes
+  - fund marks
+  - order activity
+  capabilities:
+  - one-line install with no backend integration required
+  - customizable theme, layout and choice of which datasets to surface
+  - auth, refresh and entitlements handled by Caplight
+  documentation: https://www.caplight.com/products/api
+  reference_image: https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png
+  availability: >-
+    The OpenAPI description states the widget is offered "for customers who would like an easy way of
+    integrating Caplight Data into their platform. For inquiries, please contact us directly." There is
+    no self-serve embed onboarding.
+  x-evidence:
+    fetched: '2026-08-09'
+    embed_host: embed.caplight.com
+    dns: NXDOMAIN as of 2026-08-09
+    note: >-
+      embed.caplight.com did not resolve on probe. The snippet is documented on Caplight's own product
+      page and in the OpenAPI description, so the component is recorded as published-but-unverified
+      rather than confirmed live.
+gaps:
+- No public reference documentation for the Embed API — configuration is described only in marketing copy.
+- The documented loader host did not resolve anonymously, so the embed cannot be exercised without contact.

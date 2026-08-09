@@ -1,0 +1,50 @@
+generated: '2026-08-09'
+method: searched
+source: >-
+  openapi/caplight-rest-api-openapi-original.json (servers[] + info.description) +
+  https://platform.caplight.com/api/documentation.html
+api: Caplight REST API
+environments:
+- name: Production
+  base_url: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  declared_in: openapi servers[0]
+- name: Staging/Sandbox
+  base_url: https://us-central1-caplight-staging.cloudfunctions.net/api/public
+  declared_in: openapi servers[1]
+  description: >-
+    Caplight publishes a second, separately-named staging/sandbox host in the OpenAPI servers array and
+    in the documentation body. It is live and enforces the same api_key authentication as production.
+separation:
+  model: separate-host
+  key_prefixes: null
+  test_mode_flag: null
+  note: >-
+    Test and live are separated by HOST, not by key prefix or a mode flag. Caplight publishes no
+    convention for telling a staging key from a production key, and no self-serve way to obtain either —
+    API access is a paid add-on and keys are issued on request to contact@caplight.com.
+test_values:
+  published: false
+  note: >-
+    No test company IDs, magic identifiers, fixture datasets or seeded records are published. Because the
+    API is read-only market data rather than a transactional API, there are no test cards, test clocks or
+    trigger tooling to capture. Nothing has been invented here.
+verification:
+  fetched: '2026-08-09'
+  probes:
+  - url: https://us-central1-caplight-staging.cloudfunctions.net/api/public/v1/companies?domain=stripe.com
+    http_status: 401
+    body: '{"message":"Invalid/missing API key. Please set request header api_key with your provided API key"}'
+    conclusion: staging host is live and reachable; it rejects anonymous calls exactly as production does
+  - url: https://us-central1-caplight-prod.cloudfunctions.net/api/public/v1/companies?domain=stripe.com
+    http_status: 401
+    conclusion: production host is live
+console:
+  interactive_docs: https://platform.caplight.com/api/documentation.html
+  try_it: false
+  note: >-
+    The reference is rendered with Redoc, which is read-only — there is no in-browser "try it" console
+    against either environment.
+gaps:
+- No documented way to self-serve a sandbox key; every environment requires a sales conversation.
+- No published test fixtures or reference company IDs to make a staging call return known data.
+- No key-prefix or mode convention to prevent a staging key being used against production.

@@ -1,0 +1,56 @@
+generated: '2026-08-09'
+method: searched
+source: >-
+  https://www.caplight.com/changelog + openapi/caplight-rest-api-openapi-original.json +
+  https://platform.caplight.com/api/documentation.html
+versioning:
+  scheme: uri-path
+  current: v2
+  versions_live:
+  - v1
+  - v2
+  spec_info_version: 2.0.0
+  docs: https://platform.caplight.com/api/documentation.html
+  description: >-
+    Endpoints are versioned via path prefix. /v1/ serves company, MarketPrice and order-book endpoints;
+    /v2/ serves company lookup, company details, funding rounds, investors, comps and composite index.
+    Both versions are live and served from the same host; v1 is not marked deprecated.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  note: >-
+    Caplight publishes no deprecation or sunset policy, and no RFC 8594 Sunset/Deprecation header was
+    observed. Deprecation is signalled only inside the spec, at field level.
+deprecated_operations: []
+deprecated_fields:
+- path: components.schemas.Order.volume
+  replacement: minVolume
+  note: '"(Deprecated field - replaced with minVolume). Order volume in USD, minimum amount"'
+  source: openapi/caplight-rest-api-openapi-original.json
+changelog:
+  url: https://www.caplight.com/changelog
+  started: '2026-04-22'
+  detail: changelog/caplight-changelog.yml
+  scope: platform-wide (product + data + API)
+status_page: null
+status_page_probe:
+  url: https://status.caplight.com
+  result: DNS NXDOMAIN
+  checked: '2026-08-09'
+sla:
+  url: null
+  uptime_target: null
+  published: false
+support:
+  api_access_request: contact@caplight.com
+  engineering_contact: engineering@caplight.com
+  source: openapi/caplight-rest-api-openapi-original.json info.description + info.contact
+terms_of_service: https://platform.caplight.com/terms
+gaps:
+- No status page (status.caplight.com does not resolve).
+- No published deprecation or sunset policy, and no Sunset/Deprecation response headers.
+- No SLA or uptime commitment published on the public surface.
+- >-
+  v1 and v2 coexist with no published statement of which is preferred or how long v1 is supported.
