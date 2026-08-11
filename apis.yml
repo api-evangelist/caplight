@@ -31,51 +31,14 @@ tags:
 - mcp
 - agent-native
 apis:
-- name: Caplight REST API
-  description: >-
-    Versioned REST API over the Caplight private-markets dataset. v1 covers company lookup, MarketPrice
-    and MarketPrice history, the live order book, trade history, order history, quarterly market
-    summaries, fund marks, news, stock splits, COI filings and comparable performance; v2 covers company
-    lookup and details, funding rounds and a funding-round updates feed, investor participation, comps
-    and composite-index timeseries. 26 read-only GET operations, api_key header authentication, page-based
-    pagination, and a separate staging/sandbox host. Sold as a paid add-on to Caplight Data.
-  humanURL: https://platform.caplight.com/api/documentation.html
-  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
-  tags:
-  - private-markets
-  - secondary-market
-  - market-data
-  - company-data
-  - investor-data
-  - funding-rounds
-  - pricing-data
-  properties:
-  - type: OpenAPI
-    url: openapi/caplight-rest-api-openapi-original.json
-  - type: Documentation
-    url: https://platform.caplight.com/api/documentation.html
-  - type: APIReference
-    url: https://platform.caplight.com/api/documentation.html
-  - type: Authentication
-    url: authentication/caplight-authentication.yml
-  - type: Conventions
-    url: conventions/caplight-conventions.yml
-  - type: ErrorCatalog
-    url: errors/caplight-problem-types.yml
-  - type: DataModel
-    url: data-model/caplight-data-model.yml
-  - type: Overlay
-    url: overlays/caplight-rest-api-overlay.yaml
-  - type: Sandbox
-    url: sandbox/caplight-sandbox.yml
 - name: Caplight MCP Server
   description: >-
     Hosted, remote MCP server that connects Claude.ai and Claude Desktop to the Caplight dataset. Caplight
     documents 15 tools spanning live MarketPrice quotes and price history, the secondary order book and
-    trade history, company profiles, COI filings, SEC-derived fund marks, funding rounds with amounts and
-    valuations, investor participation and quarterly market summaries. Added as a custom connector; no API
-    key is required — access is authorized with a Caplight account over OAuth 2.1 (authorization code +
-    PKCE S256, dynamic client registration), advertised via RFC 8414 and RFC 9728 metadata documents.
+    trade history, company profiles, COI filings, SEC-derived fund marks, funding rounds with amounts
+    and valuations, investor participation and quarterly market summaries. Added as a custom connector;
+    no API key is required — access is authorized with a Caplight account over OAuth 2.1 (authorization
+    code + PKCE S256, dynamic client registration), advertised via RFC 8414 and RFC 9728 metadata documents.
   humanURL: https://www.caplight.com/products/mcp
   baseURL: https://platform.caplight.com/mcp
   tags:
@@ -93,7 +56,400 @@ apis:
     url: mcp/caplight-tool-crosswalk.yml
   - type: Documentation
     url: https://www.caplight.com/products/mcp
+- aid: caplight:caplight-companies-api
+  name: Caplight Companies API
+  description: The Companies API from Caplight — 1 operation(s) for companies.
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Companies
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-companies-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-company-api
+  name: Caplight Company API
+  description: The Company API from Caplight — 3 operation(s) for company.
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Company
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-company-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-company-details-api
+  name: Caplight Company Details API
+  description: >-
+    Canonical Company resource: identity (name, legal name, location), descriptions, and the latest LLM-generated
+    firmographic tags (sectors / verticals / keywords with attribution).
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Company Details
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-company-details-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-company-filings-api
+  name: Caplight Company Filings API
+  description: COI (Certificate of Incorporation) filings and related company documents
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Company Filings
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-company-filings-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-company-lookup-api
+  name: Caplight Company Lookup API
+  description: >-
+    Resolves company domains, PitchBook IDs and v1 company IDs to v2 company IDs, in batches.
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Company Lookup
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-company-lookup-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-composite-index-api
+  name: Caplight Composite Index API
+  description: The Composite Index API from Caplight — 3 operation(s) for composite index.
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Composite Index
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-composite-index-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-comps-api
+  name: Caplight Comps API
+  description: >-
+    LLM-discovered comparable companies with an overall similarity score, a per-dimension breakdown, a
+    classification, and a short rationale.
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Comps
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-comps-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-fund-marks-api
+  name: Caplight Fund Marks API
+  description: Mutual fund mark-to-market valuations from SEC filings
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Fund Marks
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-fund-marks-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-funding-rounds-api
+  name: Caplight Funding Rounds API
+  description: Funding round data including amounts, valuations, participants, and citations
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Funding Rounds
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-funding-rounds-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-investors-api
+  name: Caplight Investors API
+  description: Investor participation data for companies
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Investors
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-investors-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-live-orderbook-api
+  name: Caplight Live Orderbook API
+  description: The Live Orderbook API from Caplight — 1 operation(s) for live orderbook.
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Live Orderbook
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-live-orderbook-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-marketprice-api
+  name: Caplight Market Price API
+  description: >-
+    Caplight's proprietary MarketPrice estimate, calculated using executed trades, company primary rounds,
+    bids/offers, fund marks, 409a valuations, and comps performance.
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - MarketPrice
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-marketprice-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-news-api
+  name: Caplight News API
+  description: Company news articles with sentiment analysis
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - News
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-news-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-order-history-api
+  name: Caplight Order History API
+  description: The Order History API from Caplight — 1 operation(s) for order history.
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Order History
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-order-history-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-stock-splits-api
+  name: Caplight Stock Splits API
+  description: The Stock Splits API from Caplight — 1 operation(s) for stock splits.
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Stock Splits
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-stock-splits-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-trade-history-api
+  name: Caplight Trade History API
+  description: The Trade History API from Caplight — 1 operation(s) for trade history.
+  humanURL: https://platform.caplight.com/api/documentation.html
+  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
+  tags:
+  - Trade History
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-trade-history-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
 common:
+- type: Overlay
+  url: overlays/caplight-rest-api-overlay.yaml
 - type: AgenticAccess
   url: agentic-access/caplight-agentic-access.yml
 - type: Website
