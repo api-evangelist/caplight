@@ -1,0 +1,117 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Company API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Company",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get company",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/companies",
+            "params": [
+              {
+                "name": "domain",
+                "value": "stripe.com",
+                "type": "query",
+                "description": "Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId."
+              },
+              {
+                "name": "caplightId",
+                "value": "134591n9dfk519kl",
+                "type": "query",
+                "description": "Company Caplight Id"
+              },
+              {
+                "name": "pitchbookId",
+                "value": "54782-29",
+                "type": "query",
+                "description": "Company Pitchbook Id"
+              }
+            ]
+          },
+          "docs": "Returns matching companies by lookup field. One (and only one) lookup field must be provided."
+        },
+        {
+          "info": {
+            "name": "Get Quarterly Market Summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/companies/quarterly-market-summary",
+            "params": [
+              {
+                "name": "caplightId",
+                "value": "134591n9dfk519kl",
+                "type": "query",
+                "description": "Company Caplight Id"
+              },
+              {
+                "name": "pitchbookId",
+                "value": "54782-29",
+                "type": "query",
+                "description": "Company Pitchbook Id"
+              },
+              {
+                "name": "domain",
+                "value": "stripe.com",
+                "type": "query",
+                "description": "Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId."
+              }
+            ]
+          },
+          "docs": "Returns quarterly market summary for a company by Caplight ID."
+        },
+        {
+          "info": {
+            "name": "Get Comparable Performance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/comps-performance",
+            "params": [
+              {
+                "name": "caplightId",
+                "value": "134591n9dfk519kl",
+                "type": "query",
+                "description": "Company Caplight Id"
+              },
+              {
+                "name": "pitchbookId",
+                "value": "54782-29",
+                "type": "query",
+                "description": "Company Pitchbook Id"
+              },
+              {
+                "name": "startDate",
+                "value": "2025-01-01",
+                "type": "query",
+                "description": "Start date and base line for public comparable performance"
+              },
+              {
+                "name": "endDate",
+                "value": "2025-12-31",
+                "type": "query",
+                "description": "End date for public comparable performance"
+              }
+            ]
+          },
+          "docs": "Returns a time series of public comparable performance data as a daily percentage change relative to the beginning of a time period for a private company"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,146 @@
+{
+  "item": [
+    {
+      "id": "c70bf33d-7bd7-4749-8408-e28354f3bfef",
+      "name": "Investors",
+      "description": {
+        "content": "Investor participation data for companies",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9961c629-c238-468a-bf26-c1941614939c",
+          "name": "Get company investors",
+          "request": {
+            "name": "Get company investors",
+            "description": {
+              "content": "Returns a paginated list of investors who have participated in funding rounds for a company.\n\n**Undisclosed round investors:** Some investors are known to have invested in a company but the specific round details are not available (e.g., due to confidential filings or incomplete data). These investors have `isUndisclosedRoundInvestor: true` and their `roundsInvested` array will be empty.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "companies",
+                ":companyId",
+                "investors"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Page number (1-based). First page is 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "50",
+                  "description": "Number of results per page (default 50, max 200)"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "companyId",
+                  "description": "(Required) Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d0da5807-af7b-4ae5-a688-60c81dc3d46c",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "companies",
+                    ":companyId",
+                    "investors"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNumber",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "companyId",
+                      "description": "(Required) Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"investors\": [\n    {\n      \"id\": \"11111111-aaaa-bbbb-cccc-111111111111\",\n      \"type\": \"firm\",\n      \"name\": \"Sequoia Capital\",\n      \"roundsInvested\": [\n        {\n          \"roundId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n          \"wasLead\": true,\n          \"leadPartners\": []\n        }\n      ],\n      \"isUndisclosedRoundInvestor\": false\n    },\n    {\n      \"id\": \"22222222-aaaa-bbbb-cccc-222222222222\",\n      \"type\": \"firm\",\n      \"name\": \"Andreessen Horowitz\",\n      \"roundsInvested\": [\n        {\n          \"roundId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n          \"wasLead\": false,\n          \"leadPartners\": [\n            {\n              \"id\": \"11111111-aaaa-bbbb-cccc-111111111111\",\n              \"type\": \"firm\",\n              \"name\": \"Sequoia Capital\"\n            }\n          ]\n        }\n      ],\n      \"isUndisclosedRoundInvestor\": false\n    },\n    {\n      \"id\": \"44444444-aaaa-bbbb-cccc-444444444444\",\n      \"type\": \"individual\",\n      \"name\": \"Jane Smith\",\n      \"roundsInvested\": [],\n      \"isUndisclosedRoundInvestor\": true\n    }\n  ],\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 2,\n    \"totalRecords\": 4\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "53eef9c7-304a-4127-af4f-d437e11cdcd6",
+    "name": "Caplight REST Investors API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}

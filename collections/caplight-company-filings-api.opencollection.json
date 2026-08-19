@@ -1,0 +1,73 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Company Filings API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Company Filings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "All COI Filings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/filings/cois/all",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "1",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              }
+            ]
+          },
+          "docs": "Returns all COI filings in the Caplight database, ordered by most recently added/updated"
+        },
+        {
+          "info": {
+            "name": "Get COI Download URLs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/filings/cois/get-download-urls",
+            "params": [
+              {
+                "name": "filingId",
+                "value": "",
+                "type": "query",
+                "description": "COI filing ID"
+              },
+              {
+                "name": "allowOverage",
+                "value": "",
+                "type": "query",
+                "description": "Pass \"true\" to accept overage charges when the monthly limit is reached (only applies to accounts with overage enabled)"
+              }
+            ]
+          },
+          "docs": "Generates short-lived download URLs for a COI filing. Increments the account's monthly COI download count. Re-downloading a previously downloaded COI does not consume a download slot. This endpoint is only available upon request and may include additional pricing."
+        },
+        {
+          "info": {
+            "name": "COI Download Stats",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/filings/cois/download-stats"
+          },
+          "docs": "Returns the authenticated account's COI download usage for the current calendar month (UTC)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,459 @@
+{
+  "item": [
+    {
+      "id": "ebba0dba-7ac5-42bf-b99e-8d566f4e8b56",
+      "name": "Funding Rounds",
+      "description": {
+        "content": "Funding round data including amounts, valuations, participants, and citations",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f21eaca2-39d5-4e33-aabd-2eeebc42a6cc",
+          "name": "Get company funding rounds",
+          "request": {
+            "name": "Get company funding rounds",
+            "description": {
+              "content": "Returns a paginated, sortable list of funding rounds for a company. Results are sorted by `roundDate` ascending by default.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "companies",
+                ":companyId",
+                "funding-rounds"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Page number (1-based). First page is 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "50",
+                  "description": "Number of results per page (default 50, max 200)"
+                },
+                {
+                  "disabled": false,
+                  "key": "sortBy",
+                  "value": "roundDate",
+                  "description": "Field to sort results by. `roundDate` sorts by the best available date for the round, using the first non-null value from: completedAt, the round's internal date, then announcedAt. `updatedAt` sorts by the last update timestamp. Rounds with a null sort value are placed at the end regardless of sort order."
+                },
+                {
+                  "disabled": false,
+                  "key": "sortOrder",
+                  "value": "asc",
+                  "description": "Sort direction: `asc` for ascending (oldest first), `desc` for descending (newest first)."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "companyId",
+                  "description": "(Required) Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b29d9caf-64f7-48ff-87da-6eef8b020fc7",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "companies",
+                    ":companyId",
+                    "funding-rounds"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNumber",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "50"
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "roundDate"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "companyId",
+                      "description": "(Required) Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"fundingRounds\": [\n    {\n      \"id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n      \"company\": {\n        \"id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n        \"name\": \"Acme Inc\",\n        \"domain\": \"acme.com\",\n        \"pitchbookId\": \"41339-53\",\n        \"caplightIds\": {\n          \"v2Id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n          \"v1Id\": \"abc123xyz\"\n        }\n      },\n      \"status\": \"completed\",\n      \"isDeleted\": false,\n      \"announcedAt\": \"2024-03-15\",\n      \"completedAt\": \"2024-06-01\",\n      \"roundName\": \"Series B\",\n      \"amounts\": {\n        \"total\": {\n          \"amount\": 50000000,\n          \"currency\": \"USD\",\n          \"amountUsd\": 50000000\n        },\n        \"equity\": {\n          \"amount\": 50000000,\n          \"currency\": \"USD\",\n          \"amountUsd\": 50000000\n        },\n        \"debt\": {\n          \"amount\": null,\n          \"currency\": \"USD\",\n          \"amountUsd\": null\n        }\n      },\n      \"valuation\": {\n        \"preMoney\": {\n          \"amount\": 200000000,\n          \"currency\": \"USD\",\n          \"amountUsd\": 200000000\n        },\n        \"postMoney\": {\n          \"amount\": 250000000,\n          \"currency\": \"USD\",\n          \"amountUsd\": 250000000\n        }\n      },\n      \"pps\": {\n        \"amount\": 12.5,\n        \"currency\": \"USD\",\n        \"amountUsd\": 12.5\n      },\n      \"participants\": [\n        {\n          \"id\": \"f1a2b3c4-d5e6-7890-abcd-111111111111\",\n          \"investor\": {\n            \"id\": \"11111111-aaaa-bbbb-cccc-111111111111\",\n            \"type\": \"firm\",\n            \"name\": \"Sequoia Capital\"\n          },\n          \"role\": \"lead\"\n        },\n        {\n          \"id\": \"f1a2b3c4-d5e6-7890-abcd-222222222222\",\n          \"investor\": {\n            \"id\": \"22222222-aaaa-bbbb-cccc-222222222222\",\n            \"type\": \"firm\",\n            \"name\": \"a16z\"\n          },\n          \"role\": \"participant\"\n        }\n      ],\n      \"citations\": [\n        {\n          \"id\": \"c1a2b3c4-d5e6-7890-abcd-333333333333\",\n          \"type\": \"press_release\",\n          \"url\": \"https://example.com/press\",\n          \"sourceName\": \"Company Blog\",\n          \"publishedAt\": \"2024-06-01\"\n        }\n      ],\n      \"updatedAt\": \"2024-06-15T14:30:00.000Z\"\n    },\n    {\n      \"id\": \"d4e5f6a7-b8c9-0123-def0-456789abcdef\",\n      \"company\": {\n        \"id\": \"e5f6a7b8-c9d0-1234-ef01-56789abcdef0\",\n        \"name\": \"Beta Corp\",\n        \"domain\": \"betacorp.io\",\n        \"pitchbookId\": null,\n        \"caplightIds\": {\n          \"v2Id\": \"e5f6a7b8-c9d0-1234-ef01-56789abcdef0\",\n          \"v1Id\": null\n        }\n      },\n      \"status\": \"announced\",\n      \"isDeleted\": false,\n      \"announcedAt\": \"2024-07-01\",\n      \"completedAt\": null,\n      \"roundName\": \"Series C\",\n      \"restricted\": {\n        \"fields\": [\n          \"amounts\",\n          \"valuation\",\n          \"participants\"\n        ]\n      },\n      \"updatedAt\": \"2024-07-05T11:00:00.000Z\"\n    }\n  ],\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 3,\n    \"totalRecords\": 12\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3261ebcf-0c99-42ee-b14e-2d517fa9432c",
+          "name": "Get funding round updates",
+          "request": {
+            "name": "Get funding round updates",
+            "description": {
+              "content": "Returns funding rounds that have been updated within a date range. Use this for sync/incremental ingestion. Only returns rounds for companies your account has access to.\n\n**Window:** Rounds are returned where `updatedSince < updated_at <= upTo` (updatedSince is exclusive, upTo is inclusive).\n\n**Ordering:** Results are ordered by `updated_at` ascending, then `id` ascending.\n\n**Pagination:** For the first request, omit `upTo` or set it to bound your query. The response includes an `upTo` value. For pages 2 through N of the same batch, pass that same `upTo` as the `upTo` query param so pagination stays consistent.\n\n**Checkpointing:** After fetching all pages for a batch, advance your checkpoint by setting the next request's `updatedSince` to the `upTo` value from the previous response.\n\n**Deleted rounds:** Rounds deleted within the query range are included with `isDeleted: true`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "funding-rounds",
+                "updates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "updatedSince",
+                  "value": "<dateTime>",
+                  "description": "(Required) ISO 8601 date — exclusive lower bound. Return rounds with updated_at strictly after this time. Use the previous response's upTo to checkpoint for the next batch."
+                },
+                {
+                  "disabled": false,
+                  "key": "upTo",
+                  "value": "<dateTime>",
+                  "description": "ISO 8601 date — inclusive upper bound. Return rounds with updated_at <= this time. Omit for first request (defaults to now). For pages 2..N, reuse the upTo value from the first page response."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Page number (1-based). First page is 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "50",
+                  "description": "Number of results per page (default 50, max 200)"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e0cbc255-24b8-456e-a758-fca48cf7cbd4",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "funding-rounds",
+                    "updates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "updatedSince",
+                      "value": "2024-01-01T00:00:00.000Z"
+                    },
+                    {
+                      "key": "upTo",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "pageNumber",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"updatedSince\": \"2024-06-01T00:00:00.000Z\",\n  \"upTo\": \"2024-06-15T23:59:59.999Z\",\n  \"fundingRounds\": [\n    {\n      \"id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n      \"company\": {\n        \"id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n        \"name\": \"Acme Inc\",\n        \"domain\": \"acme.com\",\n        \"pitchbookId\": \"41339-53\",\n        \"caplightIds\": {\n          \"v2Id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n          \"v1Id\": \"abc123xyz\"\n        }\n      },\n      \"status\": \"completed\",\n      \"isDeleted\": false,\n      \"announcedAt\": \"2024-03-15\",\n      \"completedAt\": \"2024-06-01\",\n      \"roundName\": \"Series B\",\n      \"amounts\": {\n        \"total\": {\n          \"amount\": 50000000,\n          \"currency\": \"USD\",\n          \"amountUsd\": 50000000\n        },\n        \"equity\": {\n          \"amount\": 50000000,\n          \"currency\": \"USD\",\n          \"amountUsd\": 50000000\n        },\n        \"debt\": {\n          \"amount\": null,\n          \"currency\": \"USD\",\n          \"amountUsd\": null\n        }\n      },\n      \"valuation\": {\n        \"preMoney\": {\n          \"amount\": 200000000,\n          \"currency\": \"USD\",\n          \"amountUsd\": 200000000\n        },\n        \"postMoney\": {\n          \"amount\": 250000000,\n          \"currency\": \"USD\",\n          \"amountUsd\": 250000000\n        }\n      },\n      \"pps\": {\n        \"amount\": 12.5,\n        \"currency\": \"USD\",\n        \"amountUsd\": 12.5\n      },\n      \"participants\": [\n        {\n          \"id\": \"f1a2b3c4-d5e6-7890-abcd-111111111111\",\n          \"investor\": {\n            \"id\": \"11111111-aaaa-bbbb-cccc-111111111111\",\n            \"type\": \"firm\",\n            \"name\": \"Sequoia Capital\"\n          },\n          \"role\": \"lead\"\n        }\n      ],\n      \"citations\": [],\n      \"updatedAt\": \"2024-06-10T09:00:00.000Z\"\n    }\n  ],\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 1,\n    \"totalRecords\": 1\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "af0df812-eb5d-4a6f-b2fe-fe50ab36a2a2",
+              "name": "Invalid date parameters (e.g. missing or invalid updatedSince)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "funding-rounds",
+                    "updates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "updatedSince",
+                      "value": "2024-01-01T00:00:00.000Z"
+                    },
+                    {
+                      "key": "upTo",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "pageNumber",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "20d1fcc6-7270-48cf-b626-52292e61b43d",
+          "name": "Get funding round by ID",
+          "request": {
+            "name": "Get funding round by ID",
+            "description": {
+              "content": "Returns a single funding round by its round ID. Returns 404 if the round is not accessible to your account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "funding-rounds",
+                ":roundId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "roundId",
+                  "description": "(Required) Round ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1cd7c311-3776-485d-9685-4c50098fa4d2",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "funding-rounds",
+                    ":roundId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "roundId",
+                      "description": "(Required) Round ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"company\": {\n    \"id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n    \"name\": \"Acme Inc\",\n    \"domain\": \"acme.com\",\n    \"pitchbookId\": \"41339-53\",\n    \"caplightIds\": {\n      \"v2Id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n      \"v1Id\": \"abc123xyz\"\n    }\n  },\n  \"status\": \"completed\",\n  \"isDeleted\": false,\n  \"announcedAt\": \"2024-03-15\",\n  \"completedAt\": \"2024-06-01\",\n  \"roundName\": \"Series B\",\n  \"amounts\": {\n    \"total\": {\n      \"amount\": 50000000,\n      \"currency\": \"USD\",\n      \"amountUsd\": 50000000\n    },\n    \"equity\": {\n      \"amount\": 50000000,\n      \"currency\": \"USD\",\n      \"amountUsd\": 50000000\n    },\n    \"debt\": {\n      \"amount\": null,\n      \"currency\": \"USD\",\n      \"amountUsd\": null\n    }\n  },\n  \"valuation\": {\n    \"preMoney\": {\n      \"amount\": 200000000,\n      \"currency\": \"USD\",\n      \"amountUsd\": 200000000\n    },\n    \"postMoney\": {\n      \"amount\": 250000000,\n      \"currency\": \"USD\",\n      \"amountUsd\": 250000000\n    }\n  },\n  \"pps\": {\n    \"amount\": 12.5,\n    \"currency\": \"USD\",\n    \"amountUsd\": 12.5\n  },\n  \"participants\": [\n    {\n      \"id\": \"f1a2b3c4-d5e6-7890-abcd-111111111111\",\n      \"investor\": {\n        \"id\": \"11111111-aaaa-bbbb-cccc-111111111111\",\n        \"type\": \"firm\",\n        \"name\": \"Sequoia Capital\"\n      },\n      \"role\": \"lead\"\n    },\n    {\n      \"id\": \"f1a2b3c4-d5e6-7890-abcd-222222222222\",\n      \"investor\": {\n        \"id\": \"22222222-aaaa-bbbb-cccc-222222222222\",\n        \"type\": \"firm\",\n        \"name\": \"Andreessen Horowitz\"\n      },\n      \"role\": \"participant\"\n    },\n    {\n      \"id\": \"f1a2b3c4-d5e6-7890-abcd-444444444444\",\n      \"investor\": {\n        \"id\": \"44444444-aaaa-bbbb-cccc-444444444444\",\n        \"type\": \"individual\",\n        \"name\": \"Jane Smith\"\n      },\n      \"role\": \"participant\"\n    }\n  ],\n  \"citations\": [\n    {\n      \"id\": \"c1a2b3c4-d5e6-7890-abcd-555555555555\",\n      \"type\": \"press_release\",\n      \"url\": \"https://acme.com/series-b\",\n      \"sourceName\": \"Acme Blog\",\n      \"publishedAt\": \"2024-06-01\"\n    },\n    {\n      \"id\": \"c1a2b3c4-d5e6-7890-abcd-666666666666\",\n      \"type\": \"sec_filing\",\n      \"url\": null,\n      \"sourceName\": \"Form D\",\n      \"publishedAt\": \"2024-06-15\"\n    }\n  ],\n  \"updatedAt\": \"2024-06-15T14:30:00.000Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "12c10e18-4900-4d88-9e0e-a378ae96de01",
+              "name": "Funding round not found or not accessible",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "funding-rounds",
+                    ":roundId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "roundId",
+                      "description": "(Required) Round ID"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "ab7f3cea-6005-4006-a16a-e353826fd85f",
+    "name": "Caplight REST Funding Rounds API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}

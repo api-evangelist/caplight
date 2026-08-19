@@ -1,0 +1,356 @@
+{
+  "item": [
+    {
+      "id": "9bf25cfb-1988-4569-9b60-3c424a7d718d",
+      "name": "Company",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c28f884a-da28-49e7-861a-fb105a7b7aa8",
+          "name": "Get company",
+          "request": {
+            "name": "Get company",
+            "description": {
+              "content": "Returns matching companies by lookup field. One (and only one) lookup field must be provided.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "companies"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "domain",
+                  "value": "<string>",
+                  "description": "Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId."
+                },
+                {
+                  "disabled": false,
+                  "key": "caplightId",
+                  "value": "<string>",
+                  "description": "Company Caplight Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "pitchbookId",
+                  "value": "<string>",
+                  "description": "Company Pitchbook Id"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "98b9a61a-50f6-4676-bd8a-1482d0e134c5",
+              "name": "successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "companies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "domain",
+                      "value": "stripe.com"
+                    },
+                    {
+                      "key": "caplightId",
+                      "value": "134591n9dfk519kl"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "54782-29"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"name\": \"Stripe\",\n    \"caplightId\": \"12d3140kjf90\",\n    \"caplightIds\": {\n      \"v2Id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n      \"v1Id\": \"12d3140kjf90\"\n    },\n    \"pitchbookId\": \"54782-29\",\n    \"domain\": \"stripe.com\",\n    \"status\": \"Private\",\n    \"caplightPageURL\": \"https://platform.caplight.com/companies/38048685\",\n    \"hqCountry\": \"United States\",\n    \"countryOfDomicile\": \"US\",\n    \"industry\": \"FinTech\",\n    \"legalName\": \"Stripe, Inc.\",\n    \"has409aValuations\": false,\n    \"coisAvailable\": true,\n    \"marketPriceEstimate\": {\n      \"date\": \"2022-09-10\",\n      \"price\": 15.9,\n      \"estimatedValuation\": 2150000000,\n      \"priceStandardError\": 1.35,\n      \"lastUpdated\": \"2022-09-10\"\n    }\n  },\n  {\n    \"name\": \"Stripe\",\n    \"caplightId\": \"12d3140kjf90\",\n    \"caplightIds\": {\n      \"v2Id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n      \"v1Id\": \"12d3140kjf90\"\n    },\n    \"pitchbookId\": \"54782-29\",\n    \"domain\": \"stripe.com\",\n    \"status\": \"Private\",\n    \"caplightPageURL\": \"https://platform.caplight.com/companies/38048685\",\n    \"hqCountry\": \"United States\",\n    \"countryOfDomicile\": \"US\",\n    \"industry\": \"FinTech\",\n    \"legalName\": \"Stripe, Inc.\",\n    \"has409aValuations\": true,\n    \"coisAvailable\": true,\n    \"marketPriceEstimate\": {\n      \"date\": \"2022-09-10\",\n      \"price\": 15.9,\n      \"estimatedValuation\": 2150000000,\n      \"priceStandardError\": 1.35,\n      \"lastUpdated\": \"2022-09-10\"\n    }\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8c54d28f-544b-42ed-b1c7-6ae5204bff8c",
+          "name": "Get Quarterly Market Summary",
+          "request": {
+            "name": "Get Quarterly Market Summary",
+            "description": {
+              "content": "Returns quarterly market summary for a company by Caplight ID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "companies",
+                "quarterly-market-summary"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "caplightId",
+                  "value": "<string>",
+                  "description": "Company Caplight Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "pitchbookId",
+                  "value": "<string>",
+                  "description": "Company Pitchbook Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "domain",
+                  "value": "<string>",
+                  "description": "Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b52e991a-9413-4908-aeea-5e7e0902b324",
+              "name": "successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "companies",
+                    "quarterly-market-summary"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "caplightId",
+                      "value": "134591n9dfk519kl"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "54782-29"
+                    },
+                    {
+                      "key": "domain",
+                      "value": "stripe.com"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"companyMeta\": {\n    \"name\": \"Stripe\",\n    \"domain\": \"stripe.com\",\n    \"caplightId\": \"12d3140kjf90\",\n    \"pitchbookId\": \"54782-29\"\n  },\n  \"currentMarketPricePPS\": 25.5,\n  \"currentMarketPriceValuation\": 2500000000,\n  \"quarterlyMarketData\": [\n    {\n      \"quarter\": \"2022-09-10\",\n      \"quarterStart\": \"2023-01-26T05:56:30 +00:00\",\n      \"totalTradeVolume\": 50000,\n      \"totalBidVolume\": 75000,\n      \"totalOfferVolume\": 65000,\n      \"fundMarkVWAPPrice\": 25.5,\n      \"fundMarkCount\": 10,\n      \"marketPricePPSAtStartOfQuarter\": 20.75,\n      \"marketPriceValuationAtStartOfQuarter\": 2000000000\n    },\n    {\n      \"quarter\": \"2022-09-10\",\n      \"quarterStart\": \"2023-01-26T05:56:30 +00:00\",\n      \"totalTradeVolume\": 50000,\n      \"totalBidVolume\": 75000,\n      \"totalOfferVolume\": 65000,\n      \"fundMarkVWAPPrice\": 25.5,\n      \"fundMarkCount\": 10,\n      \"marketPricePPSAtStartOfQuarter\": 20.75,\n      \"marketPriceValuationAtStartOfQuarter\": 2000000000\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "18e1df19-58ca-4c68-819b-272fbf6662f2",
+          "name": "Get Comparable Performance",
+          "request": {
+            "name": "Get Comparable Performance",
+            "description": {
+              "content": "Returns a time series of public comparable performance data as a daily percentage change relative to the beginning of a time period for a private company",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "comps-performance"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "caplightId",
+                  "value": "<string>",
+                  "description": "Company Caplight Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "pitchbookId",
+                  "value": "<string>",
+                  "description": "Company Pitchbook Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "startDate",
+                  "value": "<string>",
+                  "description": "Start date and base line for public comparable performance"
+                },
+                {
+                  "disabled": false,
+                  "key": "endDate",
+                  "value": "<string>",
+                  "description": "End date for public comparable performance"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ae0f9a43-96df-4823-b9e1-2c1b78b676f8",
+              "name": "successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "comps-performance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "caplightId",
+                      "value": "134591n9dfk519kl"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "54782-29"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2025-01-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2025-12-31"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"companyMeta\": {\n    \"name\": \"Stripe\",\n    \"domain\": \"stripe.com\",\n    \"caplightId\": \"12d3140kjf90\",\n    \"pitchbookId\": \"54782-29\"\n  },\n  \"compsPerformanceOverTime\": [\n    {\n      \"date\": \"2025-12-31\",\n      \"percentageChangeVsTimePeriodStart\": 20.5\n    },\n    {\n      \"date\": \"2025-12-31\",\n      \"percentageChangeVsTimePeriodStart\": 20.5\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "892f04d5-2213-48df-a27f-862f0b2fac6b",
+    "name": "Caplight REST Company API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}

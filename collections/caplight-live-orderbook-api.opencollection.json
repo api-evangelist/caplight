@@ -1,0 +1,37 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Live Orderbook API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Live Orderbook",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "All live orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/live-orderbook",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "1",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              }
+            ]
+          },
+          "docs": "Returns all live orders on the Caplight platform."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

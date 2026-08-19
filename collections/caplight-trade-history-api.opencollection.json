@@ -1,0 +1,49 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Trade History API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Trade History",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Company trade history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/trade-history",
+            "params": [
+              {
+                "name": "caplightId",
+                "value": "134591n9dfk519kl",
+                "type": "query",
+                "description": "Company Caplight Id"
+              },
+              {
+                "name": "pitchbookId",
+                "value": "54782-29",
+                "type": "query",
+                "description": "Company Pitchbook Id"
+              },
+              {
+                "name": "pageNumber",
+                "value": "2",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              }
+            ]
+          },
+          "docs": "Returns full trade history for a company, paginated. Either caplightId or pitchbookId must be provided."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

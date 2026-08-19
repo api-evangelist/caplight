@@ -1,0 +1,330 @@
+openapi: 3.2.0
+info:
+  version: 2.0.0
+  title: Caplight REST Fund Marks API
+  description: 'This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.
+
+
+    # Production server
+
+    https://us-central1-caplight-prod.cloudfunctions.net/api/public
+
+
+    # Staging/sandbox server
+
+    https://us-central1-caplight-staging.cloudfunctions.net/api/public
+
+
+    # API versions
+
+    Endpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.
+
+
+    # Company IDs
+
+    Companies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.
+
+
+    If you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.
+
+
+    # V2 Access & Permissions
+
+
+    **Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.
+
+
+    **Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.
+
+
+    # Widget Embed
+
+    In addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.
+
+
+    # Authentication
+
+
+    <SecurityDefinitions />
+
+    '
+  termsOfService: https://platform.caplight.com/terms
+  contact:
+    name: 'Contact: Caplight Engineering'
+    email: engineering@caplight.com
+  x-logo:
+    url: https://storage.googleapis.com/caplight-prod.appspot.com/caplight-logos/api-logo.png
+    altText: Caplight logo
+servers:
+- url: //us-central1-caplight-prod.cloudfunctions.net/api/public
+  description: Production
+- url: //us-central1-caplight-staging.cloudfunctions.net/api/public
+  description: Staging/Sandbox
+tags:
+- name: Fund Marks
+  description: Mutual fund mark-to-market valuations from SEC filings
+paths:
+  /v1/fund-marks:
+    get:
+      tags:
+      - Fund Marks
+      summary: Get company fund marks
+      description: Returns mutual fund mark-to-market valuations for a company from SEC filings. Fund marks represent the fair value prices reported by mutual funds in their quarterly holdings disclosures (N-PORT filings). These are valuable data points for gauging private company valuations as assessed by institutional investors.
+      parameters:
+      - name: caplightId
+        in: query
+        description: Company Caplight Id
+        required: false
+        schema:
+          type: string
+        example: 134591n9dfk519kl
+      - name: pitchbookId
+        in: query
+        description: Company Pitchbook Id
+        required: false
+        schema:
+          type: string
+        example: 54782-29
+      - name: domain
+        in: query
+        description: Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId.
+        required: false
+        schema:
+          type: string
+        example: stripe.com
+      - name: quarter
+        in: query
+        description: Filter to a specific quarter (e.g. 1Q2024). Mutually exclusive with quarterFrom/quarterTo.
+        required: false
+        schema:
+          type: string
+        example: 1Q2024
+      - name: quarterFrom
+        in: query
+        description: Filter to quarters starting from this quarter (inclusive). Use with quarterTo for a range.
+        required: false
+        schema:
+          type: string
+        example: 1Q2023
+      - name: quarterTo
+        in: query
+        description: Filter to quarters up to this quarter (inclusive). Use with quarterFrom for a range.
+        required: false
+        schema:
+          type: string
+        example: 4Q2024
+      - name: pageNumber
+        in: query
+        description: Page number (1-based). First page is 1.
+        required: false
+        schema:
+          type: integer
+          default: 1
+        example: 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundMarksResponse'
+              example:
+                companyMeta:
+                  name: Stripe
+                  domain: stripe.com
+                  caplightId: abc123xyz
+                  pitchbookId: 54782-29
+                pagination:
+                  pageNumber: 1
+                  numPages: 3
+                  totalRecords: 45
+                fundMarks:
+                - fundFamily: T. Rowe Price
+                  fundName: T. Rowe Price Global Technology Fund
+                  fundEdgarId: '0001127110'
+                  quarter: 4Q2024
+                  filingDate: '2025-01-15'
+                  reportingDate: '2024-12-31'
+                  adsh: 0001127110-25-000123
+                  assetName: Stripe Inc
+                  assetDescription: Stripe Inc Series I Preferred Stock
+                  pricePerShare: 27.5
+                  numberOfShares: 500000
+                  positionSize: 13750000
+                  shareClass: Series I
+                  shareSeries: Preferred
+                  assetType: Preferred Stock
+                  edgarFilingURL: https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001127110&type=N-PORT
+                - fundFamily: Fidelity
+                  fundName: Fidelity Contrafund
+                  fundEdgarId: '0000315066'
+                  quarter: 4Q2024
+                  filingDate: '2025-01-20'
+                  reportingDate: '2024-12-31'
+                  adsh: 0000315066-25-000456
+                  assetName: Stripe Inc
+                  assetDescription: Stripe Inc Common Stock
+                  pricePerShare: 25
+                  numberOfShares: 1000000
+                  positionSize: 25000000
+                  shareClass: null
+                  shareSeries: null
+                  assetType: Common Stock
+                  edgarFilingURL: https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000315066&type=N-PORT
+components:
+  schemas:
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
+    FundMark:
+      type: object
+      description: A mutual fund's mark-to-market valuation from SEC N-PORT filings
+      properties:
+        fundFamily:
+          type: string
+          description: Name of the fund family (e.g. T. Rowe Price, Fidelity)
+          example: T. Rowe Price
+        fundName:
+          type: string
+          description: Name of the specific fund
+          example: T. Rowe Price Global Technology Fund
+        fundEdgarId:
+          type: string
+          description: SEC EDGAR CIK for the fund
+          example: '0001127110'
+        quarter:
+          type: string
+          description: Reporting quarter in format QQ[YYYY] (e.g. 1Q2024)
+          example: 4Q2024
+        filingDate:
+          type: string
+          format: date
+          description: Date the SEC filing was submitted
+          example: '2025-01-15'
+        reportingDate:
+          type: string
+          format: date
+          description: As-of date for the valuation (quarter end)
+          example: '2024-12-31'
+        adsh:
+          type: string
+          description: SEC accession number for the filing
+          example: 0001127110-25-000123
+        assetName:
+          type: string
+          description: Name of the asset/issuer as reported
+          example: Stripe Inc
+        assetDescription:
+          type: string
+          description: Description of the security
+          example: Stripe Inc Series I Preferred Stock
+        pricePerShare:
+          type: number
+          format: double
+          description: Fair value price per share as marked by the fund (USD)
+          example: 27.5
+        numberOfShares:
+          type: integer
+          nullable: true
+          description: Number of shares held by the fund
+          example: 500000
+        positionSize:
+          type: number
+          nullable: true
+          description: Total position value (numberOfShares * pricePerShare) in USD
+          example: 13750000
+        shareClass:
+          type: string
+          nullable: true
+          description: Share class (e.g. Series I, Series A)
+          example: Series I
+        shareSeries:
+          type: string
+          nullable: true
+          description: Share series type
+          example: Preferred
+        assetType:
+          type: string
+          description: Type of security (e.g. Common Stock, Preferred Stock)
+          example: Preferred Stock
+        edgarFilingURL:
+          type: string
+          description: URL to the SEC EDGAR filing
+          example: https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001127110&type=N-PORT
+    FundMarksResponse:
+      type: object
+      properties:
+        companyMeta:
+          $ref: '#/components/schemas/CompanyMeta'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        fundMarks:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundMark'
+    CompanyMeta:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Company name
+          example: Stripe
+        domain:
+          type: string
+          description: Company top-level web domain
+          example: stripe.com
+        caplightId:
+          type: string
+          description: Caplight Company ID
+          example: 12d3140kjf90
+        pitchbookId:
+          type: string
+          description: Pitchbook Company ID
+          example: 54782-29
+  securitySchemes:
+    api_key:
+      description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
+      type: apiKey
+      name: api_key
+      in: header
+x-tagGroups:
+- name: V1
+  tags:
+  - Company
+  - Companies
+  - MarketPrice
+  - Live Orderbook
+  - Trade History
+  - Order History
+  - Company Filings
+  - Stock Splits
+  - Fund Marks
+  - News
+  - company_model
+  - order_model
+  - market_price_model
+  - trade_model
+  - 409a_valuation_model
+  - fund_mark_model
+  - comp_model
+  - stock_split_model
+  - coi_model
+- name: V2
+  tags:
+  - Funding Rounds
+  - Investors
+  - Company Lookup
+  - Company Details
+  - Comps

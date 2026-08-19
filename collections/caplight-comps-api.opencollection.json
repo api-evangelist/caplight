@@ -1,0 +1,49 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Comps API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Comps",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get company comps",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v2/companies/:companyId/comps",
+            "params": [
+              {
+                "name": "companyId",
+                "value": "",
+                "type": "path",
+                "description": "Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified."
+              },
+              {
+                "name": "pageNumber",
+                "value": "1",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "50",
+                "type": "query",
+                "description": "Number of results per page (default 50, max 200). Most companies return all comparables in a single page."
+              }
+            ]
+          },
+          "docs": "Returns the LLM-discovered comparable companies (\"comps\") for a company, each with an overall similarity score (0-1), a per-dimension similarity breakdown, a classification, and a short rationale. Comps are ordered by similarity in descending order. Requires comps API access."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

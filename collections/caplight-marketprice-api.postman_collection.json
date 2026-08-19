@@ -1,0 +1,368 @@
+{
+  "item": [
+    {
+      "id": "99b8d0d5-d0d3-4bb4-8908-05011e5e2a80",
+      "name": "MarketPrice",
+      "description": {
+        "content": "Caplight's proprietary MarketPrice estimate, calculated using executed trades, company primary rounds, bids/offers, fund marks, 409a valuations, and comps performance.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b2236a1e-e1af-4791-a883-7fcb2fe767b6",
+          "name": "All MarketPrices",
+          "request": {
+            "name": "All MarketPrices",
+            "description": {
+              "content": "Returns the latest MarketPrice for all companies where a Caplight MarketPrice exists. Each company's best-available price model is returned (secondaryMarket by default, falling back to fundMarks); the priceModel field on each row indicates which model produced it.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "all-marketprices"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "<number>",
+                  "description": "Page number (1-based). First page is 1."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional. Filters the response to companies whose latest MarketPrice was produced by the given model. Allowed values (case-insensitive): \"secondaryMarket\" or \"fundMarks\". When omitted, every company's best-available MarketPrice is returned. An unrecognized value returns HTTP 400.",
+                "key": "x-price-model",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "10bab754-6760-4607-a21d-b8606936d032",
+              "name": "successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "all-marketprices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNumber",
+                      "value": "2"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional. Filters the response to companies whose latest MarketPrice was produced by the given model. Allowed values (case-insensitive): \"secondaryMarket\" or \"fundMarks\". When omitted, every company's best-available MarketPrice is returned. An unrecognized value returns HTTP 400.",
+                    "key": "x-price-model",
+                    "value": "secondaryMarket"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"allMarketPrices\": [\n    {\n      \"company\": {\n        \"name\": \"Stripe\",\n        \"domain\": \"stripe.com\",\n        \"caplightId\": \"12d3140kjf90\",\n        \"pitchbookId\": \"54782-29\"\n      },\n      \"priceModel\": \"secondaryMarket\",\n      \"date\": \"2022-09-10\",\n      \"price\": 15.9,\n      \"estimatedValuation\": 2150000000,\n      \"priceStandardError\": 1.35,\n      \"lastUpdated\": \"2022-09-10\"\n    },\n    {\n      \"company\": {\n        \"name\": \"Stripe\",\n        \"domain\": \"stripe.com\",\n        \"caplightId\": \"12d3140kjf90\",\n        \"pitchbookId\": \"54782-29\"\n      },\n      \"priceModel\": \"secondaryMarket\",\n      \"date\": \"2022-09-10\",\n      \"price\": 15.9,\n      \"estimatedValuation\": 2150000000,\n      \"priceStandardError\": 1.35,\n      \"lastUpdated\": \"2022-09-10\"\n    }\n  ],\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 10,\n    \"totalRecords\": 250\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c00f5dd2-735e-4b47-81da-9abc368dbb59",
+          "name": "MarketPrice history",
+          "request": {
+            "name": "MarketPrice history",
+            "description": {
+              "content": "Returns MarketPrice estimate history for a company by lookup field. One (and only one) lookup field must be provided. By default the best-available price model is returned for the company: the secondaryMarket model, automatically falling back to the fundMarks model when the company has no secondaryMarket series or its secondary-market data has gone stale. Use the x-price-model header to pin a specific model. The returned series is recomputed on each model run, so the set of dates returned for a company can change between requests.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "market-price-history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "caplightId",
+                  "value": "<string>",
+                  "description": "Company Caplight Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "fixed",
+                  "value": "<boolean>",
+                  "description": "Whether to return the fixed (unrevised) MarketPrice history. For most use-cases do NOT supply this parameter. Only honored for the secondaryMarket price model; combining fixed=true with x-price-model=fundMarks returns HTTP 400."
+                },
+                {
+                  "disabled": false,
+                  "key": "pitchbookId",
+                  "value": "<string>",
+                  "description": "Company Pitchbook Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "<number>",
+                  "description": "Page number (1-based). First page is 1."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional. Pins the MarketPrice model used to build the series. Allowed values (case-insensitive): \"secondaryMarket\" or \"fundMarks\". When omitted, the best-available model is served (secondaryMarket by default, falling back to fundMarks). Pin \"secondaryMarket\" to always receive the secondary-market series where one exists. An unrecognized value returns HTTP 400.",
+                "key": "x-price-model",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "06ac101f-5cd7-45f5-9364-2d0279778690",
+              "name": "successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "market-price-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "caplightId",
+                      "value": "134591n9dfk519kl"
+                    },
+                    {
+                      "key": "fixed",
+                      "value": "true"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "54782-29"
+                    },
+                    {
+                      "key": "pageNumber",
+                      "value": "2"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional. Pins the MarketPrice model used to build the series. Allowed values (case-insensitive): \"secondaryMarket\" or \"fundMarks\". When omitted, the best-available model is served (secondaryMarket by default, falling back to fundMarks). Pin \"secondaryMarket\" to always receive the secondary-market series where one exists. An unrecognized value returns HTTP 400.",
+                    "key": "x-price-model",
+                    "value": "secondaryMarket"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"priceModel\": \"secondaryMarket\",\n  \"daysSinceLastDataPoint\": 10,\n  \"companyMeta\": {\n    \"name\": \"Stripe\",\n    \"domain\": \"stripe.com\",\n    \"caplightId\": \"12d3140kjf90\",\n    \"pitchbookId\": \"54782-29\"\n  },\n  \"marketPriceHistory\": [\n    {\n      \"date\": \"2022-09-10\",\n      \"price\": 15.9,\n      \"estimatedValuation\": 2150000000,\n      \"priceStandardError\": 1.35,\n      \"lastUpdated\": \"2022-09-10\"\n    },\n    {\n      \"date\": \"2022-09-10\",\n      \"price\": 15.9,\n      \"estimatedValuation\": 2150000000,\n      \"priceStandardError\": 1.35,\n      \"lastUpdated\": \"2022-09-10\"\n    }\n  ],\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 10,\n    \"totalRecords\": 250\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d653cbbd-32f8-4b94-90e9-2ed7b4c410e4",
+          "name": "MarketPrice end-of-day history",
+          "request": {
+            "name": "MarketPrice end-of-day history",
+            "description": {
+              "content": "Returns MarketPrice estimate history generated at a set hour of day; handles one company at a time; returns either interpolated time series generated on a given day or a time series of point-in-time estimates for the date of generation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "market-price-fixed-eod"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "caplightId",
+                  "value": "<string>",
+                  "description": "Company Caplight Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "pitchbookId",
+                  "value": "<string>",
+                  "description": "Company Pitchbook Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "utcHour",
+                  "value": "<number>",
+                  "description": "Selected UTC hour at which MarketPrice was generated on each day (0, 4, 8, 12, 16, and 20 are supported)"
+                },
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "<number>",
+                  "description": "Page number (1-based). First page is 1."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4a98a9cf-8f2b-45d4-b50e-490aa041a691",
+              "name": "successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "market-price-fixed-eod"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "caplightId",
+                      "value": "134591n9dfk519kl"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "54782-29"
+                    },
+                    {
+                      "key": "utcHour",
+                      "value": "0"
+                    },
+                    {
+                      "key": "pageNumber",
+                      "value": "2"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"companyMeta\": {\n    \"name\": \"Stripe\",\n    \"domain\": \"stripe.com\",\n    \"caplightId\": \"12d3140kjf90\",\n    \"pitchbookId\": \"54782-29\"\n  },\n  \"marketPriceData\": [\n    {\n      \"date\": \"2022-09-10\",\n      \"price\": 15.9,\n      \"estimatedValuation\": 2150000000,\n      \"priceStandardError\": 1.35,\n      \"generatedAtTimestamp\": 1690000000,\n      \"daysSinceLastDataPoint\": 10,\n      \"numberOfPoints6mo\": 12,\n      \"orderImbalance\": {\n        \"bidContribution\": 0.53,\n        \"offerContribution\": 0.25\n      }\n    },\n    {\n      \"date\": \"2022-09-10\",\n      \"price\": 15.9,\n      \"estimatedValuation\": 2150000000,\n      \"priceStandardError\": 1.35,\n      \"generatedAtTimestamp\": 1690000000,\n      \"daysSinceLastDataPoint\": 10,\n      \"numberOfPoints6mo\": 12,\n      \"orderImbalance\": {\n        \"bidContribution\": 0.53,\n        \"offerContribution\": 0.25\n      }\n    }\n  ],\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 10,\n    \"totalRecords\": 250\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "51871319-a58b-4a28-ae88-4f1c06066608",
+    "name": "Caplight REST Market Price API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}

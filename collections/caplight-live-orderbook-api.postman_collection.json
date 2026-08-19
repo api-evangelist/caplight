@@ -1,0 +1,116 @@
+{
+  "item": [
+    {
+      "id": "41443676-33ae-4077-b370-c354906ca87f",
+      "name": "Live Orderbook",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "743ea28a-58be-4a90-bb4c-cc730bfb767c",
+          "name": "All live orders",
+          "request": {
+            "name": "All live orders",
+            "description": {
+              "content": "Returns all live orders on the Caplight platform.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "live-orderbook"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "<number>",
+                  "description": "Page number (1-based). First page is 1."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c9666c96-5dca-4da5-a0a4-dd84da8aec35",
+              "name": "successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "live-orderbook"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNumber",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"liveOrderbook\": [\n    {\n      \"companyMeta\": {\n        \"name\": \"Stripe\",\n        \"domain\": \"stripe.com\",\n        \"caplightId\": \"12d3140kjf90\",\n        \"pitchbookId\": \"54782-29\"\n      },\n      \"id\": \"okP88RZSS9e1owCq73iD\",\n      \"direction\": \"bid\",\n      \"price\": 15.9,\n      \"valuation\": 5000000000,\n      \"volume\": 1000000,\n      \"minVolume\": 1000000,\n      \"maxVolume\": 5000000,\n      \"minShares\": 80000,\n      \"maxShares\": 100000,\n      \"structure\": \"spv\",\n      \"isLive\": true,\n      \"managementFee\": 0.01,\n      \"carry\": 0.2,\n      \"shareClasses\": [\n        \"common\"\n      ],\n      \"brokerClientRelationship\": \"direct\",\n      \"originationDate\": \"2023-01-26T05:56:30 +00:00\",\n      \"date\": \"2022-09-10\",\n      \"lastUpdatedAt\": \"2023-01-26T05:56:30 +00:00\",\n      \"dealHistory\": [\n        {\n          \"id\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"counterpartyOrderId\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"currentStatus\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"currentStatusUpdatedAt\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"statusHistory\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"id\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"counterpartyOrderId\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"currentStatus\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"currentStatusUpdatedAt\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"statusHistory\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ]\n    },\n    {\n      \"companyMeta\": {\n        \"name\": \"Stripe\",\n        \"domain\": \"stripe.com\",\n        \"caplightId\": \"12d3140kjf90\",\n        \"pitchbookId\": \"54782-29\"\n      },\n      \"id\": \"okP88RZSS9e1owCq73iD\",\n      \"direction\": \"bid\",\n      \"price\": 15.9,\n      \"valuation\": 5000000000,\n      \"volume\": 1000000,\n      \"minVolume\": 1000000,\n      \"maxVolume\": 5000000,\n      \"minShares\": 80000,\n      \"maxShares\": 100000,\n      \"structure\": \"spv\",\n      \"isLive\": true,\n      \"managementFee\": 0.01,\n      \"carry\": 0.2,\n      \"shareClasses\": [\n        \"common\"\n      ],\n      \"brokerClientRelationship\": \"direct\",\n      \"originationDate\": \"2023-01-26T05:56:30 +00:00\",\n      \"date\": \"2022-09-10\",\n      \"lastUpdatedAt\": \"2023-01-26T05:56:30 +00:00\",\n      \"dealHistory\": [\n        {\n          \"id\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"counterpartyOrderId\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"currentStatus\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"currentStatusUpdatedAt\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"statusHistory\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"id\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"counterpartyOrderId\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"currentStatus\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"currentStatusUpdatedAt\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"statusHistory\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ]\n    }\n  ],\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 10,\n    \"totalRecords\": 250\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "4a8e60fc-365b-4755-a157-6de544df5546",
+    "name": "Caplight REST Live Orderbook API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}

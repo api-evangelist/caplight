@@ -1,0 +1,49 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Order History API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Order History",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Company order history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/order-history",
+            "params": [
+              {
+                "name": "caplightId",
+                "value": "134591n9dfk519kl",
+                "type": "query",
+                "description": "Company Caplight Id"
+              },
+              {
+                "name": "pitchbookId",
+                "value": "54782-29",
+                "type": "query",
+                "description": "Company Pitchbook Id"
+              },
+              {
+                "name": "pageNumber",
+                "value": "1",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              }
+            ]
+          },
+          "docs": "Returns 3 months of order (bid/offer) history for a company. These orders do not represent closed (completed) transactions. Either caplightId or pitchbookId must be provided."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

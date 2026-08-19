@@ -1,0 +1,260 @@
+openapi: 3.2.0
+info:
+  version: 2.0.0
+  title: Caplight REST Company Lookup API
+  description: 'This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.
+
+
+    # Production server
+
+    https://us-central1-caplight-prod.cloudfunctions.net/api/public
+
+
+    # Staging/sandbox server
+
+    https://us-central1-caplight-staging.cloudfunctions.net/api/public
+
+
+    # API versions
+
+    Endpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.
+
+
+    # Company IDs
+
+    Companies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.
+
+
+    If you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.
+
+
+    # V2 Access & Permissions
+
+
+    **Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.
+
+
+    **Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.
+
+
+    # Widget Embed
+
+    In addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.
+
+
+    # Authentication
+
+
+    <SecurityDefinitions />
+
+    '
+  termsOfService: https://platform.caplight.com/terms
+  contact:
+    name: 'Contact: Caplight Engineering'
+    email: engineering@caplight.com
+  x-logo:
+    url: https://storage.googleapis.com/caplight-prod.appspot.com/caplight-logos/api-logo.png
+    altText: Caplight logo
+servers:
+- url: //us-central1-caplight-prod.cloudfunctions.net/api/public
+  description: Production
+- url: //us-central1-caplight-staging.cloudfunctions.net/api/public
+  description: Staging/Sandbox
+tags:
+- name: Company Lookup
+  description: Resolves company domains, PitchBook IDs and v1 company IDs to v2 company IDs, in batches.
+paths:
+  /v2/companies:
+    get:
+      tags:
+      - Company Lookup
+      summary: Look up company IDs
+      description: 'Resolves company domains, PitchBook IDs and v1 company IDs to v2 company IDs — including for companies added recently.
+
+
+        **Batching:** each parameter may be repeated, e.g. `?domain=clickhouse.com&domain=neros.tech&v1Id=abc123xyz`. At most 50 identifiers in total across all three parameters; more returns 400.
+
+
+        **Results:** one entry per identifier requested, echoing it back in `query` so responses line up with requests. Entries are grouped by identifier type in the order `domain`, `pitchbookId`, `v1Id` — not in query-string order. An identifier that matches nothing comes back with an empty `matches` array rather than a 404.
+
+
+        A domain can match more than one company, because subsidiaries, acquired shells and stale duplicates share one. Every candidate is returned, best match first: not acquired, then an exact website match, then an active business status, then companies carrying market data, then the highest last known funding round valuation.
+
+
+        **Access:** requires Companies V2 API access. Unlike the other v2 company endpoints, lookup does not enforce per-company access control and does not count toward your annual distinct-company limit — it returns identity only. `pitchbookId` is not included on matches; read it from `GET /v2/companies/{companyId}` once you have access to the company.'
+      parameters:
+      - name: domain
+        in: query
+        description: Company website domain or URL. The root domain is extracted and lowercased before matching, so `https://www.clickhouse.com/docs` and `clickhouse.com` behave identically. Repeatable.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+        example:
+        - clickhouse.com
+        - neros.tech
+      - name: pitchbookId
+        in: query
+        description: PitchBook company ID. Repeatable.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+        example:
+        - 41339-53
+      - name: v1Id
+        in: query
+        description: v1 company ID — the same value the v1 endpoints return as `caplightId`. Repeatable.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+        example:
+        - abc123xyz
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicCompanyLookupResponse'
+              example:
+                results:
+                - query:
+                    type: domain
+                    value: clickhouse.com
+                  matches:
+                  - id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+                    name: ClickHouse
+                    domain: clickhouse.com
+                    caplightIds:
+                      v2Id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+                      v1Id: abc123xyz
+                - query:
+                    type: domain
+                    value: neros.tech
+                  matches: []
+        '400':
+          description: No identifier supplied, or more than 50 identifiers in one request
+        '401':
+          description: Missing or invalid API key
+        '403':
+          description: Account does not have Companies V2 API access
+components:
+  schemas:
+    PublicCompanyLookupResponse:
+      type: object
+      required:
+      - results
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicCompanyLookupResult'
+    PublicCompanyLookupMatch:
+      description: A company matched by a lookup. `pitchbookId` is not included — read it from `GET /v2/companies/{companyId}`.
+      type: object
+      required:
+      - id
+      - name
+      - domain
+      - caplightIds
+      properties:
+        id:
+          type: string
+          description: v2 company ID
+          example: b2c3d4e5-f6a7-8901-bcde-f12345678901
+        name:
+          type: string
+          description: Company name
+          example: ClickHouse
+        domain:
+          type: string
+          nullable: true
+          description: Company domain on record, which may differ from the domain queried when the match came from the company's website
+          example: clickhouse.com
+        caplightIds:
+          type: object
+          required:
+          - v2Id
+          - v1Id
+          properties:
+            v2Id:
+              type: string
+              description: v2 company ID
+            v1Id:
+              type: string
+              nullable: true
+              description: v1 company ID, null when the company has no v1 record
+    PublicCompanyLookupResult:
+      description: The matches for one requested identifier.
+      type: object
+      required:
+      - query
+      - matches
+      properties:
+        query:
+          type: object
+          description: The identifier this entry answers, echoed back so responses line up with requests
+          required:
+          - type
+          - value
+          properties:
+            type:
+              type: string
+              enum:
+              - domain
+              - pitchbookId
+              - v1Id
+            value:
+              type: string
+              example: clickhouse.com
+        matches:
+          type: array
+          description: Every company matching the identifier, best match first. Empty when nothing matched.
+          items:
+            $ref: '#/components/schemas/PublicCompanyLookupMatch'
+  securitySchemes:
+    api_key:
+      description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
+      type: apiKey
+      name: api_key
+      in: header
+x-tagGroups:
+- name: V1
+  tags:
+  - Company
+  - Companies
+  - MarketPrice
+  - Live Orderbook
+  - Trade History
+  - Order History
+  - Company Filings
+  - Stock Splits
+  - Fund Marks
+  - News
+  - company_model
+  - order_model
+  - market_price_model
+  - trade_model
+  - 409a_valuation_model
+  - fund_mark_model
+  - comp_model
+  - stock_split_model
+  - coi_model
+- name: V2
+  tags:
+  - Funding Rounds
+  - Investors
+  - Company Lookup
+  - Company Details
+  - Comps

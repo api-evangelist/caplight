@@ -1,0 +1,680 @@
+openapi: 3.2.0
+info:
+  version: 2.0.0
+  title: Caplight REST Funding Rounds API
+  description: 'This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.
+
+
+    # Production server
+
+    https://us-central1-caplight-prod.cloudfunctions.net/api/public
+
+
+    # Staging/sandbox server
+
+    https://us-central1-caplight-staging.cloudfunctions.net/api/public
+
+
+    # API versions
+
+    Endpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.
+
+
+    # Company IDs
+
+    Companies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.
+
+
+    If you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.
+
+
+    # V2 Access & Permissions
+
+
+    **Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.
+
+
+    **Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.
+
+
+    # Widget Embed
+
+    In addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.
+
+
+    # Authentication
+
+
+    <SecurityDefinitions />
+
+    '
+  termsOfService: https://platform.caplight.com/terms
+  contact:
+    name: 'Contact: Caplight Engineering'
+    email: engineering@caplight.com
+  x-logo:
+    url: https://storage.googleapis.com/caplight-prod.appspot.com/caplight-logos/api-logo.png
+    altText: Caplight logo
+servers:
+- url: //us-central1-caplight-prod.cloudfunctions.net/api/public
+  description: Production
+- url: //us-central1-caplight-staging.cloudfunctions.net/api/public
+  description: Staging/Sandbox
+tags:
+- name: Funding Rounds
+  description: Funding round data including amounts, valuations, participants, and citations
+paths:
+  /v2/companies/{companyId}/funding-rounds:
+    get:
+      tags:
+      - Funding Rounds
+      summary: Get company funding rounds
+      description: Returns a paginated, sortable list of funding rounds for a company. Results are sorted by `roundDate` ascending by default.
+      parameters:
+      - name: companyId
+        in: path
+        description: 'Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified.'
+        required: true
+        schema:
+          type: string
+      - name: pageNumber
+        in: query
+        description: Page number (1-based). First page is 1.
+        required: false
+        schema:
+          type: integer
+          default: 1
+        example: 1
+      - name: pageSize
+        in: query
+        description: Number of results per page (default 50, max 200)
+        required: false
+        schema:
+          type: integer
+          default: 50
+          minimum: 1
+          maximum: 200
+        example: 50
+      - name: sortBy
+        in: query
+        description: 'Field to sort results by. `roundDate` sorts by the best available date for the round, using the first non-null value from: completedAt, the round''s internal date, then announcedAt. `updatedAt` sorts by the last update timestamp. Rounds with a null sort value are placed at the end regardless of sort order.'
+        required: false
+        schema:
+          type: string
+          enum:
+          - roundDate
+          - updatedAt
+          default: roundDate
+        example: roundDate
+      - name: sortOrder
+        in: query
+        description: 'Sort direction: `asc` for ascending (oldest first), `desc` for descending (newest first).'
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+        example: asc
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundingRoundsResponse'
+              example:
+                fundingRounds:
+                - id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                  company:
+                    id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+                    name: Acme Inc
+                    domain: acme.com
+                    pitchbookId: 41339-53
+                    caplightIds:
+                      v2Id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+                      v1Id: abc123xyz
+                  status: completed
+                  isDeleted: false
+                  announcedAt: '2024-03-15'
+                  completedAt: '2024-06-01'
+                  roundName: Series B
+                  amounts:
+                    total:
+                      amount: 50000000
+                      currency: USD
+                      amountUsd: 50000000
+                    equity:
+                      amount: 50000000
+                      currency: USD
+                      amountUsd: 50000000
+                    debt:
+                      amount: null
+                      currency: USD
+                      amountUsd: null
+                  valuation:
+                    preMoney:
+                      amount: 200000000
+                      currency: USD
+                      amountUsd: 200000000
+                    postMoney:
+                      amount: 250000000
+                      currency: USD
+                      amountUsd: 250000000
+                  pps:
+                    amount: 12.5
+                    currency: USD
+                    amountUsd: 12.5
+                  participants:
+                  - id: f1a2b3c4-d5e6-7890-abcd-111111111111
+                    investor:
+                      id: 11111111-aaaa-bbbb-cccc-111111111111
+                      type: firm
+                      name: Sequoia Capital
+                    role: lead
+                  - id: f1a2b3c4-d5e6-7890-abcd-222222222222
+                    investor:
+                      id: 22222222-aaaa-bbbb-cccc-222222222222
+                      type: firm
+                      name: a16z
+                    role: participant
+                  citations:
+                  - id: c1a2b3c4-d5e6-7890-abcd-333333333333
+                    type: press_release
+                    url: https://example.com/press
+                    sourceName: Company Blog
+                    publishedAt: '2024-06-01'
+                  updatedAt: '2024-06-15T14:30:00.000Z'
+                - id: d4e5f6a7-b8c9-0123-def0-456789abcdef
+                  company:
+                    id: e5f6a7b8-c9d0-1234-ef01-56789abcdef0
+                    name: Beta Corp
+                    domain: betacorp.io
+                    pitchbookId: null
+                    caplightIds:
+                      v2Id: e5f6a7b8-c9d0-1234-ef01-56789abcdef0
+                      v1Id: null
+                  status: announced
+                  isDeleted: false
+                  announcedAt: '2024-07-01'
+                  completedAt: null
+                  roundName: Series C
+                  restricted:
+                    fields:
+                    - amounts
+                    - valuation
+                    - participants
+                  updatedAt: '2024-07-05T11:00:00.000Z'
+                pagination:
+                  pageNumber: 1
+                  numPages: 3
+                  totalRecords: 12
+  /v2/funding-rounds/updates:
+    get:
+      tags:
+      - Funding Rounds
+      summary: Get funding round updates
+      description: 'Returns funding rounds that have been updated within a date range. Use this for sync/incremental ingestion. Only returns rounds for companies your account has access to.
+
+
+        **Window:** Rounds are returned where `updatedSince < updated_at <= upTo` (updatedSince is exclusive, upTo is inclusive).
+
+
+        **Ordering:** Results are ordered by `updated_at` ascending, then `id` ascending.
+
+
+        **Pagination:** For the first request, omit `upTo` or set it to bound your query. The response includes an `upTo` value. For pages 2 through N of the same batch, pass that same `upTo` as the `upTo` query param so pagination stays consistent.
+
+
+        **Checkpointing:** After fetching all pages for a batch, advance your checkpoint by setting the next request''s `updatedSince` to the `upTo` value from the previous response.
+
+
+        **Deleted rounds:** Rounds deleted within the query range are included with `isDeleted: true`.'
+      parameters:
+      - name: updatedSince
+        in: query
+        description: ISO 8601 date — exclusive lower bound. Return rounds with updated_at strictly after this time. Use the previous response's upTo to checkpoint for the next batch.
+        required: true
+        schema:
+          type: string
+          format: date-time
+        example: '2024-01-01T00:00:00.000Z'
+      - name: upTo
+        in: query
+        description: ISO 8601 date — inclusive upper bound. Return rounds with updated_at <= this time. Omit for first request (defaults to now). For pages 2..N, reuse the upTo value from the first page response.
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: pageNumber
+        in: query
+        description: Page number (1-based). First page is 1.
+        required: false
+        schema:
+          type: integer
+          default: 1
+        example: 1
+      - name: pageSize
+        in: query
+        description: Number of results per page (default 50, max 200)
+        required: false
+        schema:
+          type: integer
+          default: 50
+          minimum: 1
+          maximum: 200
+        example: 50
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundingRoundUpdatesResponse'
+              example:
+                updatedSince: '2024-06-01T00:00:00.000Z'
+                upTo: '2024-06-15T23:59:59.999Z'
+                fundingRounds:
+                - id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                  company:
+                    id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+                    name: Acme Inc
+                    domain: acme.com
+                    pitchbookId: 41339-53
+                    caplightIds:
+                      v2Id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+                      v1Id: abc123xyz
+                  status: completed
+                  isDeleted: false
+                  announcedAt: '2024-03-15'
+                  completedAt: '2024-06-01'
+                  roundName: Series B
+                  amounts:
+                    total:
+                      amount: 50000000
+                      currency: USD
+                      amountUsd: 50000000
+                    equity:
+                      amount: 50000000
+                      currency: USD
+                      amountUsd: 50000000
+                    debt:
+                      amount: null
+                      currency: USD
+                      amountUsd: null
+                  valuation:
+                    preMoney:
+                      amount: 200000000
+                      currency: USD
+                      amountUsd: 200000000
+                    postMoney:
+                      amount: 250000000
+                      currency: USD
+                      amountUsd: 250000000
+                  pps:
+                    amount: 12.5
+                    currency: USD
+                    amountUsd: 12.5
+                  participants:
+                  - id: f1a2b3c4-d5e6-7890-abcd-111111111111
+                    investor:
+                      id: 11111111-aaaa-bbbb-cccc-111111111111
+                      type: firm
+                      name: Sequoia Capital
+                    role: lead
+                  citations: []
+                  updatedAt: '2024-06-10T09:00:00.000Z'
+                pagination:
+                  pageNumber: 1
+                  numPages: 1
+                  totalRecords: 1
+        '400':
+          description: Invalid date parameters (e.g. missing or invalid updatedSince)
+  /v2/funding-rounds/{roundId}:
+    get:
+      tags:
+      - Funding Rounds
+      summary: Get funding round by ID
+      description: Returns a single funding round by its round ID. Returns 404 if the round is not accessible to your account.
+      parameters:
+      - name: roundId
+        in: path
+        description: Round ID
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundingRoundSnapshot'
+              example:
+                id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                company:
+                  id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+                  name: Acme Inc
+                  domain: acme.com
+                  pitchbookId: 41339-53
+                  caplightIds:
+                    v2Id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+                    v1Id: abc123xyz
+                status: completed
+                isDeleted: false
+                announcedAt: '2024-03-15'
+                completedAt: '2024-06-01'
+                roundName: Series B
+                amounts:
+                  total:
+                    amount: 50000000
+                    currency: USD
+                    amountUsd: 50000000
+                  equity:
+                    amount: 50000000
+                    currency: USD
+                    amountUsd: 50000000
+                  debt:
+                    amount: null
+                    currency: USD
+                    amountUsd: null
+                valuation:
+                  preMoney:
+                    amount: 200000000
+                    currency: USD
+                    amountUsd: 200000000
+                  postMoney:
+                    amount: 250000000
+                    currency: USD
+                    amountUsd: 250000000
+                pps:
+                  amount: 12.5
+                  currency: USD
+                  amountUsd: 12.5
+                participants:
+                - id: f1a2b3c4-d5e6-7890-abcd-111111111111
+                  investor:
+                    id: 11111111-aaaa-bbbb-cccc-111111111111
+                    type: firm
+                    name: Sequoia Capital
+                  role: lead
+                - id: f1a2b3c4-d5e6-7890-abcd-222222222222
+                  investor:
+                    id: 22222222-aaaa-bbbb-cccc-222222222222
+                    type: firm
+                    name: Andreessen Horowitz
+                  role: participant
+                - id: f1a2b3c4-d5e6-7890-abcd-444444444444
+                  investor:
+                    id: 44444444-aaaa-bbbb-cccc-444444444444
+                    type: individual
+                    name: Jane Smith
+                  role: participant
+                citations:
+                - id: c1a2b3c4-d5e6-7890-abcd-555555555555
+                  type: press_release
+                  url: https://acme.com/series-b
+                  sourceName: Acme Blog
+                  publishedAt: '2024-06-01'
+                - id: c1a2b3c4-d5e6-7890-abcd-666666666666
+                  type: sec_filing
+                  url: null
+                  sourceName: Form D
+                  publishedAt: '2024-06-15'
+                updatedAt: '2024-06-15T14:30:00.000Z'
+        '404':
+          description: Funding round not found or not accessible
+components:
+  schemas:
+    PublicCompanySummary:
+      type: object
+      description: Company summary. Companies have two IDs — v1 and v2 — both provided in caplightIds for cross-referencing across API versions.
+      properties:
+        id:
+          type: string
+          description: v2 company ID
+        name:
+          type: string
+          description: Company name
+        domain:
+          type: string
+          nullable: true
+          description: Company website domain
+        pitchbookId:
+          type: string
+          nullable: true
+          description: Pitchbook company ID
+        caplightIds:
+          type: object
+          description: Both company ID formats for cross-referencing v1 and v2 endpoints
+          properties:
+            v2Id:
+              type: string
+              description: v2 company ID (same as id)
+            v1Id:
+              type: string
+              nullable: true
+              description: v1 company ID (for v1 API endpoints)
+    FundingRoundsResponse:
+      type: object
+      properties:
+        fundingRounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundingRoundSnapshot'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    ApiRestrictedFields:
+      type: object
+      description: Present when one or more fields are omitted due to account field-level restrictions. The fields array lists omitted field names (e.g. amounts, valuation, pps, participants, citations). Always check for this object and handle missing fields in your integration.
+      properties:
+        fields:
+          type: array
+          items:
+            type: string
+          description: Names of fields omitted from the response due to account permissions
+    FundingRoundUpdatesResponse:
+      type: object
+      properties:
+        updatedSince:
+          type: string
+          description: Exclusive lower bound used for this query
+        upTo:
+          type: string
+          description: Inclusive upper bound used for this query. Reuse this value as up_to when fetching pages 2..N; use as updated_since for the next batch after completing all pages.
+        fundingRounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundingRoundSnapshot'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
+    FundingRoundCitation:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - url
+          - coi
+          - press_release
+          - sec_filing
+          - news
+          - other
+        url:
+          type: string
+          nullable: true
+        sourceName:
+          type: string
+          nullable: true
+        publishedAt:
+          type: string
+          nullable: true
+    FundingRoundSnapshot:
+      type: object
+      description: Funding round with amounts, valuation, participants, and citations
+      properties:
+        id:
+          type: string
+          description: Round ID
+        company:
+          $ref: '#/components/schemas/PublicCompanySummary'
+        status:
+          type: string
+          enum:
+          - announced
+          - completed
+          - cancelled
+          - rumored
+          - postponed
+        isDeleted:
+          type: boolean
+          description: Soft-deleted flag
+        announcedAt:
+          type: string
+          nullable: true
+          description: Announcement date (YYYY-MM-DD)
+        completedAt:
+          type: string
+          nullable: true
+          description: Completion date (YYYY-MM-DD)
+        roundName:
+          type: string
+          description: Round name as recorded, e.g. "Series C" or "Debt"
+        amounts:
+          type: object
+          description: Funding amounts broken down by total, equity, and debt
+          properties:
+            total:
+              $ref: '#/components/schemas/MoneyAmount'
+              description: Total funding amount
+            equity:
+              $ref: '#/components/schemas/MoneyAmount'
+              description: Equity component
+            debt:
+              $ref: '#/components/schemas/MoneyAmount'
+              description: Debt component
+        valuation:
+          type: object
+          description: Round valuation
+          properties:
+            preMoney:
+              $ref: '#/components/schemas/MoneyAmount'
+              description: Pre-money valuation
+            postMoney:
+              $ref: '#/components/schemas/MoneyAmount'
+              description: Post-money valuation
+        pps:
+          $ref: '#/components/schemas/MoneyAmount'
+          description: Average price per share
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundingRoundParticipant'
+        citations:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundingRoundCitation'
+        restricted:
+          $ref: '#/components/schemas/ApiRestrictedFields'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+    FundingRoundParticipant:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Participation record ID
+        investor:
+          $ref: '#/components/schemas/PublicInvestorSummary'
+        role:
+          type: string
+          enum:
+          - lead
+          - participant
+          - unknown
+          description: Investor role in the round
+    MoneyAmount:
+      type: object
+      description: A monetary value with original currency and USD equivalent
+      properties:
+        amount:
+          type: number
+          nullable: true
+          description: Amount in the original currency
+        currency:
+          type: string
+          description: ISO 4217 currency code (e.g. USD, EUR)
+        amountUsd:
+          type: number
+          nullable: true
+          description: Amount converted to USD
+    PublicInvestorSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Investor ID
+        type:
+          type: string
+          enum:
+          - firm
+          - individual
+        name:
+          type: string
+          description: Investor display name
+  securitySchemes:
+    api_key:
+      description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
+      type: apiKey
+      name: api_key
+      in: header
+x-tagGroups:
+- name: V1
+  tags:
+  - Company
+  - Companies
+  - MarketPrice
+  - Live Orderbook
+  - Trade History
+  - Order History
+  - Company Filings
+  - Stock Splits
+  - Fund Marks
+  - News
+  - company_model
+  - order_model
+  - market_price_model
+  - trade_model
+  - 409a_valuation_model
+  - fund_mark_model
+  - comp_model
+  - stock_split_model
+  - coi_model
+- name: V2
+  tags:
+  - Funding Rounds
+  - Investors
+  - Company Lookup
+  - Company Details
+  - Comps

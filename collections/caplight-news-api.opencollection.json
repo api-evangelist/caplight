@@ -1,0 +1,67 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST News API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "News",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get company news",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/news",
+            "params": [
+              {
+                "name": "caplightId",
+                "value": "134591n9dfk519kl",
+                "type": "query",
+                "description": "Company Caplight Id"
+              },
+              {
+                "name": "pitchbookId",
+                "value": "54782-29",
+                "type": "query",
+                "description": "Company Pitchbook Id"
+              },
+              {
+                "name": "domain",
+                "value": "stripe.com",
+                "type": "query",
+                "description": "Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId."
+              },
+              {
+                "name": "dateAfter",
+                "value": "2024-01-01",
+                "type": "query",
+                "description": "Start of date range (ISO 8601 date). Required."
+              },
+              {
+                "name": "dateBefore",
+                "value": "2024-01-31",
+                "type": "query",
+                "description": "End of date range (ISO 8601 date). Required. Maximum 31 days from dateAfter."
+              },
+              {
+                "name": "pageNumber",
+                "value": "1",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              }
+            ]
+          },
+          "docs": "Returns news articles for a company within a specified date range. Articles include sentiment classification (positive, negative, neutral) and a highlighted flag indicating high-relevance news. Maximum date range is 31 days per request."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

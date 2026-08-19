@@ -1,0 +1,288 @@
+openapi: 3.2.0
+info:
+  version: 2.0.0
+  title: Caplight REST News API
+  description: 'This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.
+
+
+    # Production server
+
+    https://us-central1-caplight-prod.cloudfunctions.net/api/public
+
+
+    # Staging/sandbox server
+
+    https://us-central1-caplight-staging.cloudfunctions.net/api/public
+
+
+    # API versions
+
+    Endpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.
+
+
+    # Company IDs
+
+    Companies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.
+
+
+    If you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.
+
+
+    # V2 Access & Permissions
+
+
+    **Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.
+
+
+    **Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.
+
+
+    # Widget Embed
+
+    In addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.
+
+
+    # Authentication
+
+
+    <SecurityDefinitions />
+
+    '
+  termsOfService: https://platform.caplight.com/terms
+  contact:
+    name: 'Contact: Caplight Engineering'
+    email: engineering@caplight.com
+  x-logo:
+    url: https://storage.googleapis.com/caplight-prod.appspot.com/caplight-logos/api-logo.png
+    altText: Caplight logo
+servers:
+- url: //us-central1-caplight-prod.cloudfunctions.net/api/public
+  description: Production
+- url: //us-central1-caplight-staging.cloudfunctions.net/api/public
+  description: Staging/Sandbox
+tags:
+- name: News
+  description: Company news articles with sentiment analysis
+paths:
+  /v1/news:
+    get:
+      tags:
+      - News
+      summary: Get company news
+      description: Returns news articles for a company within a specified date range. Articles include sentiment classification (positive, negative, neutral) and a highlighted flag indicating high-relevance news. Maximum date range is 31 days per request.
+      parameters:
+      - name: caplightId
+        in: query
+        description: Company Caplight Id
+        required: false
+        schema:
+          type: string
+        example: 134591n9dfk519kl
+      - name: pitchbookId
+        in: query
+        description: Company Pitchbook Id
+        required: false
+        schema:
+          type: string
+        example: 54782-29
+      - name: domain
+        in: query
+        description: Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId.
+        required: false
+        schema:
+          type: string
+        example: stripe.com
+      - name: dateAfter
+        in: query
+        description: Start of date range (ISO 8601 date). Required.
+        required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-01-01'
+      - name: dateBefore
+        in: query
+        description: End of date range (ISO 8601 date). Required. Maximum 31 days from dateAfter.
+        required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-01-31'
+      - name: pageNumber
+        in: query
+        description: Page number (1-based). First page is 1.
+        required: false
+        schema:
+          type: integer
+          default: 1
+        example: 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsResponse'
+              example:
+                companyMeta:
+                  name: Stripe
+                  domain: stripe.com
+                  caplightId: abc123xyz
+                  pitchbookId: 54782-29
+                pagination:
+                  pageNumber: 1
+                  numPages: 2
+                  totalRecords: 28
+                news:
+                - id: 12345
+                  groupId: news-group-abc123
+                  title: Stripe launches new AI-powered fraud detection tool
+                  url: https://techcrunch.com/2024/01/15/stripe-ai-fraud-detection
+                  publishedAt: '2024-01-15T14:30:00.000Z'
+                  publication: TechCrunch
+                  sentiment: positive
+                  highlighted: 'true'
+                - id: 12346
+                  groupId: news-group-def456
+                  title: Stripe expands European operations with new Dublin office
+                  url: https://www.reuters.com/technology/stripe-dublin-expansion
+                  publishedAt: '2024-01-10T09:00:00.000Z'
+                  publication: Reuters
+                  sentiment: positive
+                  highlighted: 'false'
+                - id: 12347
+                  groupId: news-group-ghi789
+                  title: Fintech sector faces regulatory scrutiny in 2024
+                  url: https://www.ft.com/content/fintech-regulation-2024
+                  publishedAt: '2024-01-05T16:45:00.000Z'
+                  publication: Financial Times
+                  sentiment: neutral
+                  highlighted: 'false'
+        '400':
+          description: Invalid date parameters (missing dateAfter/dateBefore or range exceeds 31 days)
+components:
+  schemas:
+    NewsItem:
+      type: object
+      description: A news article about a company
+      properties:
+        id:
+          type: integer
+          description: Unique news article ID
+          example: 12345
+        groupId:
+          type: string
+          description: Grouping ID for related articles
+          example: news-group-abc123
+        title:
+          type: string
+          description: Article headline
+          example: Stripe launches new AI-powered fraud detection tool
+        url:
+          type: string
+          description: URL to the full article
+          example: https://techcrunch.com/2024/01/15/stripe-ai-fraud-detection
+        publishedAt:
+          type: string
+          format: date-time
+          description: Publication date/time
+          example: '2024-01-15T14:30:00.000Z'
+        publication:
+          type: string
+          description: Name of the publication source
+          example: TechCrunch
+        sentiment:
+          type: string
+          enum:
+          - positive
+          - negative
+          - neutral
+          description: Sentiment classification of the article
+          example: positive
+        highlighted:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          description: Whether this is a high-relevance article for the company
+          example: 'true'
+    NewsResponse:
+      type: object
+      properties:
+        companyMeta:
+          $ref: '#/components/schemas/CompanyMeta'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        news:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsItem'
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
+    CompanyMeta:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Company name
+          example: Stripe
+        domain:
+          type: string
+          description: Company top-level web domain
+          example: stripe.com
+        caplightId:
+          type: string
+          description: Caplight Company ID
+          example: 12d3140kjf90
+        pitchbookId:
+          type: string
+          description: Pitchbook Company ID
+          example: 54782-29
+  securitySchemes:
+    api_key:
+      description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
+      type: apiKey
+      name: api_key
+      in: header
+x-tagGroups:
+- name: V1
+  tags:
+  - Company
+  - Companies
+  - MarketPrice
+  - Live Orderbook
+  - Trade History
+  - Order History
+  - Company Filings
+  - Stock Splits
+  - Fund Marks
+  - News
+  - company_model
+  - order_model
+  - market_price_model
+  - trade_model
+  - 409a_valuation_model
+  - fund_mark_model
+  - comp_model
+  - stock_split_model
+  - coi_model
+- name: V2
+  tags:
+  - Funding Rounds
+  - Investors
+  - Company Lookup
+  - Company Details
+  - Comps

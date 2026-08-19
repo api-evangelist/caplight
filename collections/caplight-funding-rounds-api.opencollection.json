@@ -1,0 +1,117 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Funding Rounds API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Funding Rounds",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get company funding rounds",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v2/companies/:companyId/funding-rounds",
+            "params": [
+              {
+                "name": "companyId",
+                "value": "",
+                "type": "path",
+                "description": "Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified."
+              },
+              {
+                "name": "pageNumber",
+                "value": "1",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "50",
+                "type": "query",
+                "description": "Number of results per page (default 50, max 200)"
+              },
+              {
+                "name": "sortBy",
+                "value": "roundDate",
+                "type": "query",
+                "description": "Field to sort results by. `roundDate` sorts by the best available date for the round, using the first non-null value from: completedAt, the round's internal date, then announcedAt. `updatedAt` sorts by the last update timestamp. Rounds with a null sort value are placed at the end regardless of sort order."
+              },
+              {
+                "name": "sortOrder",
+                "value": "asc",
+                "type": "query",
+                "description": "Sort direction: `asc` for ascending (oldest first), `desc` for descending (newest first)."
+              }
+            ]
+          },
+          "docs": "Returns a paginated, sortable list of funding rounds for a company. Results are sorted by `roundDate` ascending by default."
+        },
+        {
+          "info": {
+            "name": "Get funding round updates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v2/funding-rounds/updates",
+            "params": [
+              {
+                "name": "updatedSince",
+                "value": "2024-01-01T00:00:00.000Z",
+                "type": "query",
+                "description": "ISO 8601 date — exclusive lower bound. Return rounds with updated_at strictly after this time. Use the previous response's upTo to checkpoint for the next batch."
+              },
+              {
+                "name": "upTo",
+                "value": "",
+                "type": "query",
+                "description": "ISO 8601 date — inclusive upper bound. Return rounds with updated_at <= this time. Omit for first request (defaults to now). For pages 2..N, reuse the upTo value from the first page response."
+              },
+              {
+                "name": "pageNumber",
+                "value": "1",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "50",
+                "type": "query",
+                "description": "Number of results per page (default 50, max 200)"
+              }
+            ]
+          },
+          "docs": "Returns funding rounds that have been updated within a date range. Use this for sync/incremental ingestion. Only returns rounds for companies your account has access to.\n\n**Window:** Rounds are returned where `updatedSince < updated_at <= upTo` (updatedSince is exclusive, upTo is inclusive).\n\n**Ordering:** Results are ordered by `updated_at` ascending, then `id` ascending.\n\n**Pagination:** For the first request, omit `upTo` or set it to bound your query. The response includes an `upTo` value. Fo"
+        },
+        {
+          "info": {
+            "name": "Get funding round by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v2/funding-rounds/:roundId",
+            "params": [
+              {
+                "name": "roundId",
+                "value": "",
+                "type": "path",
+                "description": "Round ID"
+              }
+            ]
+          },
+          "docs": "Returns a single funding round by its round ID. Returns 404 if the round is not accessible to your account."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,49 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Companies API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Companies",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all companies with either orders or trades",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/companies/all-with-data",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "1",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              },
+              {
+                "name": "has409aValuations",
+                "value": "true",
+                "type": "query",
+                "description": "Filter to only companies with 409a valuations"
+              },
+              {
+                "name": "coisAvailable",
+                "value": "true",
+                "type": "query",
+                "description": "Filter to only companies for which Caplight tracks Certificate of Incorporation (COI) filings"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of companies with at least one order or trade. Optional filters: `has409aValuations` and `coisAvailable`."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

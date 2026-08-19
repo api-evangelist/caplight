@@ -1,0 +1,299 @@
+{
+  "item": [
+    {
+      "id": "7365716b-a88c-4edc-891c-fe041e3cfa23",
+      "name": "Company Lookup",
+      "description": {
+        "content": "Resolves company domains, PitchBook IDs and v1 company IDs to v2 company IDs, in batches.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6521d423-8f3e-400e-a1e2-5ab129e4c226",
+          "name": "Look up company IDs",
+          "request": {
+            "name": "Look up company IDs",
+            "description": {
+              "content": "Resolves company domains, PitchBook IDs and v1 company IDs to v2 company IDs — including for companies added recently.\n\n**Batching:** each parameter may be repeated, e.g. `?domain=clickhouse.com&domain=neros.tech&v1Id=abc123xyz`. At most 50 identifiers in total across all three parameters; more returns 400.\n\n**Results:** one entry per identifier requested, echoing it back in `query` so responses line up with requests. Entries are grouped by identifier type in the order `domain`, `pitchbookId`, `v1Id` — not in query-string order. An identifier that matches nothing comes back with an empty `matches` array rather than a 404.\n\nA domain can match more than one company, because subsidiaries, acquired shells and stale duplicates share one. Every candidate is returned, best match first: not acquired, then an exact website match, then an active business status, then companies carrying market data, then the highest last known funding round valuation.\n\n**Access:** requires Companies V2 API access. Unlike the other v2 company endpoints, lookup does not enforce per-company access control and does not count toward your annual distinct-company limit — it returns identity only. `pitchbookId` is not included on matches; read it from `GET /v2/companies/{companyId}` once you have access to the company.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "companies"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "domain",
+                  "value": "<string>",
+                  "description": "Company website domain or URL. The root domain is extracted and lowercased before matching, so `https://www.clickhouse.com/docs` and `clickhouse.com` behave identically. Repeatable."
+                },
+                {
+                  "disabled": false,
+                  "key": "domain",
+                  "value": "<string>",
+                  "description": "Company website domain or URL. The root domain is extracted and lowercased before matching, so `https://www.clickhouse.com/docs` and `clickhouse.com` behave identically. Repeatable."
+                },
+                {
+                  "disabled": false,
+                  "key": "pitchbookId",
+                  "value": "<string>",
+                  "description": "PitchBook company ID. Repeatable."
+                },
+                {
+                  "disabled": false,
+                  "key": "pitchbookId",
+                  "value": "<string>",
+                  "description": "PitchBook company ID. Repeatable."
+                },
+                {
+                  "disabled": false,
+                  "key": "v1Id",
+                  "value": "<string>",
+                  "description": "v1 company ID — the same value the v1 endpoints return as `caplightId`. Repeatable."
+                },
+                {
+                  "disabled": false,
+                  "key": "v1Id",
+                  "value": "<string>",
+                  "description": "v1 company ID — the same value the v1 endpoints return as `caplightId`. Repeatable."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "12a3d495-add6-4fab-96e7-f6baf437e822",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "companies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "domain",
+                      "value": "clickhouse.com"
+                    },
+                    {
+                      "key": "domain",
+                      "value": "neros.tech"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "41339-53"
+                    },
+                    {
+                      "key": "v1Id",
+                      "value": "abc123xyz"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"results\": [\n    {\n      \"query\": {\n        \"type\": \"domain\",\n        \"value\": \"clickhouse.com\"\n      },\n      \"matches\": [\n        {\n          \"id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n          \"name\": \"ClickHouse\",\n          \"domain\": \"clickhouse.com\",\n          \"caplightIds\": {\n            \"v2Id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n            \"v1Id\": \"abc123xyz\"\n          }\n        }\n      ]\n    },\n    {\n      \"query\": {\n        \"type\": \"domain\",\n        \"value\": \"neros.tech\"\n      },\n      \"matches\": []\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7712cabe-484e-4f01-b8dc-22ea79971d42",
+              "name": "No identifier supplied, or more than 50 identifiers in one request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "companies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "domain",
+                      "value": "clickhouse.com"
+                    },
+                    {
+                      "key": "domain",
+                      "value": "neros.tech"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "41339-53"
+                    },
+                    {
+                      "key": "v1Id",
+                      "value": "abc123xyz"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "58fd8613-2cbf-42e8-a7da-f6343753f606",
+              "name": "Missing or invalid API key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "companies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "domain",
+                      "value": "clickhouse.com"
+                    },
+                    {
+                      "key": "domain",
+                      "value": "neros.tech"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "41339-53"
+                    },
+                    {
+                      "key": "v1Id",
+                      "value": "abc123xyz"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9ae0d8e1-c61d-4a08-ab13-f363fdc5622c",
+              "name": "Account does not have Companies V2 API access",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "companies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "domain",
+                      "value": "clickhouse.com"
+                    },
+                    {
+                      "key": "domain",
+                      "value": "neros.tech"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "41339-53"
+                    },
+                    {
+                      "key": "v1Id",
+                      "value": "abc123xyz"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "21c2d1f7-8ea9-416a-b44c-f135eb29547e",
+    "name": "Caplight REST Company Lookup API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}

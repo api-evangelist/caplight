@@ -11,16 +11,14 @@ server:
   - Claude Desktop
   install:
     method: custom connector
-    steps: >-
-      In Claude.ai or Claude Desktop open Customize > Connectors > + > Add custom connector, enter
-      "Caplight" as the name and https://platform.caplight.com/mcp as the URL, click Add, then Connect and
-      authenticate with a Caplight account.
+    steps: In Claude.ai or Claude Desktop open Customize > Connectors > + > Add custom connector, enter
+      "Caplight" as the name and https://platform.caplight.com/mcp as the URL, click Add, then Connect
+      and authenticate with a Caplight account.
 authentication:
   model: oauth2
   api_key_required: false
-  note: >-
-    Caplight documents that no API key is needed for the MCP server — only a Caplight account. Access is
-    authorized over OAuth 2.1 authorization code + PKCE (S256) with dynamic client registration.
+  note: Caplight documents that no API key is needed for the MCP server — only a Caplight account. Access
+    is authorized over OAuth 2.1 authorization code + PKCE (S256) with dynamic client registration.
   authorization_server: https://platform.caplight.com/mcp
   authorization_endpoint: https://platform.caplight.com/mcp/authorize
   token_endpoint: https://platform.caplight.com/mcp/token
@@ -35,12 +33,12 @@ introspection:
     url: https://platform.caplight.com/mcp
     body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
     http_status: 401
-    response: '{"error":"Unauthorized","message":"Valid authentication required. Use the OAuth flow to obtain an access token."}'
-  note: >-
-    tools/list requires an authenticated OAuth access token, so the live tool names and inputSchemas
+    response: '{"error":"Unauthorized","message":"Valid authentication required. Use the OAuth flow to
+      obtain an access token."}'
+  note: tools/list requires an authenticated OAuth access token, so the live tool names and inputSchemas
     could not be enumerated anonymously. Caplight publishes no llms.txt and no tool-name list, so the
-    tool names below are NOT recorded — only the capability areas Caplight itself documents. Input
-    schemas require authenticated introspection.
+    tool names below are NOT recorded — only the capability areas Caplight itself documents. Input schemas
+    require authenticated introspection.
 tools:
   count_documented: 15
   names_published: false
@@ -56,9 +54,15 @@ tools:
   - funding rounds with amounts and valuations
   - investor participation
   - quarterly market summaries
-positioning: >-
-  Caplight distinguishes the two surfaces explicitly: the REST API is for programmatic machine-to-machine
-  access (scheduled jobs, data pipelines, embedded widgets) while the MCP server is optimized for
-  interactive AI agents that call tools in order and synthesize multi-step research. Caplight states it
-  processes only the tool calls the LLM requests and has no access to chat sessions.
+positioning: 'Caplight distinguishes the two surfaces explicitly: the REST API is for programmatic machine-to-machine
+  access (scheduled jobs, data pipelines, embedded widgets) while the MCP server is optimized for interactive
+  AI agents that call tools in order and synthesize multi-step research. Caplight states it processes
+  only the tool calls the LLM requests and has no access to chat sessions.'
 crosswalk: mcp/caplight-tool-crosswalk.yml
+deployment:
+  mode: remote
+  endpoint: https://platform.caplight.com/mcp
+  verified: probed
+  probe: gated
+  checked: '2026-08-12'
+  source: catalog MCP census

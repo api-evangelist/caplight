@@ -1,0 +1,146 @@
+{
+  "item": [
+    {
+      "id": "15807f39-d4d3-49a0-98be-93a532467ac2",
+      "name": "Comps",
+      "description": {
+        "content": "LLM-discovered comparable companies with an overall similarity score, a per-dimension breakdown, a classification, and a short rationale.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1975bd3d-1e83-4612-837d-e248611fcde1",
+          "name": "Get company comps",
+          "request": {
+            "name": "Get company comps",
+            "description": {
+              "content": "Returns the LLM-discovered comparable companies (\"comps\") for a company, each with an overall similarity score (0-1), a per-dimension similarity breakdown, a classification, and a short rationale. Comps are ordered by similarity in descending order. Requires comps API access.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "companies",
+                ":companyId",
+                "comps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Page number (1-based). First page is 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "50",
+                  "description": "Number of results per page (default 50, max 200). Most companies return all comparables in a single page."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "companyId",
+                  "description": "(Required) Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "bb68c85f-83d6-430f-8baa-cf8bfb88eeab",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "companies",
+                    ":companyId",
+                    "comps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNumber",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "companyId",
+                      "description": "(Required) Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"company\": {\n    \"id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n    \"name\": \"Acme Inc\",\n    \"domain\": \"acme.com\",\n    \"pitchbookId\": \"41339-53\",\n    \"caplightIds\": {\n      \"v2Id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n      \"v1Id\": \"abc123xyz\"\n    }\n  },\n  \"comparables\": [\n    {\n      \"name\": \"Globex Corp\",\n      \"domain\": \"globex.com\",\n      \"caplightIds\": {\n        \"v2Id\": \"c3d4e5f6-a7b8-9012-cdef-234567890123\",\n        \"v1Id\": \"def456uvw\"\n      },\n      \"ticker\": null,\n      \"isPublic\": false,\n      \"productName\": null,\n      \"subsidiaryName\": null,\n      \"classification\": \"pure_play\",\n      \"similarity\": 0.82,\n      \"similarityExplanation\": \"Same product category, overlapping customers.\",\n      \"similarityBreakdown\": [\n        {\n          \"key\": \"product\",\n          \"label\": \"Product overlap\",\n          \"score\": 0.9,\n          \"reasoning\": \"Both operate two-sided payment networks.\"\n        },\n        {\n          \"key\": \"customer\",\n          \"label\": \"Customer overlap\",\n          \"score\": 0.8,\n          \"reasoning\": \"Shared enterprise customer base.\"\n        }\n      ],\n      \"description\": \"A close competitor in the enterprise widget space.\",\n      \"generatedAt\": \"2026-01-15T12:00:00.000Z\"\n    }\n  ],\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 1,\n    \"totalRecords\": 1\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "f62dd55c-e90e-4503-a954-b6c9ae16c376",
+    "name": "Caplight REST Comps API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}

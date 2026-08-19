@@ -1,0 +1,136 @@
+{
+  "item": [
+    {
+      "id": "167185e5-0fdc-483e-8eae-ea26ba357a02",
+      "name": "Trade History",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ef589427-ba3c-481d-98af-c273b32dda50",
+          "name": "Company trade history",
+          "request": {
+            "name": "Company trade history",
+            "description": {
+              "content": "Returns full trade history for a company, paginated. Either caplightId or pitchbookId must be provided.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "trade-history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "caplightId",
+                  "value": "<string>",
+                  "description": "Company Caplight Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "pitchbookId",
+                  "value": "<string>",
+                  "description": "Company Pitchbook Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "<number>",
+                  "description": "Page number (1-based). First page is 1."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "49f0169c-e431-4a2c-88f5-0477005bd9fb",
+              "name": "successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "trade-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "caplightId",
+                      "value": "134591n9dfk519kl"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "54782-29"
+                    },
+                    {
+                      "key": "pageNumber",
+                      "value": "2"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"companyMeta\": {\n    \"name\": \"Stripe\",\n    \"domain\": \"stripe.com\",\n    \"caplightId\": \"12d3140kjf90\",\n    \"pitchbookId\": \"54782-29\"\n  },\n  \"tradeHistory\": [\n    {\n      \"volume\": 5000000,\n      \"id\": \"okP88RZSS9e1owCq73iD\",\n      \"price\": 15.9,\n      \"valuation\": 5000000000,\n      \"structure\": \"spv\",\n      \"hasCarry\": true,\n      \"shareClass\": \"preferred\",\n      \"shareClassSeries\": \"Series B Preferred\",\n      \"date\": \"2022-09-10\",\n      \"lastUpdatedAt\": \"2023-01-26T05:56:30 +00:00\"\n    },\n    {\n      \"volume\": 5000000,\n      \"id\": \"okP88RZSS9e1owCq73iD\",\n      \"price\": 15.9,\n      \"valuation\": 5000000000,\n      \"structure\": \"spv\",\n      \"hasCarry\": true,\n      \"shareClass\": \"preferred\",\n      \"shareClassSeries\": \"Series B Preferred\",\n      \"date\": \"2022-09-10\",\n      \"lastUpdatedAt\": \"2023-01-26T05:56:30 +00:00\"\n    }\n  ],\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 10,\n    \"totalRecords\": 250\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "7b7b5f0e-a877-4307-a31b-20db1ee75459",
+    "name": "Caplight REST Trade History API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}

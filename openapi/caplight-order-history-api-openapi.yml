@@ -1,0 +1,348 @@
+openapi: 3.2.0
+info:
+  version: 2.0.0
+  title: Caplight REST Order History API
+  description: 'This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.
+
+
+    # Production server
+
+    https://us-central1-caplight-prod.cloudfunctions.net/api/public
+
+
+    # Staging/sandbox server
+
+    https://us-central1-caplight-staging.cloudfunctions.net/api/public
+
+
+    # API versions
+
+    Endpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.
+
+
+    # Company IDs
+
+    Companies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.
+
+
+    If you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.
+
+
+    # V2 Access & Permissions
+
+
+    **Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.
+
+
+    **Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.
+
+
+    # Widget Embed
+
+    In addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.
+
+
+    # Authentication
+
+
+    <SecurityDefinitions />
+
+    '
+  termsOfService: https://platform.caplight.com/terms
+  contact:
+    name: 'Contact: Caplight Engineering'
+    email: engineering@caplight.com
+  x-logo:
+    url: https://storage.googleapis.com/caplight-prod.appspot.com/caplight-logos/api-logo.png
+    altText: Caplight logo
+servers:
+- url: //us-central1-caplight-prod.cloudfunctions.net/api/public
+  description: Production
+- url: //us-central1-caplight-staging.cloudfunctions.net/api/public
+  description: Staging/Sandbox
+tags:
+- name: Order History
+paths:
+  /v1/order-history:
+    get:
+      tags:
+      - Order History
+      summary: Company order history
+      description: Returns 3 months of order (bid/offer) history for a company. These orders do not represent closed (completed) transactions. Either caplightId or pitchbookId must be provided.
+      parameters:
+      - name: caplightId
+        in: query
+        description: Company Caplight Id
+        required: false
+        deprecated: false
+        schema:
+          type: string
+        example: 134591n9dfk519kl
+      - name: pitchbookId
+        in: query
+        description: Company Pitchbook Id
+        required: false
+        deprecated: false
+        schema:
+          type: string
+        example: 54782-29
+      - name: pageNumber
+        in: query
+        description: Page number (1-based). First page is 1.
+        required: false
+        deprecated: false
+        schema:
+          type: number
+        example: 1
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderHistory'
+components:
+  schemas:
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
+    CompanyMeta:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Company name
+          example: Stripe
+        domain:
+          type: string
+          description: Company top-level web domain
+          example: stripe.com
+        caplightId:
+          type: string
+          description: Caplight Company ID
+          example: 12d3140kjf90
+        pitchbookId:
+          type: string
+          description: Pitchbook Company ID
+          example: 54782-29
+    Date:
+      type: string
+      description: ISO formatted date without time
+      example: '2022-09-10'
+    Timestamp:
+      type: string
+      description: ISO formatted datetime
+      example: '2023-01-26T05:56:30 +00:00'
+    OrderHistory:
+      type: object
+      properties:
+        companyMeta:
+          $ref: '#/components/schemas/CompanyMeta'
+        orderHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Order:
+      allOf:
+      - type: object
+        properties:
+          id:
+            type: string
+            description: Unique record ID
+            example: okP88RZSS9e1owCq73iD
+          direction:
+            type: string
+            enum:
+            - bid
+            - offer
+            description: The type of order (bid/offer)
+            example: bid
+          price:
+            type: number
+            format: double
+            description: Share price USD (does not include split adjustments to today, i.e. reflective of the share count at the time)
+            example: 15.9
+          valuation:
+            type: number
+            format: double
+            description: Implied valuation USD
+            example: 5000000000
+          volume:
+            type: number
+            format: double
+            deprecated: true
+            description: (Deprecated field - replaced with minVolume). Order volume in USD, minimum amount
+            example: 1000000
+          minVolume:
+            type: number
+            format: double
+            description: Order volume in USD, minimum amount
+            example: 1000000
+          maxVolume:
+            type: number
+            format: double
+            description: Order volume in USD, maximum amount
+            example: 5000000
+          minShares:
+            type: number
+            format: int
+            description: Order share count, minimum amount
+            example: 80000
+          maxShares:
+            type: number
+            format: int
+            description: Order share count, maximum amount
+            example: 100000
+          structure:
+            type: string
+            enum:
+            - unknown
+            - direct
+            - spv
+            - forward
+            - call_option
+            - put_option
+            - swap
+            - variable_prepaid_forward
+            - exchange_fund
+            example: spv
+          isLive:
+            type: boolean
+            description: Whether an order is currently live
+            example: true
+          managementFee:
+            type: number
+            format: double
+            description: SPV management fee (if exists). Percentage value expressed as a decimal
+            example: 0.01
+          carry:
+            type: number
+            format: double
+            description: SPV carry (if exists). Percentage value expressed as a decimal
+            example: 0.2
+          shareClasses:
+            type: array
+            description: May be an empty array or null
+            items:
+              type: string
+              enum:
+              - common
+              - preferred
+              - unknown
+            example:
+            - common
+          brokerClientRelationship:
+            type: string
+            enum:
+            - direct
+            - indirect
+            description: Broker's relationship with the end-client (investor/shareholder) behind an order. "indirect" means the broker is working with a client through another broker.
+            example: direct
+          originationDate:
+            description: Order origination date. This reflects the date the order was originally captured by a Caplight order contributor
+            $ref: '#/components/schemas/Timestamp'
+          date:
+            description: Latest date of order creation / last update
+            $ref: '#/components/schemas/Date'
+          lastUpdatedAt:
+            description: Database timestamp when the trade/order data point was created or last updated in the database.
+            $ref: '#/components/schemas/Timestamp'
+          dealHistory:
+            type: array
+            description: Deals this order is part of. Paid add-on — available only to accounts with the Deal History add-on enabled; in most cases this requires a subscription upgrade. Email contact@caplight.com to enable it. When enabled, an empty array means the order has no deals; when not enabled, the field is omitted.
+            items:
+              $ref: '#/components/schemas/OrderDeal'
+    OrderDeal:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A stable, unique identifier for the deal.
+          example: okP88RZSS9e1owCq73iD
+        counterpartyOrderId:
+          type: string
+          nullable: true
+          description: The id of the order on the other side of this deal. `null` when the other side is not represented by an order.
+          example: aBc123dEf456
+        currentStatus:
+          type: string
+          enum:
+          - introductionRequested
+          - introduced
+          - potentialClosing
+          - inClosing
+          - closed
+          - dead
+          - blocked
+          description: The deal's current status.
+          example: introduced
+        currentStatusUpdatedAt:
+          description: When the current status was set.
+          $ref: '#/components/schemas/Timestamp'
+        statusHistory:
+          type: array
+          description: The deal's past status changes, oldest first.
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - introductionRequested
+                - introduced
+                - potentialClosing
+                - inClosing
+                - closed
+                - dead
+                - blocked
+              at:
+                $ref: '#/components/schemas/Timestamp'
+  securitySchemes:
+    api_key:
+      description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
+      type: apiKey
+      name: api_key
+      in: header
+x-tagGroups:
+- name: V1
+  tags:
+  - Company
+  - Companies
+  - MarketPrice
+  - Live Orderbook
+  - Trade History
+  - Order History
+  - Company Filings
+  - Stock Splits
+  - Fund Marks
+  - News
+  - company_model
+  - order_model
+  - market_price_model
+  - trade_model
+  - 409a_valuation_model
+  - fund_mark_model
+  - comp_model
+  - stock_split_model
+  - coi_model
+- name: V2
+  tags:
+  - Funding Rounds
+  - Investors
+  - Company Lookup
+  - Company Details
+  - Comps

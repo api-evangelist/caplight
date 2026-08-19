@@ -1,0 +1,164 @@
+openapi: 3.2.0
+info:
+  version: 2.0.0
+  title: Caplight REST Stock Splits API
+  description: 'This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.
+
+
+    # Production server
+
+    https://us-central1-caplight-prod.cloudfunctions.net/api/public
+
+
+    # Staging/sandbox server
+
+    https://us-central1-caplight-staging.cloudfunctions.net/api/public
+
+
+    # API versions
+
+    Endpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.
+
+
+    # Company IDs
+
+    Companies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.
+
+
+    If you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.
+
+
+    # V2 Access & Permissions
+
+
+    **Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.
+
+
+    **Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.
+
+
+    # Widget Embed
+
+    In addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.
+
+
+    # Authentication
+
+
+    <SecurityDefinitions />
+
+    '
+  termsOfService: https://platform.caplight.com/terms
+  contact:
+    name: 'Contact: Caplight Engineering'
+    email: engineering@caplight.com
+  x-logo:
+    url: https://storage.googleapis.com/caplight-prod.appspot.com/caplight-logos/api-logo.png
+    altText: Caplight logo
+servers:
+- url: //us-central1-caplight-prod.cloudfunctions.net/api/public
+  description: Production
+- url: //us-central1-caplight-staging.cloudfunctions.net/api/public
+  description: Staging/Sandbox
+tags:
+- name: Stock Splits
+paths:
+  /v1/stock-splits:
+    get:
+      tags:
+      - Stock Splits
+      summary: Get Stock Splits
+      description: Returns all stock splits for all companies, ordered by most recently added/revised to the Caplight database
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockSplits'
+components:
+  schemas:
+    StockSplits:
+      type: object
+      properties:
+        stockSplits:
+          type: array
+          items:
+            $ref: '#/components/schemas/StockSplit'
+    Timestamp:
+      type: string
+      description: ISO formatted datetime
+      example: '2023-01-26T05:56:30 +00:00'
+    StockSplit:
+      type: object
+      properties:
+        companyMeta:
+          $ref: '#/components/schemas/CompanyMeta'
+        postSplitShares:
+          type: number
+          description: Post-stock split share count. A post-split value of 10 and pre-split value of 1 implies a 10-to-1 stock split.
+          example: 10
+        preSplitShares:
+          type: number
+          description: Pre-stock split share count. A post-split value of 10 and pre-split value of 1 implies a 10-to-1 stock split.
+          example: 1
+        stockSplitDate:
+          description: Caplight's best estimate of the date at which the stock split occurred
+          $ref: '#/components/schemas/Timestamp'
+        createdAt:
+          description: Date when Caplight first captured the stock split information
+          $ref: '#/components/schemas/Timestamp'
+    CompanyMeta:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Company name
+          example: Stripe
+        domain:
+          type: string
+          description: Company top-level web domain
+          example: stripe.com
+        caplightId:
+          type: string
+          description: Caplight Company ID
+          example: 12d3140kjf90
+        pitchbookId:
+          type: string
+          description: Pitchbook Company ID
+          example: 54782-29
+  securitySchemes:
+    api_key:
+      description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
+      type: apiKey
+      name: api_key
+      in: header
+x-tagGroups:
+- name: V1
+  tags:
+  - Company
+  - Companies
+  - MarketPrice
+  - Live Orderbook
+  - Trade History
+  - Order History
+  - Company Filings
+  - Stock Splits
+  - Fund Marks
+  - News
+  - company_model
+  - order_model
+  - market_price_model
+  - trade_model
+  - 409a_valuation_model
+  - fund_mark_model
+  - comp_model
+  - stock_split_model
+  - coi_model
+- name: V2
+  tags:
+  - Funding Rounds
+  - Investors
+  - Company Lookup
+  - Company Details
+  - Comps

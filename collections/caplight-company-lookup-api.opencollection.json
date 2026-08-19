@@ -1,0 +1,49 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Company Lookup API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Company Lookup",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Look up company IDs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v2/companies",
+            "params": [
+              {
+                "name": "domain",
+                "value": "clickhouse.com,neros.tech",
+                "type": "query",
+                "description": "Company website domain or URL. The root domain is extracted and lowercased before matching, so `https://www.clickhouse.com/docs` and `clickhouse.com` behave identically. Repeatable."
+              },
+              {
+                "name": "pitchbookId",
+                "value": "41339-53",
+                "type": "query",
+                "description": "PitchBook company ID. Repeatable."
+              },
+              {
+                "name": "v1Id",
+                "value": "abc123xyz",
+                "type": "query",
+                "description": "v1 company ID — the same value the v1 endpoints return as `caplightId`. Repeatable."
+              }
+            ]
+          },
+          "docs": "Resolves company domains, PitchBook IDs and v1 company IDs to v2 company IDs — including for companies added recently.\n\n**Batching:** each parameter may be repeated, e.g. `?domain=clickhouse.com&domain=neros.tech&v1Id=abc123xyz`. At most 50 identifiers in total across all three parameters; more returns 400.\n\n**Results:** one entry per identifier requested, echoing it back in `query` so responses line up with requests. Entries are grouped by identifier type in the order `domain`, `pitchbookId`, `"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

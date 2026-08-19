@@ -1,0 +1,376 @@
+{
+  "item": [
+    {
+      "id": "de95b715-777d-438d-a80e-0d9e559fc128",
+      "name": "Company Filings",
+      "description": {
+        "content": "COI (Certificate of Incorporation) filings and related company documents",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9ec4c4db-5ab9-4b00-9a9d-7f4e6cadc687",
+          "name": "All COI Filings",
+          "request": {
+            "name": "All COI Filings",
+            "description": {
+              "content": "Returns all COI filings in the Caplight database, ordered by most recently added/updated",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "filings",
+                "cois",
+                "all"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "<number>",
+                  "description": "Page number (1-based). First page is 1."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "15708724-e90e-42a3-ac97-7238324877a6",
+              "name": "successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "filings",
+                    "cois",
+                    "all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNumber",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"cois\": [\n    {\n      \"id\": \"string\",\n      \"company\": {\n        \"name\": \"Stripe\",\n        \"domain\": \"stripe.com\",\n        \"caplightId\": \"12d3140kjf90\",\n        \"pitchbookId\": \"54782-29\"\n      },\n      \"filingDate\": \"2022-09-10\",\n      \"fileMeta\": {\n        \"pdfAvailable\": false,\n        \"htmlAvailable\": true,\n        \"numberOfPages\": 2030.7810549837502\n      },\n      \"createdAt\": \"2023-01-26T05:56:30 +00:00\",\n      \"updatedAt\": \"2023-01-26T05:56:30 +00:00\"\n    },\n    {\n      \"id\": \"string\",\n      \"company\": {\n        \"name\": \"Stripe\",\n        \"domain\": \"stripe.com\",\n        \"caplightId\": \"12d3140kjf90\",\n        \"pitchbookId\": \"54782-29\"\n      },\n      \"filingDate\": \"2022-09-10\",\n      \"fileMeta\": {\n        \"pdfAvailable\": false,\n        \"htmlAvailable\": false,\n        \"numberOfPages\": 9937.277411313593\n      },\n      \"createdAt\": \"2023-01-26T05:56:30 +00:00\",\n      \"updatedAt\": \"2023-01-26T05:56:30 +00:00\"\n    }\n  ],\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 10,\n    \"totalRecords\": 250\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "982f7ff7-09c8-43d9-b568-7d2ccfeb5024",
+          "name": "Get COI Download URLs",
+          "request": {
+            "name": "Get COI Download URLs",
+            "description": {
+              "content": "Generates short-lived download URLs for a COI filing. Increments the account's monthly COI download count. Re-downloading a previously downloaded COI does not consume a download slot. This endpoint is only available upon request and may include additional pricing.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "filings",
+                "cois",
+                "get-download-urls"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filingId",
+                  "value": "<string>",
+                  "description": "(Required) COI filing ID"
+                },
+                {
+                  "disabled": false,
+                  "key": "allowOverage",
+                  "value": "<string>",
+                  "description": "Pass \"true\" to accept overage charges when the monthly limit is reached (only applies to accounts with overage enabled)"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fdf72623-3d17-4082-bdf5-a986c747ef07",
+              "name": "successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "filings",
+                    "cois",
+                    "get-download-urls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filingId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "allowOverage",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"coiMeta\": {\n    \"date\": \"string\"\n  },\n  \"numberOfPages\": 9541.388096911662,\n  \"pdfLink\": \"string\",\n  \"htmlLink\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8de1222e-403a-470c-9679-d0d266f81b2e",
+              "name": "Limit reached or invalid request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "filings",
+                    "cois",
+                    "get-download-urls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filingId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "allowOverage",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f0a52e21-02ab-46d4-bb1e-5427333922ab",
+              "name": "COI filing not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "filings",
+                    "cois",
+                    "get-download-urls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filingId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "allowOverage",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2030af3b-8c66-4da8-b882-6ccfdcdfc57f",
+          "name": "COI Download Stats",
+          "request": {
+            "name": "COI Download Stats",
+            "description": {
+              "content": "Returns the authenticated account's COI download usage for the current calendar month (UTC).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "filings",
+                "cois",
+                "download-stats"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "89ae48dd-1b18-4162-9ae2-b67b83239877",
+              "name": "successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "filings",
+                    "cois",
+                    "download-stats"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"monthlyLimit\": 3092.2542290809597,\n  \"netNewDownloads\": 3645.044661267307,\n  \"overageDownloads\": 8721.873743482724,\n  \"remainingDownloads\": 6115.700874363871,\n  \"totalDownloads\": 6439.908885340406\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "02b16d3b-87e6-4dd1-8ebc-5817a26f02c3",
+    "name": "Caplight REST Company Filings API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}

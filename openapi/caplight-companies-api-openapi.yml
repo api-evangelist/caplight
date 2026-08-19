@@ -1,0 +1,231 @@
+openapi: 3.2.0
+info:
+  version: 2.0.0
+  title: Caplight REST Companies API
+  description: 'This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.
+
+
+    # Production server
+
+    https://us-central1-caplight-prod.cloudfunctions.net/api/public
+
+
+    # Staging/sandbox server
+
+    https://us-central1-caplight-staging.cloudfunctions.net/api/public
+
+
+    # API versions
+
+    Endpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.
+
+
+    # Company IDs
+
+    Companies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.
+
+
+    If you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.
+
+
+    # V2 Access & Permissions
+
+
+    **Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.
+
+
+    **Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.
+
+
+    # Widget Embed
+
+    In addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.
+
+
+    # Authentication
+
+
+    <SecurityDefinitions />
+
+    '
+  termsOfService: https://platform.caplight.com/terms
+  contact:
+    name: 'Contact: Caplight Engineering'
+    email: engineering@caplight.com
+  x-logo:
+    url: https://storage.googleapis.com/caplight-prod.appspot.com/caplight-logos/api-logo.png
+    altText: Caplight logo
+servers:
+- url: //us-central1-caplight-prod.cloudfunctions.net/api/public
+  description: Production
+- url: //us-central1-caplight-staging.cloudfunctions.net/api/public
+  description: Staging/Sandbox
+tags:
+- name: Companies
+paths:
+  /v1/companies/all-with-data:
+    get:
+      tags:
+      - Companies
+      summary: Get all companies with either orders or trades
+      description: 'Returns a paginated list of companies with at least one order or trade. Optional filters: `has409aValuations` and `coisAvailable`.'
+      parameters:
+      - name: pageNumber
+        in: query
+        description: Page number (1-based). First page is 1.
+        required: false
+        deprecated: false
+        schema:
+          type: number
+        example: 1
+      - name: has409aValuations
+        in: query
+        description: Filter to only companies with 409a valuations
+        required: false
+        deprecated: false
+        schema:
+          type: boolean
+        example: true
+      - name: coisAvailable
+        in: query
+        description: Filter to only companies for which Caplight tracks Certificate of Incorporation (COI) filings
+        required: false
+        deprecated: false
+        schema:
+          type: boolean
+        example: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllCompaniesWithData'
+components:
+  schemas:
+    AllCompaniesWithData:
+      type: object
+      properties:
+        companies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyLite'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
+    CompanyLite:
+      description: Caplight light Company model
+      type: object
+      properties:
+        name:
+          type: string
+          description: Company name
+          example: Stripe
+        caplightId:
+          type: string
+          description: Caplight Company ID
+          example: 12d3140kjf90
+        caplightIds:
+          type: object
+          description: This company's IDs across API versions, for cross-referencing v1 and v2 endpoints
+          properties:
+            v2Id:
+              type: string
+              nullable: true
+              description: v2 company ID, used by the v2 endpoints. Null when the company has no v2 record.
+              example: b2c3d4e5-f6a7-8901-bcde-f12345678901
+            v1Id:
+              type: string
+              description: v1 company ID, the same value as caplightId
+              example: 12d3140kjf90
+        pitchbookId:
+          type: string
+          description: Pitchbook Company ID
+          example: 54782-29
+        domain:
+          type: string
+          description: Company website domain
+          example: stripe.com
+        status:
+          type: string
+          description: Company status (Private, Public, Acquired, or Out of business)
+          example: Private
+        caplightPageURL:
+          type: string
+          description: Caplight platform URL for the company
+          example: https://platform.caplight.com/companies/38048685
+        hqCountry:
+          type: string
+          description: Headquarters country (ISO name or code as stored)
+          nullable: true
+          example: United States
+        countryOfDomicile:
+          type: string
+          description: Country of domicile (ISO code)
+          nullable: true
+          example: US
+        industry:
+          type: string
+          description: Caplight primary industry label
+          nullable: true
+          example: FinTech
+        legalName:
+          type: string
+          description: Legal entity name when available
+          nullable: true
+          example: Stripe, Inc.
+        has409aValuations:
+          type: boolean
+          description: Whether the company has at least one 409A valuation on file
+        coisAvailable:
+          type: boolean
+          description: Whether Caplight tracks COI (Certificate of Incorporation) filings for this company
+  securitySchemes:
+    api_key:
+      description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
+      type: apiKey
+      name: api_key
+      in: header
+x-tagGroups:
+- name: V1
+  tags:
+  - Company
+  - Companies
+  - MarketPrice
+  - Live Orderbook
+  - Trade History
+  - Order History
+  - Company Filings
+  - Stock Splits
+  - Fund Marks
+  - News
+  - company_model
+  - order_model
+  - market_price_model
+  - trade_model
+  - 409a_valuation_model
+  - fund_mark_model
+  - comp_model
+  - stock_split_model
+  - coi_model
+- name: V2
+  tags:
+  - Funding Rounds
+  - Investors
+  - Company Lookup
+  - Company Details
+  - Comps

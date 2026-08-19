@@ -1,0 +1,319 @@
+openapi: 3.2.0
+info:
+  version: 2.0.0
+  title: Caplight REST Composite Index API
+  description: 'This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.
+
+
+    # Production server
+
+    https://us-central1-caplight-prod.cloudfunctions.net/api/public
+
+
+    # Staging/sandbox server
+
+    https://us-central1-caplight-staging.cloudfunctions.net/api/public
+
+
+    # API versions
+
+    Endpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.
+
+
+    # Company IDs
+
+    Companies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.
+
+
+    If you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.
+
+
+    # V2 Access & Permissions
+
+
+    **Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.
+
+
+    **Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.
+
+
+    # Widget Embed
+
+    In addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.
+
+
+    # Authentication
+
+
+    <SecurityDefinitions />
+
+    '
+  termsOfService: https://platform.caplight.com/terms
+  contact:
+    name: 'Contact: Caplight Engineering'
+    email: engineering@caplight.com
+  x-logo:
+    url: https://storage.googleapis.com/caplight-prod.appspot.com/caplight-logos/api-logo.png
+    altText: Caplight logo
+servers:
+- url: //us-central1-caplight-prod.cloudfunctions.net/api/public
+  description: Production
+- url: //us-central1-caplight-staging.cloudfunctions.net/api/public
+  description: Staging/Sandbox
+tags:
+- name: Composite Index
+paths:
+  /v2/composite-index:
+    get:
+      tags:
+      - Composite Index
+      summary: Get composite index timeseries
+      description: Returns a market-cap weighted composite index timeseries for private companies in a given sector or vertical, or the overall Caplight Top 20 (`scope=overall`). The index is rebased to 100 on the start date; each day includes the constituent list and weights. Companies that exit the private market (M&A, IPO, or wind-down) are excluded after their exit date. Only the parameters documented below are accepted — any other parameter is rejected with a 400 so index values are never silently computed under non-standard settings.
+      parameters:
+      - name: sector
+        in: query
+        description: Sector name to build the index from. Provide exactly one of `sector`, `vertical`, or `scope=overall`. Use `/composite-index/sectors` for valid names.
+        required: false
+        schema:
+          type: string
+        example: Cybersecurity
+      - name: vertical
+        in: query
+        description: Vertical name to build the index from. Provide exactly one of `sector`, `vertical`, or `scope=overall`. Use `/composite-index/verticals` for valid names.
+        required: false
+        schema:
+          type: string
+        example: Endpoint Security
+      - name: scope
+        in: query
+        description: Set to `overall` for the Caplight Top 20 — the flagship private-market index across all sectors (the 20 most liquid private companies, price-per-share weighted, monthly rebalance). Cannot be combined with `sector` or `vertical`.
+        required: false
+        schema:
+          type: string
+          enum:
+          - overall
+        example: overall
+      - name: startDate
+        in: query
+        description: Start date for the timeseries. Defaults to 1 year ago.
+        required: false
+        schema:
+          $ref: '#/components/schemas/Date'
+        example: '2025-04-01'
+      - name: endDate
+        in: query
+        description: End date for the timeseries. Defaults to yesterday.
+        required: false
+        schema:
+          $ref: '#/components/schemas/Date'
+        example: '2026-04-01'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompositeIndexResponse'
+        '400':
+          description: Invalid or unsupported parameters. The endpoint accepts only the parameters documented above; unknown parameters are rejected rather than ignored.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No companies found for the given filter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v2/composite-index/sectors:
+    get:
+      tags:
+      - Composite Index
+      summary: List available sectors
+      description: Returns a list of all active sector names that can be used with the composite index endpoint.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example:
+                - AI, Data & Cloud Infrastructure
+                - Consumer & Commerce
+                - Crypto & Web3
+                - Cybersecurity
+                - Energy & Sustainability
+                - Enterprise Software
+                - FinTech
+                - Frontier & Industrial Tech
+                - Healthcare & Life Sciences
+                - Media, Entertainment & Gaming
+                - Mobility, Transportation & Logistics
+                - Real Estate & PropTech
+                - Telecommunications & Networking
+  /v2/composite-index/verticals:
+    get:
+      tags:
+      - Composite Index
+      summary: List available verticals
+      description: Returns a list of all active verticals with their parent sector names. Optionally filter by sector.
+      parameters:
+      - name: sector
+        in: query
+        description: Filter verticals by sector name. Must be a valid sector (use /composite-index/sectors to list).
+        required: false
+        schema:
+          type: string
+        example: Cybersecurity
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    sectorName:
+                      type: string
+                example:
+                - name: Cloud Infrastructure
+                  sectorName: AI, Data & Cloud Infrastructure
+                - name: ML Platforms
+                  sectorName: AI, Data & Cloud Infrastructure
+                - name: Endpoint Security
+                  sectorName: Cybersecurity
+                - name: Cloud Security
+                  sectorName: Cybersecurity
+                - name: Payments
+                  sectorName: FinTech
+components:
+  schemas:
+    Date:
+      type: string
+      description: ISO formatted date without time
+      example: '2022-09-10'
+    CompositeIndexResponse:
+      type: object
+      required:
+      - timeseries
+      - warnings
+      properties:
+        timeseries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompositeIndexTimeseriesPoint'
+        metadata:
+          type: object
+          description: 'Run metadata (whitelisted subset): weighting, top_n, selection_method, rebalance settings, requested date range, and exclusion counts.'
+        warnings:
+          description: Structured warnings surfaced by the private index and any requested overlays. Callers can filter on `overlay` + `code` without regex-matching the free-form `message`.
+          type: array
+          items:
+            $ref: '#/components/schemas/CompositeIndexWarning'
+    CompositeIndexWarning:
+      type: object
+      required:
+      - overlay
+      - code
+      - message
+      properties:
+        overlay:
+          type: string
+          enum:
+          - bespoke-public-index
+          - etf-price-timeseries
+          - composite-index
+        code:
+          type: string
+          description: Structured warning code. `python-warning` propagates a free-form warning from the python server's `warnings[]` field (e.g. 'thin universe', 'coverage warning') regardless of which overlay emitted it. `python-metadata-error` indicates the python server returned HTTP 200 with `metadata.error` set, typically a partial failure. `python-error` is a full overlay failure — the overlay soft-degraded but the primary index still succeeded. `vertical-not-found` means the ETF overlay caller passed a vertical that doesn't exist in the classification DB.
+          enum:
+          - no-public-tickers
+          - empty-result
+          - python-error
+          - python-warning
+          - python-metadata-error
+          - missing-constituents
+          - etf-mapping-missing
+          - vertical-not-found
+        message:
+          type: string
+    CompositeIndexConstituent:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Company identifier (UUID). Same as the companyId used in other v2 endpoints.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Company name
+        weight:
+          type: number
+          description: Constituent weight in the index (0-1)
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        error:
+          type: string
+          example: sector or vertical query param is required
+    CompositeIndexTimeseriesPoint:
+      type: object
+      properties:
+        date:
+          $ref: '#/components/schemas/Date'
+        index:
+          type: number
+          description: Index value (rebased to 100 on start date)
+        constituents:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompositeIndexConstituent'
+  securitySchemes:
+    api_key:
+      description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
+      type: apiKey
+      name: api_key
+      in: header
+x-tagGroups:
+- name: V1
+  tags:
+  - Company
+  - Companies
+  - MarketPrice
+  - Live Orderbook
+  - Trade History
+  - Order History
+  - Company Filings
+  - Stock Splits
+  - Fund Marks
+  - News
+  - company_model
+  - order_model
+  - market_price_model
+  - trade_model
+  - 409a_valuation_model
+  - fund_mark_model
+  - comp_model
+  - stock_split_model
+  - coi_model
+- name: V2
+  tags:
+  - Funding Rounds
+  - Investors
+  - Company Lookup
+  - Company Details
+  - Comps

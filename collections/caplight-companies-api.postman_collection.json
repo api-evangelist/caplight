@@ -1,0 +1,138 @@
+{
+  "item": [
+    {
+      "id": "8cda69fc-f966-46df-ad9f-0da1fbd65c13",
+      "name": "Companies",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e6a55b0a-0993-453f-80a0-0cafb45fdda3",
+          "name": "Get all companies with either orders or trades",
+          "request": {
+            "name": "Get all companies with either orders or trades",
+            "description": {
+              "content": "Returns a paginated list of companies with at least one order or trade. Optional filters: `has409aValuations` and `coisAvailable`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "companies",
+                "all-with-data"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "<number>",
+                  "description": "Page number (1-based). First page is 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "has409aValuations",
+                  "value": "<boolean>",
+                  "description": "Filter to only companies with 409a valuations"
+                },
+                {
+                  "disabled": false,
+                  "key": "coisAvailable",
+                  "value": "<boolean>",
+                  "description": "Filter to only companies for which Caplight tracks Certificate of Incorporation (COI) filings"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "21d77f16-7675-4f11-a344-6fdf9f898ea4",
+              "name": "successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "companies",
+                    "all-with-data"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNumber",
+                      "value": "1"
+                    },
+                    {
+                      "key": "has409aValuations",
+                      "value": "true"
+                    },
+                    {
+                      "key": "coisAvailable",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"companies\": [\n    {\n      \"name\": \"Stripe\",\n      \"caplightId\": \"12d3140kjf90\",\n      \"caplightIds\": {\n        \"v2Id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n        \"v1Id\": \"12d3140kjf90\"\n      },\n      \"pitchbookId\": \"54782-29\",\n      \"domain\": \"stripe.com\",\n      \"status\": \"Private\",\n      \"caplightPageURL\": \"https://platform.caplight.com/companies/38048685\",\n      \"hqCountry\": \"United States\",\n      \"countryOfDomicile\": \"US\",\n      \"industry\": \"FinTech\",\n      \"legalName\": \"Stripe, Inc.\",\n      \"has409aValuations\": true,\n      \"coisAvailable\": true\n    },\n    {\n      \"name\": \"Stripe\",\n      \"caplightId\": \"12d3140kjf90\",\n      \"caplightIds\": {\n        \"v2Id\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n        \"v1Id\": \"12d3140kjf90\"\n      },\n      \"pitchbookId\": \"54782-29\",\n      \"domain\": \"stripe.com\",\n      \"status\": \"Private\",\n      \"caplightPageURL\": \"https://platform.caplight.com/companies/38048685\",\n      \"hqCountry\": \"United States\",\n      \"countryOfDomicile\": \"US\",\n      \"industry\": \"FinTech\",\n      \"legalName\": \"Stripe, Inc.\",\n      \"has409aValuations\": true,\n      \"coisAvailable\": true\n    }\n  ],\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 10,\n    \"totalRecords\": 250\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "45b5c7bb-6e04-4a3b-afb0-042f52384878",
+    "name": "Caplight REST Companies API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}

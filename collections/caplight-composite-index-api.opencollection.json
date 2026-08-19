@@ -1,0 +1,91 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Composite Index API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Composite Index",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get composite index timeseries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v2/composite-index",
+            "params": [
+              {
+                "name": "sector",
+                "value": "Cybersecurity",
+                "type": "query",
+                "description": "Sector name to build the index from. Provide exactly one of `sector`, `vertical`, or `scope=overall`. Use `/composite-index/sectors` for valid names."
+              },
+              {
+                "name": "vertical",
+                "value": "Endpoint Security",
+                "type": "query",
+                "description": "Vertical name to build the index from. Provide exactly one of `sector`, `vertical`, or `scope=overall`. Use `/composite-index/verticals` for valid names."
+              },
+              {
+                "name": "scope",
+                "value": "overall",
+                "type": "query",
+                "description": "Set to `overall` for the Caplight Top 20 — the flagship private-market index across all sectors (the 20 most liquid private companies, price-per-share weighted, monthly rebalance). Cannot be combined with `sector` or `vertical`."
+              },
+              {
+                "name": "startDate",
+                "value": "2025-04-01",
+                "type": "query",
+                "description": "Start date for the timeseries. Defaults to 1 year ago."
+              },
+              {
+                "name": "endDate",
+                "value": "2026-04-01",
+                "type": "query",
+                "description": "End date for the timeseries. Defaults to yesterday."
+              }
+            ]
+          },
+          "docs": "Returns a market-cap weighted composite index timeseries for private companies in a given sector or vertical, or the overall Caplight Top 20 (`scope=overall`). The index is rebased to 100 on the start date; each day includes the constituent list and weights. Companies that exit the private market (M&A, IPO, or wind-down) are excluded after their exit date. Only the parameters documented below are accepted — any other parameter is rejected with a 400 so index values are never silently computed un"
+        },
+        {
+          "info": {
+            "name": "List available sectors",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v2/composite-index/sectors"
+          },
+          "docs": "Returns a list of all active sector names that can be used with the composite index endpoint."
+        },
+        {
+          "info": {
+            "name": "List available verticals",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v2/composite-index/verticals",
+            "params": [
+              {
+                "name": "sector",
+                "value": "Cybersecurity",
+                "type": "query",
+                "description": "Filter verticals by sector name. Must be a valid sector (use /composite-index/sectors to list)."
+              }
+            ]
+          },
+          "docs": "Returns a list of all active verticals with their parent sector names. Optionally filter by sector."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

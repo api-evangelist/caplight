@@ -1,0 +1,37 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Company Details API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Company Details",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get company details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v2/companies/:companyId",
+            "params": [
+              {
+                "name": "companyId",
+                "value": "",
+                "type": "path",
+                "description": "Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified."
+              }
+            ]
+          },
+          "docs": "Returns the canonical Company resource: identity (name, legal name, location), descriptions, and the latest LLM-generated firmographic tags (sectors / verticals / keywords with attribution). Empty tag arrays and `tags.generatedAt: null` when the company has never been tagged."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,123 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Market Price API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "MarketPrice",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "All MarketPrices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/all-marketprices",
+            "headers": [
+              {
+                "name": "x-price-model",
+                "value": "secondaryMarket"
+              }
+            ],
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "2",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              }
+            ]
+          },
+          "docs": "Returns the latest MarketPrice for all companies where a Caplight MarketPrice exists. Each company's best-available price model is returned (secondaryMarket by default, falling back to fundMarks); the priceModel field on each row indicates which model produced it."
+        },
+        {
+          "info": {
+            "name": "MarketPrice history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/market-price-history",
+            "headers": [
+              {
+                "name": "x-price-model",
+                "value": "secondaryMarket"
+              }
+            ],
+            "params": [
+              {
+                "name": "caplightId",
+                "value": "134591n9dfk519kl",
+                "type": "query",
+                "description": "Company Caplight Id"
+              },
+              {
+                "name": "fixed",
+                "value": "true",
+                "type": "query",
+                "description": "Whether to return the fixed (unrevised) MarketPrice history. For most use-cases do NOT supply this parameter. Only honored for the secondaryMarket price model; combining fixed=true with x-price-model=fundMarks returns HTTP 400."
+              },
+              {
+                "name": "pitchbookId",
+                "value": "54782-29",
+                "type": "query",
+                "description": "Company Pitchbook Id"
+              },
+              {
+                "name": "pageNumber",
+                "value": "2",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              }
+            ]
+          },
+          "docs": "Returns MarketPrice estimate history for a company by lookup field. One (and only one) lookup field must be provided. By default the best-available price model is returned for the company: the secondaryMarket model, automatically falling back to the fundMarks model when the company has no secondaryMarket series or its secondary-market data has gone stale. Use the x-price-model header to pin a specific model. The returned series is recomputed on each model run, so the set of dates returned for a "
+        },
+        {
+          "info": {
+            "name": "MarketPrice end-of-day history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v1/market-price-fixed-eod",
+            "params": [
+              {
+                "name": "caplightId",
+                "value": "134591n9dfk519kl",
+                "type": "query",
+                "description": "Company Caplight Id"
+              },
+              {
+                "name": "pitchbookId",
+                "value": "54782-29",
+                "type": "query",
+                "description": "Company Pitchbook Id"
+              },
+              {
+                "name": "utcHour",
+                "value": "0",
+                "type": "query",
+                "description": "Selected UTC hour at which MarketPrice was generated on each day (0, 4, 8, 12, 16, and 20 are supported)"
+              },
+              {
+                "name": "pageNumber",
+                "value": "2",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              }
+            ]
+          },
+          "docs": "Returns MarketPrice estimate history generated at a set hour of day; handles one company at a time; returns either interpolated time series generated on a given day or a time series of point-in-time estimates for the date of generation."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

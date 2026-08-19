@@ -1,0 +1,221 @@
+{
+  "item": [
+    {
+      "id": "4b8f9099-8eed-49bd-bfe9-c0617b313346",
+      "name": "News",
+      "description": {
+        "content": "Company news articles with sentiment analysis",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "54c0df33-be8e-4536-a424-5fc2fe1f3867",
+          "name": "Get company news",
+          "request": {
+            "name": "Get company news",
+            "description": {
+              "content": "Returns news articles for a company within a specified date range. Articles include sentiment classification (positive, negative, neutral) and a highlighted flag indicating high-relevance news. Maximum date range is 31 days per request.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "news"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "caplightId",
+                  "value": "<string>",
+                  "description": "Company Caplight Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "pitchbookId",
+                  "value": "<string>",
+                  "description": "Company Pitchbook Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "domain",
+                  "value": "<string>",
+                  "description": "Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId."
+                },
+                {
+                  "disabled": false,
+                  "key": "dateAfter",
+                  "value": "<date>",
+                  "description": "(Required) Start of date range (ISO 8601 date). Required."
+                },
+                {
+                  "disabled": false,
+                  "key": "dateBefore",
+                  "value": "<date>",
+                  "description": "(Required) End of date range (ISO 8601 date). Required. Maximum 31 days from dateAfter."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Page number (1-based). First page is 1."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "caae8cdd-479c-479d-a008-9f4cbfba7f81",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "news"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "caplightId",
+                      "value": "134591n9dfk519kl"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "54782-29"
+                    },
+                    {
+                      "key": "domain",
+                      "value": "stripe.com"
+                    },
+                    {
+                      "key": "dateAfter",
+                      "value": "2024-01-01"
+                    },
+                    {
+                      "key": "dateBefore",
+                      "value": "2024-01-31"
+                    },
+                    {
+                      "key": "pageNumber",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"companyMeta\": {\n    \"name\": \"Stripe\",\n    \"domain\": \"stripe.com\",\n    \"caplightId\": \"abc123xyz\",\n    \"pitchbookId\": \"54782-29\"\n  },\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 2,\n    \"totalRecords\": 28\n  },\n  \"news\": [\n    {\n      \"id\": 12345,\n      \"groupId\": \"news-group-abc123\",\n      \"title\": \"Stripe launches new AI-powered fraud detection tool\",\n      \"url\": \"https://techcrunch.com/2024/01/15/stripe-ai-fraud-detection\",\n      \"publishedAt\": \"2024-01-15T14:30:00.000Z\",\n      \"publication\": \"TechCrunch\",\n      \"sentiment\": \"positive\",\n      \"highlighted\": \"true\"\n    },\n    {\n      \"id\": 12346,\n      \"groupId\": \"news-group-def456\",\n      \"title\": \"Stripe expands European operations with new Dublin office\",\n      \"url\": \"https://www.reuters.com/technology/stripe-dublin-expansion\",\n      \"publishedAt\": \"2024-01-10T09:00:00.000Z\",\n      \"publication\": \"Reuters\",\n      \"sentiment\": \"positive\",\n      \"highlighted\": \"false\"\n    },\n    {\n      \"id\": 12347,\n      \"groupId\": \"news-group-ghi789\",\n      \"title\": \"Fintech sector faces regulatory scrutiny in 2024\",\n      \"url\": \"https://www.ft.com/content/fintech-regulation-2024\",\n      \"publishedAt\": \"2024-01-05T16:45:00.000Z\",\n      \"publication\": \"Financial Times\",\n      \"sentiment\": \"neutral\",\n      \"highlighted\": \"false\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "34e8a420-8594-4515-8923-578b00af147a",
+              "name": "Invalid date parameters (missing dateAfter/dateBefore or range exceeds 31 days)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "news"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "caplightId",
+                      "value": "134591n9dfk519kl"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "54782-29"
+                    },
+                    {
+                      "key": "domain",
+                      "value": "stripe.com"
+                    },
+                    {
+                      "key": "dateAfter",
+                      "value": "2024-01-01"
+                    },
+                    {
+                      "key": "dateBefore",
+                      "value": "2024-01-31"
+                    },
+                    {
+                      "key": "pageNumber",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "acdb1183-2b17-484e-83c4-8c57658bf7e5",
+    "name": "Caplight REST News API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}

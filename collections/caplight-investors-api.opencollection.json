@@ -1,0 +1,49 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Caplight REST Investors API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Investors",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get company investors",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "//us-central1-caplight-prod.cloudfunctions.net/api/public/v2/companies/:companyId/investors",
+            "params": [
+              {
+                "name": "companyId",
+                "value": "",
+                "type": "path",
+                "description": "Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified."
+              },
+              {
+                "name": "pageNumber",
+                "value": "1",
+                "type": "query",
+                "description": "Page number (1-based). First page is 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "50",
+                "type": "query",
+                "description": "Number of results per page (default 50, max 200)"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of investors who have participated in funding rounds for a company.\n\n**Undisclosed round investors:** Some investors are known to have invested in a company but the specific round details are not available (e.g., due to confidential filings or incomplete data). These investors have `isUndisclosedRoundInvestor: true` and their `roundsInvested` array will be empty."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

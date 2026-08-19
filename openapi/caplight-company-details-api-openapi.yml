@@ -1,0 +1,304 @@
+openapi: 3.2.0
+info:
+  version: 2.0.0
+  title: Caplight REST Company Details API
+  description: 'This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.
+
+
+    # Production server
+
+    https://us-central1-caplight-prod.cloudfunctions.net/api/public
+
+
+    # Staging/sandbox server
+
+    https://us-central1-caplight-staging.cloudfunctions.net/api/public
+
+
+    # API versions
+
+    Endpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.
+
+
+    # Company IDs
+
+    Companies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.
+
+
+    If you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.
+
+
+    # V2 Access & Permissions
+
+
+    **Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.
+
+
+    **Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.
+
+
+    # Widget Embed
+
+    In addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.
+
+
+    # Authentication
+
+
+    <SecurityDefinitions />
+
+    '
+  termsOfService: https://platform.caplight.com/terms
+  contact:
+    name: 'Contact: Caplight Engineering'
+    email: engineering@caplight.com
+  x-logo:
+    url: https://storage.googleapis.com/caplight-prod.appspot.com/caplight-logos/api-logo.png
+    altText: Caplight logo
+servers:
+- url: //us-central1-caplight-prod.cloudfunctions.net/api/public
+  description: Production
+- url: //us-central1-caplight-staging.cloudfunctions.net/api/public
+  description: Staging/Sandbox
+tags:
+- name: Company Details
+  description: 'Canonical Company resource: identity (name, legal name, location), descriptions, and the latest LLM-generated firmographic tags (sectors / verticals / keywords with attribution).'
+paths:
+  /v2/companies/{companyId}:
+    get:
+      tags:
+      - Company Details
+      summary: Get company details
+      description: 'Returns the canonical Company resource: identity (name, legal name, location), descriptions, and the latest LLM-generated firmographic tags (sectors / verticals / keywords with attribution). Empty tag arrays and `tags.generatedAt: null` when the company has never been tagged.'
+      parameters:
+      - name: companyId
+        in: path
+        description: 'Company identifier: v2 company ID, v1 company ID, PitchBook ID (e.g. 41339-53), or company domain (e.g. clickhouse.com). A domain can match more than one company, in which case the best match is used; call `GET /v2/companies` to see every candidate. Access control and the annual distinct-company limit apply the same way however the company is identified.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicCompanyDetails'
+              example:
+                id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+                name: Acme Inc
+                domain: acme.com
+                pitchbookId: 41339-53
+                caplightIds:
+                  v2Id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+                  v1Id: abc123xyz
+                legalName: Acme Incorporated
+                description: Acme builds developer tools for AI agents.
+                shortDescription: Developer tools for AI.
+                location:
+                  country: United States
+                  state: California
+                  city: San Francisco
+                tags:
+                  sectors:
+                  - name: Artificial Intelligence
+                    confidence: 0.92
+                    attribution: 0.7
+                  - name: Developer Tools
+                    confidence: 0.85
+                    attribution: 0.3
+                  verticals:
+                  - name: ML Infrastructure
+                    confidence: 0.81
+                    attribution: 1
+                  keywords:
+                  - keyword: machine learning
+                    attribution: 0.5
+                  - keyword: agents
+                    attribution: 0.3
+                  - keyword: open source
+                    attribution: 0.2
+                  generatedAt: '2026-01-15T10:00:00.000Z'
+        '401':
+          description: Missing or invalid API key
+        '403':
+          description: Account does not have Companies V2 API access, or company is outside whitelist / over annual cap
+        '404':
+          description: Company not found
+components:
+  schemas:
+    PublicVerticalTag:
+      type: object
+      required:
+      - name
+      - confidence
+      - attribution
+      properties:
+        name:
+          type: string
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        attribution:
+          type: number
+          minimum: 0
+          maximum: 1
+    FirmographicsLocation:
+      type: object
+      required:
+      - country
+      - state
+      - city
+      properties:
+        country:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+    PublicKeywordTag:
+      type: object
+      required:
+      - keyword
+      - attribution
+      properties:
+        keyword:
+          type: string
+          minLength: 1
+        attribution:
+          type: number
+          minimum: 0
+          maximum: 1
+    PublicCompanyDetails:
+      type: object
+      required:
+      - id
+      - name
+      - domain
+      - pitchbookId
+      - caplightIds
+      - legalName
+      - description
+      - shortDescription
+      - location
+      - tags
+      properties:
+        id:
+          type: string
+          description: v2 company ID
+        name:
+          type: string
+          description: Company name
+        domain:
+          type: string
+          nullable: true
+          description: Company website domain
+        pitchbookId:
+          type: string
+          nullable: true
+          description: Pitchbook company ID
+        caplightIds:
+          type: object
+          required:
+          - v2Id
+          - v1Id
+          properties:
+            v2Id:
+              type: string
+            v1Id:
+              type: string
+              nullable: true
+        legalName:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        shortDescription:
+          type: string
+          nullable: true
+        location:
+          $ref: '#/components/schemas/FirmographicsLocation'
+        tags:
+          $ref: '#/components/schemas/FirmographicsTags'
+    FirmographicsTags:
+      type: object
+      required:
+      - sectors
+      - verticals
+      - keywords
+      - generatedAt
+      properties:
+        sectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicSectorTag'
+        verticals:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicVerticalTag'
+        keywords:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicKeywordTag'
+        generatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: ISO timestamp of the latest LLM tagging run; null if the company has never been tagged.
+    PublicSectorTag:
+      type: object
+      required:
+      - name
+      - confidence
+      - attribution
+      properties:
+        name:
+          type: string
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        attribution:
+          type: number
+          minimum: 0
+          maximum: 1
+  securitySchemes:
+    api_key:
+      description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
+      type: apiKey
+      name: api_key
+      in: header
+x-tagGroups:
+- name: V1
+  tags:
+  - Company
+  - Companies
+  - MarketPrice
+  - Live Orderbook
+  - Trade History
+  - Order History
+  - Company Filings
+  - Stock Splits
+  - Fund Marks
+  - News
+  - company_model
+  - order_model
+  - market_price_model
+  - trade_model
+  - 409a_valuation_model
+  - fund_mark_model
+  - comp_model
+  - stock_split_model
+  - coi_model
+- name: V2
+  tags:
+  - Funding Rounds
+  - Investors
+  - Company Lookup
+  - Company Details
+  - Comps

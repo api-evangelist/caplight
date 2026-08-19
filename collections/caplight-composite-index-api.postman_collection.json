@@ -1,0 +1,430 @@
+{
+  "item": [
+    {
+      "id": "4c6a7930-6439-4f5d-8d8a-8a4ce64ee15f",
+      "name": "Composite Index",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "3e587933-8ce5-44b6-bb99-b6a1594d14d8",
+          "name": "Get composite index timeseries",
+          "request": {
+            "name": "Get composite index timeseries",
+            "description": {
+              "content": "Returns a market-cap weighted composite index timeseries for private companies in a given sector or vertical, or the overall Caplight Top 20 (`scope=overall`). The index is rebased to 100 on the start date; each day includes the constituent list and weights. Companies that exit the private market (M&A, IPO, or wind-down) are excluded after their exit date. Only the parameters documented below are accepted — any other parameter is rejected with a 400 so index values are never silently computed under non-standard settings.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "composite-index"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "sector",
+                  "value": "<string>",
+                  "description": "Sector name to build the index from. Provide exactly one of `sector`, `vertical`, or `scope=overall`. Use `/composite-index/sectors` for valid names."
+                },
+                {
+                  "disabled": false,
+                  "key": "vertical",
+                  "value": "<string>",
+                  "description": "Vertical name to build the index from. Provide exactly one of `sector`, `vertical`, or `scope=overall`. Use `/composite-index/verticals` for valid names."
+                },
+                {
+                  "disabled": false,
+                  "key": "scope",
+                  "value": "<string>",
+                  "description": "Set to `overall` for the Caplight Top 20 — the flagship private-market index across all sectors (the 20 most liquid private companies, price-per-share weighted, monthly rebalance). Cannot be combined with `sector` or `vertical`."
+                },
+                {
+                  "disabled": false,
+                  "key": "startDate",
+                  "value": "<string>",
+                  "description": "Start date for the timeseries. Defaults to 1 year ago."
+                },
+                {
+                  "disabled": false,
+                  "key": "endDate",
+                  "value": "<string>",
+                  "description": "End date for the timeseries. Defaults to yesterday."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "964da900-901d-44d6-85f0-c1c4274a3591",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "composite-index"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sector",
+                      "value": "Cybersecurity"
+                    },
+                    {
+                      "key": "vertical",
+                      "value": "Endpoint Security"
+                    },
+                    {
+                      "key": "scope",
+                      "value": "overall"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2025-04-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-04-01"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"timeseries\": [\n    {\n      \"date\": \"2026-04-01\",\n      \"index\": 6799.262349410437,\n      \"constituents\": [\n        {\n          \"id\": null,\n          \"name\": null,\n          \"weight\": 2997.6669337105477\n        },\n        {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"weight\": 662.1656165189893\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-04-01\",\n      \"index\": 6854.324768522756,\n      \"constituents\": [\n        {\n          \"id\": null,\n          \"name\": \"string\",\n          \"weight\": 8574.998623918023\n        },\n        {\n          \"id\": null,\n          \"name\": null,\n          \"weight\": 2922.53731401272\n        }\n      ]\n    }\n  ],\n  \"warnings\": [\n    {\n      \"overlay\": \"bespoke-public-index\",\n      \"code\": \"empty-result\",\n      \"message\": \"string\"\n    },\n    {\n      \"overlay\": \"bespoke-public-index\",\n      \"code\": \"vertical-not-found\",\n      \"message\": \"string\"\n    }\n  ],\n  \"metadata\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "db160ffb-6c3d-41b9-9166-0e5e294d9fa5",
+              "name": "Invalid or unsupported parameters. The endpoint accepts only the parameters documented above; unknown parameters are rejected rather than ignored.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "composite-index"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sector",
+                      "value": "Cybersecurity"
+                    },
+                    {
+                      "key": "vertical",
+                      "value": "Endpoint Security"
+                    },
+                    {
+                      "key": "scope",
+                      "value": "overall"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2025-04-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-04-01"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": \"sector or vertical query param is required\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "50af06e4-3bbf-4dfe-aefd-258d38c791a1",
+              "name": "No companies found for the given filter",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "composite-index"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sector",
+                      "value": "Cybersecurity"
+                    },
+                    {
+                      "key": "vertical",
+                      "value": "Endpoint Security"
+                    },
+                    {
+                      "key": "scope",
+                      "value": "overall"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2025-04-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-04-01"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"error\": \"sector or vertical query param is required\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0f09f2b0-d0e7-4b74-96c2-820106615d48",
+          "name": "List available sectors",
+          "request": {
+            "name": "List available sectors",
+            "description": {
+              "content": "Returns a list of all active sector names that can be used with the composite index endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "composite-index",
+                "sectors"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "702a44de-0a7c-441c-b311-79d28d565d6c",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "composite-index",
+                    "sectors"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  \"AI, Data & Cloud Infrastructure\",\n  \"Consumer & Commerce\",\n  \"Crypto & Web3\",\n  \"Cybersecurity\",\n  \"Energy & Sustainability\",\n  \"Enterprise Software\",\n  \"FinTech\",\n  \"Frontier & Industrial Tech\",\n  \"Healthcare & Life Sciences\",\n  \"Media, Entertainment & Gaming\",\n  \"Mobility, Transportation & Logistics\",\n  \"Real Estate & PropTech\",\n  \"Telecommunications & Networking\"\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8813816b-c845-4319-9e37-49ae19a5df82",
+          "name": "List available verticals",
+          "request": {
+            "name": "List available verticals",
+            "description": {
+              "content": "Returns a list of all active verticals with their parent sector names. Optionally filter by sector.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "composite-index",
+                "verticals"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "sector",
+                  "value": "<string>",
+                  "description": "Filter verticals by sector name. Must be a valid sector (use /composite-index/sectors to list)."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "77b5a88c-360f-459d-8f02-91a7d0e76d4b",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "composite-index",
+                    "verticals"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sector",
+                      "value": "Cybersecurity"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"name\": \"Cloud Infrastructure\",\n    \"sectorName\": \"AI, Data & Cloud Infrastructure\"\n  },\n  {\n    \"name\": \"ML Platforms\",\n    \"sectorName\": \"AI, Data & Cloud Infrastructure\"\n  },\n  {\n    \"name\": \"Endpoint Security\",\n    \"sectorName\": \"Cybersecurity\"\n  },\n  {\n    \"name\": \"Cloud Security\",\n    \"sectorName\": \"Cybersecurity\"\n  },\n  {\n    \"name\": \"Payments\",\n    \"sectorName\": \"FinTech\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "6d45584d-ab0e-417b-aa85-fd47b01f0613",
+    "name": "Caplight REST Composite Index API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}

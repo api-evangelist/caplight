@@ -1,0 +1,176 @@
+{
+  "item": [
+    {
+      "id": "7e227e54-fe4c-4b73-beab-5d6f6ba2475a",
+      "name": "Fund Marks",
+      "description": {
+        "content": "Mutual fund mark-to-market valuations from SEC filings",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a32c5dab-23b9-4fb8-b6b7-579a294bd382",
+          "name": "Get company fund marks",
+          "request": {
+            "name": "Get company fund marks",
+            "description": {
+              "content": "Returns mutual fund mark-to-market valuations for a company from SEC filings. Fund marks represent the fair value prices reported by mutual funds in their quarterly holdings disclosures (N-PORT filings). These are valuable data points for gauging private company valuations as assessed by institutional investors.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "fund-marks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "caplightId",
+                  "value": "<string>",
+                  "description": "Company Caplight Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "pitchbookId",
+                  "value": "<string>",
+                  "description": "Company Pitchbook Id"
+                },
+                {
+                  "disabled": false,
+                  "key": "domain",
+                  "value": "<string>",
+                  "description": "Company web domain (e.g. stripe.com). Multiple companies may share the same domain due to acquisitions, mergers, or other reasons. In such cases, only the company with the highest valuation is returned. For precise lookups, prefer querying by caplightId or pitchbookId."
+                },
+                {
+                  "disabled": false,
+                  "key": "quarter",
+                  "value": "<string>",
+                  "description": "Filter to a specific quarter (e.g. 1Q2024). Mutually exclusive with quarterFrom/quarterTo."
+                },
+                {
+                  "disabled": false,
+                  "key": "quarterFrom",
+                  "value": "<string>",
+                  "description": "Filter to quarters starting from this quarter (inclusive). Use with quarterTo for a range."
+                },
+                {
+                  "disabled": false,
+                  "key": "quarterTo",
+                  "value": "<string>",
+                  "description": "Filter to quarters up to this quarter (inclusive). Use with quarterFrom for a range."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Page number (1-based). First page is 1."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cfca5b7e-a555-40d6-8e74-e436d41f40e3",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "fund-marks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "caplightId",
+                      "value": "134591n9dfk519kl"
+                    },
+                    {
+                      "key": "pitchbookId",
+                      "value": "54782-29"
+                    },
+                    {
+                      "key": "domain",
+                      "value": "stripe.com"
+                    },
+                    {
+                      "key": "quarter",
+                      "value": "1Q2024"
+                    },
+                    {
+                      "key": "quarterFrom",
+                      "value": "1Q2023"
+                    },
+                    {
+                      "key": "quarterTo",
+                      "value": "4Q2024"
+                    },
+                    {
+                      "key": "pageNumber",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"companyMeta\": {\n    \"name\": \"Stripe\",\n    \"domain\": \"stripe.com\",\n    \"caplightId\": \"abc123xyz\",\n    \"pitchbookId\": \"54782-29\"\n  },\n  \"pagination\": {\n    \"pageNumber\": 1,\n    \"numPages\": 3,\n    \"totalRecords\": 45\n  },\n  \"fundMarks\": [\n    {\n      \"fundFamily\": \"T. Rowe Price\",\n      \"fundName\": \"T. Rowe Price Global Technology Fund\",\n      \"fundEdgarId\": \"0001127110\",\n      \"quarter\": \"4Q2024\",\n      \"filingDate\": \"2025-01-15\",\n      \"reportingDate\": \"2024-12-31\",\n      \"adsh\": \"0001127110-25-000123\",\n      \"assetName\": \"Stripe Inc\",\n      \"assetDescription\": \"Stripe Inc Series I Preferred Stock\",\n      \"pricePerShare\": 27.5,\n      \"numberOfShares\": 500000,\n      \"positionSize\": 13750000,\n      \"shareClass\": \"Series I\",\n      \"shareSeries\": \"Preferred\",\n      \"assetType\": \"Preferred Stock\",\n      \"edgarFilingURL\": \"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001127110&type=N-PORT\"\n    },\n    {\n      \"fundFamily\": \"Fidelity\",\n      \"fundName\": \"Fidelity Contrafund\",\n      \"fundEdgarId\": \"0000315066\",\n      \"quarter\": \"4Q2024\",\n      \"filingDate\": \"2025-01-20\",\n      \"reportingDate\": \"2024-12-31\",\n      \"adsh\": \"0000315066-25-000456\",\n      \"assetName\": \"Stripe Inc\",\n      \"assetDescription\": \"Stripe Inc Common Stock\",\n      \"pricePerShare\": 25,\n      \"numberOfShares\": 1000000,\n      \"positionSize\": 25000000,\n      \"shareClass\": null,\n      \"shareSeries\": null,\n      \"assetType\": \"Common Stock\",\n      \"edgarFilingURL\": \"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000315066&type=N-PORT\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "//us-central1-caplight-prod.cloudfunctions.net/api/public",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "935f2809-b018-40af-8710-9ecd729fc34b",
+    "name": "Caplight REST Fund Marks API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.\n\n# Production server\nhttps://us-central1-caplight-prod.cloudfunctions.net/api/public\n\n# Staging/sandbox server\nhttps://us-central1-caplight-staging.cloudfunctions.net/api/public\n\n# API versions\nEndpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.\n\n# Company IDs\nCompanies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.\n\nIf you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.\n\n# V2 Access & Permissions\n\n**Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.\n\n**Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.\n\n# Widget Embed\nIn addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.\n\n# Authentication\n\n<SecurityDefinitions />\n\n\nContact Support:\n Name: Contact: Caplight Engineering\n Email: engineering@caplight.com",
+      "type": "text/plain"
+    }
+  }
+}
