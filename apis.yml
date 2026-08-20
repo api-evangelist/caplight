@@ -18,6 +18,19 @@ specificationVersion: '0.23'
 created: '2026-08-09'
 modified: '2026-08-09'
 tags:
+- Private Markets
+- Secondary Market
+- Market Data
+- Venture Capital
+- Company Data
+- investor-data
+- Funding Rounds
+- Pricing Data
+- Financial Data
+- Fintech
+- MCP
+- agent-native
+tags_raw:
 - private-markets
 - secondary-market
 - market-data
@@ -42,6 +55,12 @@ apis:
   humanURL: https://www.caplight.com/products/mcp
   baseURL: https://platform.caplight.com/mcp
   tags:
+  - MCP
+  - agent-native
+  - Private Markets
+  - Market Data
+  - Company Data
+  tags_raw:
   - mcp
   - agent-native
   - private-markets
