@@ -10,6 +10,18 @@ description: >-
   api_key header auth, documented with a public OpenAPI 3.1.0 definition rendered in Redoc), a hosted
   OAuth-protected MCP server for Claude, and a one-line embeddable widget. Securities are offered
   through Caplight Markets LLC, member FINRA/SIPC.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://www.caplight.com/assets/og/og-image-2026.png
 url: https://raw.githubusercontent.com/api-evangelist/caplight/refs/heads/main/apis.yml
 x-type: company
