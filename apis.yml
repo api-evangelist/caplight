@@ -30,14 +30,14 @@ specificationVersion: '0.23'
 created: '2026-08-09'
 modified: '2026-08-09'
 tags:
-- Private Markets
-- Secondary Market
+- private-markets
+- secondary-market
 - Market Data
-- Venture Capital
-- Company Data
+- venture-capital
+- company-data
 - investor-data
-- Funding Rounds
-- Pricing Data
+- funding-rounds
+- pricing-data
 - Financial Data
 - Fintech
 - MCP
@@ -69,9 +69,9 @@ apis:
   tags:
   - MCP
   - agent-native
-  - Private Markets
+  - private-markets
   - Market Data
-  - Company Data
+  - company-data
   tags_raw:
   - mcp
   - agent-native
