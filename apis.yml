@@ -370,32 +370,6 @@ apis:
     url: data-model/caplight-data-model.yml
   - type: Sandbox
     url: sandbox/caplight-sandbox.yml
-- aid: caplight:caplight-marketprice-api
-  name: Caplight Market Price API
-  description: >-
-    Caplight's proprietary MarketPrice estimate, calculated using executed trades, company primary rounds,
-    bids/offers, fund marks, 409a valuations, and comps performance.
-  humanURL: https://platform.caplight.com/api/documentation.html
-  baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
-  tags:
-  - MarketPrice
-  properties:
-  - type: OpenAPI
-    url: openapi/caplight-marketprice-api-openapi.yml
-  - type: Documentation
-    url: https://platform.caplight.com/api/documentation.html
-  - type: APIReference
-    url: https://platform.caplight.com/api/documentation.html
-  - type: Authentication
-    url: authentication/caplight-authentication.yml
-  - type: Conventions
-    url: conventions/caplight-conventions.yml
-  - type: ErrorCatalog
-    url: errors/caplight-problem-types.yml
-  - type: DataModel
-    url: data-model/caplight-data-model.yml
-  - type: Sandbox
-    url: sandbox/caplight-sandbox.yml
 - aid: caplight:caplight-news-api
   name: Caplight News API
   description: Company news articles with sentiment analysis
@@ -478,6 +452,32 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/caplight-trade-history-api-openapi.yml
+  - type: Documentation
+    url: https://platform.caplight.com/api/documentation.html
+  - type: APIReference
+    url: https://platform.caplight.com/api/documentation.html
+  - type: Authentication
+    url: authentication/caplight-authentication.yml
+  - type: Conventions
+    url: conventions/caplight-conventions.yml
+  - type: ErrorCatalog
+    url: errors/caplight-problem-types.yml
+  - type: DataModel
+    url: data-model/caplight-data-model.yml
+  - type: Sandbox
+    url: sandbox/caplight-sandbox.yml
+- aid: caplight:caplight-market-price-api
+  name: Caplight Market Price API
+  description: >-
+    Caplight's proprietary MarketPrice estimate, calculated using executed trades, company primary rounds,
+    bids/offers, fund marks, 409a valuations, and comps performance.
+  humanURL: https://www.caplight.com/products/mcp
+  baseURL: https://platform.caplight.com/mcp
+  tags:
+  - Market Price
+  properties:
+  - type: OpenAPI
+    url: openapi/caplight-market-price-api-openapi.yml
   - type: Documentation
     url: https://platform.caplight.com/api/documentation.html
   - type: APIReference
