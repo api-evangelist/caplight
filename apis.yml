@@ -328,6 +328,8 @@ apis:
   humanURL: https://platform.caplight.com/api/documentation.html
   baseURL: https://us-central1-caplight-prod.cloudfunctions.net/api/public
   tags:
+  - Investor
+  tags_raw:
   - Investors
   properties:
   - type: OpenAPI
@@ -474,6 +476,8 @@ apis:
   humanURL: https://www.caplight.com/products/mcp
   baseURL: https://platform.caplight.com/mcp
   tags:
+  - MarketPrice
+  tags_raw:
   - Market Price
   properties:
   - type: OpenAPI
