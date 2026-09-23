@@ -2,52 +2,7 @@ openapi: 3.2.0
 info:
   version: 2.0.0
   title: Caplight REST Comps API
-  description: 'This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.
-
-
-    # Production server
-
-    https://us-central1-caplight-prod.cloudfunctions.net/api/public
-
-
-    # Staging/sandbox server
-
-    https://us-central1-caplight-staging.cloudfunctions.net/api/public
-
-
-    # API versions
-
-    Endpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.
-
-
-    # Company IDs
-
-    Companies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.
-
-
-    If you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.
-
-
-    # V2 Access & Permissions
-
-
-    **Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.
-
-
-    **Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.
-
-
-    # Widget Embed
-
-    In addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.
-
-
-    # Authentication
-
-
-    <SecurityDefinitions />
-
-    '
+  description: This page provides documentation for the Caplight API, a paid add-on product of Caplight Data.
   termsOfService: https://platform.caplight.com/terms
   contact:
     name: 'Contact: Caplight Engineering'
@@ -139,73 +94,10 @@ paths:
                   pageNumber: 1
                   numPages: 1
                   totalRecords: 1
+      operationId: getV2CompaniesByCompanyIdComps
+      x-operation-id-source: derived
 components:
   schemas:
-    PublicCompanySummary:
-      type: object
-      description: Company summary. Companies have two IDs — v1 and v2 — both provided in caplightIds for cross-referencing across API versions.
-      properties:
-        id:
-          type: string
-          description: v2 company ID
-        name:
-          type: string
-          description: Company name
-        domain:
-          type: string
-          nullable: true
-          description: Company website domain
-        pitchbookId:
-          type: string
-          nullable: true
-          description: Pitchbook company ID
-        caplightIds:
-          type: object
-          description: Both company ID formats for cross-referencing v1 and v2 endpoints
-          properties:
-            v2Id:
-              type: string
-              description: v2 company ID (same as id)
-            v1Id:
-              type: string
-              nullable: true
-              description: v1 company ID (for v1 API endpoints)
-    Pagination:
-      type: object
-      properties:
-        pageNumber:
-          type: integer
-          description: Page number (1-based). First page is 1.
-          example: 1
-        numPages:
-          type: integer
-          description: Total number of pages for the result set
-          example: 10
-        totalRecords:
-          type: integer
-          description: Total number of records for the result set
-          example: 250
-    ComparableDimension:
-      type: object
-      description: 'One similarity sub-dimension: a stable key, a human-readable label, a 0-1 score, and a short rationale.'
-      properties:
-        key:
-          type: string
-          example: product
-        label:
-          type: string
-          example: Product overlap
-        score:
-          type: number
-          format: double
-          minimum: 0
-          maximum: 1
-          example: 0.9
-        reasoning:
-          type: string
-          nullable: true
-          description: Short LLM rationale for this dimension's score; null when not available.
-          example: Both operate two-sided payment networks with overlapping enterprise customers.
     Comparable:
       type: object
       properties:
@@ -271,6 +163,42 @@ components:
           type: string
           format: date-time
           description: When this comparable set was generated for the target company.
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
+    ComparableDimension:
+      type: object
+      description: 'One similarity sub-dimension: a stable key, a human-readable label, a 0-1 score, and a short rationale.'
+      properties:
+        key:
+          type: string
+          example: product
+        label:
+          type: string
+          example: Product overlap
+        score:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+          example: 0.9
+        reasoning:
+          type: string
+          nullable: true
+          description: Short LLM rationale for this dimension's score; null when not available.
+          example: Both operate two-sided payment networks with overlapping enterprise customers.
     ComparablesResponse:
       type: object
       properties:
@@ -282,6 +210,35 @@ components:
             $ref: '#/components/schemas/Comparable'
         pagination:
           $ref: '#/components/schemas/Pagination'
+    PublicCompanySummary:
+      type: object
+      description: Company summary. Companies have two IDs — v1 and v2 — both provided in caplightIds for cross-referencing across API versions.
+      properties:
+        id:
+          type: string
+          description: v2 company ID
+        name:
+          type: string
+          description: Company name
+        domain:
+          type: string
+          nullable: true
+          description: Company website domain
+        pitchbookId:
+          type: string
+          nullable: true
+          description: Pitchbook company ID
+        caplightIds:
+          type: object
+          description: Both company ID formats for cross-referencing v1 and v2 endpoints
+          properties:
+            v2Id:
+              type: string
+              description: v2 company ID (same as id)
+            v1Id:
+              type: string
+              nullable: true
+              description: v1 company ID (for v1 API endpoints)
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

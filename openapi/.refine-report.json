@@ -1,22 +1,7 @@
 {
   "provider": "caplight",
   "sources": [
-    "caplight-companies-api-openapi.yml",
-    "caplight-company-api-openapi.yml",
-    "caplight-company-details-api-openapi.yml",
-    "caplight-company-filings-api-openapi.yml",
-    "caplight-company-lookup-api-openapi.yml",
-    "caplight-composite-index-api-openapi.yml",
-    "caplight-comps-api-openapi.yml",
-    "caplight-fund-marks-api-openapi.yml",
-    "caplight-funding-rounds-api-openapi.yml",
-    "caplight-investors-api-openapi.yml",
-    "caplight-live-orderbook-api-openapi.yml",
-    "caplight-marketprice-api-openapi.yml",
-    "caplight-news-api-openapi.yml",
-    "caplight-order-history-api-openapi.yml",
-    "caplight-stock-splits-api-openapi.yml",
-    "caplight-trade-history-api-openapi.yml"
+    "_original/caplight-rest-api-openapi-original.json"
   ],
   "outputs": [
     "caplight-companies-api-openapi.yml",
@@ -36,27 +21,34 @@
     "caplight-stock-splits-api-openapi.yml",
     "caplight-trade-history-api-openapi.yml"
   ],
-  "archived": [],
+  "archived": [
+    "deleted 1 superseded output(s) from the previous generation"
+  ],
   "errors": [],
   "warnings": [],
   "notes": [
-    "caplight-companies-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-company-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-company-details-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-company-filings-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-company-lookup-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-composite-index-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-comps-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-fund-marks-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-funding-rounds-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-investors-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-live-orderbook-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-marketprice-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-news-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-order-history-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-stock-splits-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "caplight-trade-history-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "apis.yml register: already-registered"
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "caplight-rest-api-openapi-original.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "caplight-rest-api-openapi-original.json: declared missing tag: Composite Index",
+    "superseded outputs removed: caplight-market-price-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 17 total)"
   ],
-  "skipped": []
+  "skipped": [
+    "caplight-companies-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-company-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-company-details-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-company-filings-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-company-lookup-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-composite-index-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-comps-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-fund-marks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-funding-rounds-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-investors-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-live-orderbook-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-market-price-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-news-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-order-history-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-stock-splits-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "caplight-trade-history-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

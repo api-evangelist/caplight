@@ -2,52 +2,7 @@ openapi: 3.2.0
 info:
   version: 2.0.0
   title: Caplight REST Market Price API
-  description: 'This page provides documentation for the Caplight API, a paid add-on product of [Caplight Data](https://www.data.caplight.com). To request API access, please contact us at contact@caplight.com.
-
-
-    # Production server
-
-    https://us-central1-caplight-prod.cloudfunctions.net/api/public
-
-
-    # Staging/sandbox server
-
-    https://us-central1-caplight-staging.cloudfunctions.net/api/public
-
-
-    # API versions
-
-    Endpoints are versioned via path prefix: `/v1/` for company, market price, and order book; `/v2/` for company lookup, funding rounds, investors, company details, and comps.
-
-
-    # Company IDs
-
-    Companies have two ID formats: a **v1 company ID** (used in v1 endpoints) and a **v2 company ID** (used in v2 endpoints). Both v1 and v2 company responses include both in `caplightIds` for cross-referencing. Path params that accept company identifiers support either format, plus PitchBook ID and company domain where applicable.
-
-
-    If you have a domain, a v1 company ID or a PitchBook ID and need the v2 company ID, call `GET /v2/companies` — it resolves up to 50 identifiers per request and covers companies added recently.
-
-
-    # V2 Access & Permissions
-
-
-    **Company access:** v2 company-scoped endpoints (funding rounds, investors, company details, and comps) enforce per-account access control. Your account may have (1) a whitelist of permitted companies, (2) an annual limit on distinct companies you can access, or both. Accessing the same company multiple times counts once toward the limit. The `/funding-rounds/updates` endpoint returns only rounds for companies you have access to.
-
-
-    **Restricted fields:** Some accounts have field-level restrictions. When a field is restricted, it is omitted from the response and its name appears in `restricted.fields` on the funding round object. Restricted fields may include: `amounts`, `valuation`, `pps`, `participants`, `citations`. Check for a `restricted` object and handle omitted fields in your integration.
-
-
-    # Widget Embed
-
-    In addition to this API, Caplight also provides an embeddable widget for customers who would like an easy way of integrating Caplight Data into their platform. [See example](https://storage.googleapis.com/caplight-prod.appspot.com/images/embed-example-3.png). For inquiries, please contact us directly.
-
-
-    # Authentication
-
-
-    <SecurityDefinitions />
-
-    '
+  description: This page provides documentation for the Caplight API, a paid add-on product of Caplight Data.
   termsOfService: https://platform.caplight.com/terms
   contact:
     name: 'Contact: Caplight Engineering'
@@ -61,13 +16,13 @@ servers:
 - url: //us-central1-caplight-staging.cloudfunctions.net/api/public
   description: Staging/Sandbox
 tags:
-- name: MarketPrice
+- name: Market Price
   description: Caplight's proprietary MarketPrice estimate, calculated using executed trades, company primary rounds, bids/offers, fund marks, 409a valuations, and comps performance.
 paths:
   /v1/all-marketprices:
     get:
       tags:
-      - MarketPrice
+      - Market Price
       summary: All MarketPrices
       description: Returns the latest MarketPrice for all companies where a Caplight MarketPrice exists. Each company's best-available price model is returned (secondaryMarket by default, falling back to fundMarks); the priceModel field on each row indicates which model produced it.
       parameters:
@@ -97,10 +52,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllMarketPrices'
+      operationId: getV1AllMarketprices
+      x-operation-id-source: derived
   /v1/market-price-history:
     get:
       tags:
-      - MarketPrice
+      - Market Price
       summary: MarketPrice history
       description: 'Returns MarketPrice estimate history for a company by lookup field. One (and only one) lookup field must be provided. By default the best-available price model is returned for the company: the secondaryMarket model, automatically falling back to the fundMarks model when the company has no secondaryMarket series or its secondary-market data has gone stale. Use the x-price-model header to pin a specific model. The returned series is recomputed on each model run, so the set of dates returned for a company can change between requests.'
       parameters:
@@ -154,10 +111,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MarketPriceHistory'
+      operationId: getV1MarketPriceHistory
+      x-operation-id-source: derived
   /v1/market-price-fixed-eod:
     get:
       tags:
-      - MarketPrice
+      - Market Price
       summary: MarketPrice end-of-day history
       description: Returns MarketPrice estimate history generated at a set hour of day; handles one company at a time; returns either interpolated time series generated on a given day or a time series of point-in-time estimates for the date of generation.
       parameters:
@@ -200,22 +159,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MarketPriceEODHistory'
+      operationId: getV1MarketPriceFixedEod
+      x-operation-id-source: derived
 components:
   schemas:
-    CompanyMarketPrice:
-      allOf:
-      - type: object
-        properties:
-          company:
-            $ref: '#/components/schemas/CompanyMeta'
-          priceModel:
-            type: string
-            enum:
-            - secondaryMarket
-            - fundMarks
-            description: 'The MarketPrice model that produced this company''s price: "secondaryMarket" or "fundMarks". Defaults to "secondaryMarket".'
-            example: secondaryMarket
-      - $ref: '#/components/schemas/MarketPrice'
+    MarketPriceEODHistory:
+      type: object
+      properties:
+        companyMeta:
+          $ref: '#/components/schemas/CompanyMeta'
+        marketPriceData:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketPriceEODFixedWithMeta'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    MarketPrice:
+      type: object
+      properties:
+        date:
+          $ref: '#/components/schemas/Date'
+        price:
+          type: number
+          format: double
+          description: Share price USD
+          example: 15.9
+        estimatedValuation:
+          type: number
+          format: int64
+          description: Estimated valuation in USD (nullable)
+          example: 2150000000
+        priceStandardError:
+          type: number
+          format: double
+          description: Standard error of MarketPrice price estimate
+          example: 1.35
+        lastUpdated:
+          $ref: '#/components/schemas/Date'
+          description: Date the MarketPrice estimate was generated
     Pagination:
       type: object
       properties:
@@ -231,38 +212,6 @@ components:
           type: integer
           description: Total number of records for the result set
           example: 250
-    CompanyMeta:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Company name
-          example: Stripe
-        domain:
-          type: string
-          description: Company top-level web domain
-          example: stripe.com
-        caplightId:
-          type: string
-          description: Caplight Company ID
-          example: 12d3140kjf90
-        pitchbookId:
-          type: string
-          description: Pitchbook Company ID
-          example: 54782-29
-    AllMarketPrices:
-      type: object
-      properties:
-        allMarketPrices:
-          type: array
-          items:
-            $ref: '#/components/schemas/CompanyMarketPrice'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    Date:
-      type: string
-      description: ISO formatted date without time
-      example: '2022-09-10'
     MarketPriceEODFixedWithMeta:
       type: object
       properties:
@@ -336,40 +285,52 @@ components:
             $ref: '#/components/schemas/MarketPrice'
         pagination:
           $ref: '#/components/schemas/Pagination'
-    MarketPriceEODHistory:
+    Date:
+      type: string
+      description: ISO formatted date without time
+      example: '2022-09-10'
+    AllMarketPrices:
       type: object
       properties:
-        companyMeta:
-          $ref: '#/components/schemas/CompanyMeta'
-        marketPriceData:
+        allMarketPrices:
           type: array
           items:
-            $ref: '#/components/schemas/MarketPriceEODFixedWithMeta'
+            $ref: '#/components/schemas/CompanyMarketPrice'
         pagination:
           $ref: '#/components/schemas/Pagination'
-    MarketPrice:
+    CompanyMeta:
       type: object
       properties:
-        date:
-          $ref: '#/components/schemas/Date'
-        price:
-          type: number
-          format: double
-          description: Share price USD
-          example: 15.9
-        estimatedValuation:
-          type: number
-          format: int64
-          description: Estimated valuation in USD (nullable)
-          example: 2150000000
-        priceStandardError:
-          type: number
-          format: double
-          description: Standard error of MarketPrice price estimate
-          example: 1.35
-        lastUpdated:
-          $ref: '#/components/schemas/Date'
-          description: Date the MarketPrice estimate was generated
+        name:
+          type: string
+          description: Company name
+          example: Stripe
+        domain:
+          type: string
+          description: Company top-level web domain
+          example: stripe.com
+        caplightId:
+          type: string
+          description: Caplight Company ID
+          example: 12d3140kjf90
+        pitchbookId:
+          type: string
+          description: Pitchbook Company ID
+          example: 54782-29
+    CompanyMarketPrice:
+      allOf:
+      - type: object
+        properties:
+          company:
+            $ref: '#/components/schemas/CompanyMeta'
+          priceModel:
+            type: string
+            enum:
+            - secondaryMarket
+            - fundMarks
+            description: 'The MarketPrice model that produced this company''s price: "secondaryMarket" or "fundMarks". Defaults to "secondaryMarket".'
+            example: secondaryMarket
+      - $ref: '#/components/schemas/MarketPrice'
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
