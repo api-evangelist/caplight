@@ -389,6 +389,36 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    FundingRoundParticipant:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Participation record ID
+        investor:
+          $ref: '#/components/schemas/PublicInvestorSummary'
+        role:
+          type: string
+          enum:
+          - lead
+          - participant
+          - unknown
+          description: Investor role in the round
+    FundingRoundUpdatesResponse:
+      type: object
+      properties:
+        updatedSince:
+          type: string
+          description: Exclusive lower bound used for this query
+        upTo:
+          type: string
+          description: Inclusive upper bound used for this query. Reuse this value as up_to when fetching pages 2..N; use as updated_since for the next batch after completing all pages.
+        fundingRounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundingRoundSnapshot'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
     FundingRoundSnapshot:
       type: object
       description: Funding round with amounts, valuation, participants, and citations
@@ -460,121 +490,6 @@ components:
           type: string
           format: date-time
           description: Last update timestamp
-    FundingRoundsResponse:
-      type: object
-      properties:
-        fundingRounds:
-          type: array
-          items:
-            $ref: '#/components/schemas/FundingRoundSnapshot'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    FundingRoundUpdatesResponse:
-      type: object
-      properties:
-        updatedSince:
-          type: string
-          description: Exclusive lower bound used for this query
-        upTo:
-          type: string
-          description: Inclusive upper bound used for this query. Reuse this value as up_to when fetching pages 2..N; use as updated_since for the next batch after completing all pages.
-        fundingRounds:
-          type: array
-          items:
-            $ref: '#/components/schemas/FundingRoundSnapshot'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    ApiRestrictedFields:
-      type: object
-      description: Present when one or more fields are omitted due to account field-level restrictions. The fields array lists omitted field names (e.g. amounts, valuation, pps, participants, citations). Always check for this object and handle missing fields in your integration.
-      properties:
-        fields:
-          type: array
-          items:
-            type: string
-          description: Names of fields omitted from the response due to account permissions
-    PublicInvestorSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Investor ID
-        type:
-          type: string
-          enum:
-          - firm
-          - individual
-        name:
-          type: string
-          description: Investor display name
-    Pagination:
-      type: object
-      properties:
-        pageNumber:
-          type: integer
-          description: Page number (1-based). First page is 1.
-          example: 1
-        numPages:
-          type: integer
-          description: Total number of pages for the result set
-          example: 10
-        totalRecords:
-          type: integer
-          description: Total number of records for the result set
-          example: 250
-    MoneyAmount:
-      type: object
-      description: A monetary value with original currency and USD equivalent
-      properties:
-        amount:
-          type: number
-          nullable: true
-          description: Amount in the original currency
-        currency:
-          type: string
-          description: ISO 4217 currency code (e.g. USD, EUR)
-        amountUsd:
-          type: number
-          nullable: true
-          description: Amount converted to USD
-    FundingRoundParticipant:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Participation record ID
-        investor:
-          $ref: '#/components/schemas/PublicInvestorSummary'
-        role:
-          type: string
-          enum:
-          - lead
-          - participant
-          - unknown
-          description: Investor role in the round
-    FundingRoundCitation:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          enum:
-          - url
-          - coi
-          - press_release
-          - sec_filing
-          - news
-          - other
-        url:
-          type: string
-          nullable: true
-        sourceName:
-          type: string
-          nullable: true
-        publishedAt:
-          type: string
-          nullable: true
     PublicCompanySummary:
       type: object
       description: Company summary. Companies have two IDs — v1 and v2 — both provided in caplightIds for cross-referencing across API versions.
@@ -604,6 +519,91 @@ components:
               type: string
               nullable: true
               description: v1 company ID (for v1 API endpoints)
+    FundingRoundCitation:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - url
+          - coi
+          - press_release
+          - sec_filing
+          - news
+          - other
+        url:
+          type: string
+          nullable: true
+        sourceName:
+          type: string
+          nullable: true
+        publishedAt:
+          type: string
+          nullable: true
+    MoneyAmount:
+      type: object
+      description: A monetary value with original currency and USD equivalent
+      properties:
+        amount:
+          type: number
+          nullable: true
+          description: Amount in the original currency
+        currency:
+          type: string
+          description: ISO 4217 currency code (e.g. USD, EUR)
+        amountUsd:
+          type: number
+          nullable: true
+          description: Amount converted to USD
+    ApiRestrictedFields:
+      type: object
+      description: Present when one or more fields are omitted due to account field-level restrictions. The fields array lists omitted field names (e.g. amounts, valuation, pps, participants, citations). Always check for this object and handle missing fields in your integration.
+      properties:
+        fields:
+          type: array
+          items:
+            type: string
+          description: Names of fields omitted from the response due to account permissions
+    FundingRoundsResponse:
+      type: object
+      properties:
+        fundingRounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundingRoundSnapshot'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
+    PublicInvestorSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Investor ID
+        type:
+          type: string
+          enum:
+          - firm
+          - individual
+        name:
+          type: string
+          description: Investor display name
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

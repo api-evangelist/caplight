@@ -51,6 +51,74 @@ components:
           companyMeta:
             $ref: '#/components/schemas/CompanyMeta'
       - $ref: '#/components/schemas/Order'
+    OrderDeal:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A stable, unique identifier for the deal.
+          example: okP88RZSS9e1owCq73iD
+        counterpartyOrderId:
+          type: string
+          nullable: true
+          description: The id of the order on the other side of this deal. `null` when the other side is not represented by an order.
+          example: aBc123dEf456
+        currentStatus:
+          type: string
+          enum:
+          - introductionRequested
+          - introduced
+          - potentialClosing
+          - inClosing
+          - closed
+          - dead
+          - blocked
+          description: The deal's current status.
+          example: introduced
+        currentStatusUpdatedAt:
+          description: When the current status was set.
+          $ref: '#/components/schemas/Timestamp'
+        statusHistory:
+          type: array
+          description: The deal's past status changes, oldest first.
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - introductionRequested
+                - introduced
+                - potentialClosing
+                - inClosing
+                - closed
+                - dead
+                - blocked
+              at:
+                $ref: '#/components/schemas/Timestamp'
+    Timestamp:
+      type: string
+      description: ISO formatted datetime
+      example: '2023-01-26T05:56:30 +00:00'
+    CompanyMeta:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Company name
+          example: Stripe
+        domain:
+          type: string
+          description: Company top-level web domain
+          example: stripe.com
+        caplightId:
+          type: string
+          description: Caplight Company ID
+          example: 12d3140kjf90
+        pitchbookId:
+          type: string
+          description: Pitchbook Company ID
+          example: 54782-29
     Order:
       allOf:
       - type: object
@@ -176,59 +244,6 @@ components:
           type: integer
           description: Total number of records for the result set
           example: 250
-    OrderDeal:
-      type: object
-      properties:
-        id:
-          type: string
-          description: A stable, unique identifier for the deal.
-          example: okP88RZSS9e1owCq73iD
-        counterpartyOrderId:
-          type: string
-          nullable: true
-          description: The id of the order on the other side of this deal. `null` when the other side is not represented by an order.
-          example: aBc123dEf456
-        currentStatus:
-          type: string
-          enum:
-          - introductionRequested
-          - introduced
-          - potentialClosing
-          - inClosing
-          - closed
-          - dead
-          - blocked
-          description: The deal's current status.
-          example: introduced
-        currentStatusUpdatedAt:
-          description: When the current status was set.
-          $ref: '#/components/schemas/Timestamp'
-        statusHistory:
-          type: array
-          description: The deal's past status changes, oldest first.
-          items:
-            type: object
-            properties:
-              status:
-                type: string
-                enum:
-                - introductionRequested
-                - introduced
-                - potentialClosing
-                - inClosing
-                - closed
-                - dead
-                - blocked
-              at:
-                $ref: '#/components/schemas/Timestamp'
-    Date:
-      type: string
-      description: ISO formatted date without time
-      example: '2022-09-10'
-    Timestamp:
-      type: string
-      description: ISO formatted datetime
-      example: '2023-01-26T05:56:30 +00:00'
     LiveOrderbook:
       type: object
       properties:
@@ -238,25 +253,10 @@ components:
             $ref: '#/components/schemas/OrderWithCompanyMeta'
         pagination:
           $ref: '#/components/schemas/Pagination'
-    CompanyMeta:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Company name
-          example: Stripe
-        domain:
-          type: string
-          description: Company top-level web domain
-          example: stripe.com
-        caplightId:
-          type: string
-          description: Caplight Company ID
-          example: 12d3140kjf90
-        pitchbookId:
-          type: string
-          description: Pitchbook Company ID
-          example: 54782-29
+    Date:
+      type: string
+      description: ISO formatted date without time
+      example: '2022-09-10'
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

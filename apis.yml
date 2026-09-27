@@ -58,7 +58,7 @@ tags:
 - Financial Data
 - Fintech
 - MCP
-- agent-native
+- Agent-Native
 tags_raw:
 - private-markets
 - secondary-market
@@ -85,7 +85,7 @@ apis:
   baseURL: https://platform.caplight.com/mcp
   tags:
   - MCP
-  - agent-native
+  - Agent-Native
   - Private Markets
   - Market Data
   - Company Data
@@ -479,8 +479,6 @@ apis:
   humanURL: https://www.caplight.com/products/mcp
   baseURL: https://platform.caplight.com/mcp
   tags:
-  - MarketPrice
-  tags_raw:
   - Market Price
   properties:
   - type: OpenAPI

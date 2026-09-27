@@ -163,6 +163,79 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    CompanyMeta:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Company name
+          example: Stripe
+        domain:
+          type: string
+          description: Company top-level web domain
+          example: stripe.com
+        caplightId:
+          type: string
+          description: Caplight Company ID
+          example: 12d3140kjf90
+        pitchbookId:
+          type: string
+          description: Pitchbook Company ID
+          example: 54782-29
+    CompanyMarketPrice:
+      allOf:
+      - type: object
+        properties:
+          company:
+            $ref: '#/components/schemas/CompanyMeta'
+          priceModel:
+            type: string
+            enum:
+            - secondaryMarket
+            - fundMarks
+            description: 'The MarketPrice model that produced this company''s price: "secondaryMarket" or "fundMarks". Defaults to "secondaryMarket".'
+            example: secondaryMarket
+      - $ref: '#/components/schemas/MarketPrice'
+    MarketPriceHistory:
+      type: object
+      properties:
+        priceModel:
+          type: string
+          enum:
+          - secondaryMarket
+          - fundMarks
+          description: 'The MarketPrice model that produced the returned series: "secondaryMarket" (secondary-market transaction model) or "fundMarks" (fund-marks-based model). Reflects the model selected by default or pinned via the x-price-model request header. Omitted when no series is available for the company.'
+          example: secondaryMarket
+        daysSinceLastDataPoint:
+          type:
+          - number
+          - 'null'
+          format: int
+          description: Number of days between the most recent underlying data point (trade, order, funding round, or fund mark) and the latest MarketPrice date. Null when unavailable.
+          example: 10
+        companyMeta:
+          $ref: '#/components/schemas/CompanyMeta'
+        marketPriceHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketPrice'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
     MarketPriceEODHistory:
       type: object
       properties:
@@ -172,6 +245,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MarketPriceEODFixedWithMeta'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    AllMarketPrices:
+      type: object
+      properties:
+        allMarketPrices:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyMarketPrice'
         pagination:
           $ref: '#/components/schemas/Pagination'
     MarketPrice:
@@ -197,21 +279,10 @@ components:
         lastUpdated:
           $ref: '#/components/schemas/Date'
           description: Date the MarketPrice estimate was generated
-    Pagination:
-      type: object
-      properties:
-        pageNumber:
-          type: integer
-          description: Page number (1-based). First page is 1.
-          example: 1
-        numPages:
-          type: integer
-          description: Total number of pages for the result set
-          example: 10
-        totalRecords:
-          type: integer
-          description: Total number of records for the result set
-          example: 250
+    Date:
+      type: string
+      description: ISO formatted date without time
+      example: '2022-09-10'
     MarketPriceEODFixedWithMeta:
       type: object
       properties:
@@ -260,77 +331,6 @@ components:
               format: double
               description: Contribution (out of 1.00) of offers into MarketPrice level, derived using the leave-one-out approach
               example: 0.25
-    MarketPriceHistory:
-      type: object
-      properties:
-        priceModel:
-          type: string
-          enum:
-          - secondaryMarket
-          - fundMarks
-          description: 'The MarketPrice model that produced the returned series: "secondaryMarket" (secondary-market transaction model) or "fundMarks" (fund-marks-based model). Reflects the model selected by default or pinned via the x-price-model request header. Omitted when no series is available for the company.'
-          example: secondaryMarket
-        daysSinceLastDataPoint:
-          type:
-          - number
-          - 'null'
-          format: int
-          description: Number of days between the most recent underlying data point (trade, order, funding round, or fund mark) and the latest MarketPrice date. Null when unavailable.
-          example: 10
-        companyMeta:
-          $ref: '#/components/schemas/CompanyMeta'
-        marketPriceHistory:
-          type: array
-          items:
-            $ref: '#/components/schemas/MarketPrice'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    Date:
-      type: string
-      description: ISO formatted date without time
-      example: '2022-09-10'
-    AllMarketPrices:
-      type: object
-      properties:
-        allMarketPrices:
-          type: array
-          items:
-            $ref: '#/components/schemas/CompanyMarketPrice'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    CompanyMeta:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Company name
-          example: Stripe
-        domain:
-          type: string
-          description: Company top-level web domain
-          example: stripe.com
-        caplightId:
-          type: string
-          description: Caplight Company ID
-          example: 12d3140kjf90
-        pitchbookId:
-          type: string
-          description: Pitchbook Company ID
-          example: 54782-29
-    CompanyMarketPrice:
-      allOf:
-      - type: object
-        properties:
-          company:
-            $ref: '#/components/schemas/CompanyMeta'
-          priceModel:
-            type: string
-            enum:
-            - secondaryMarket
-            - fundMarks
-            description: 'The MarketPrice model that produced this company''s price: "secondaryMarket" or "fundMarks". Defaults to "secondaryMarket".'
-            example: secondaryMarket
-      - $ref: '#/components/schemas/MarketPrice'
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

@@ -119,17 +119,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    NewsResponse:
-      type: object
-      properties:
-        companyMeta:
-          $ref: '#/components/schemas/CompanyMeta'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        news:
-          type: array
-          items:
-            $ref: '#/components/schemas/NewsItem'
     NewsItem:
       type: object
       description: A news article about a company
@@ -174,6 +163,17 @@ components:
           - 'false'
           description: Whether this is a high-relevance article for the company
           example: 'true'
+    NewsResponse:
+      type: object
+      properties:
+        companyMeta:
+          $ref: '#/components/schemas/CompanyMeta'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        news:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsItem'
     CompanyMeta:
       type: object
       properties:

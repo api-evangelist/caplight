@@ -130,21 +130,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Pagination:
-      type: object
-      properties:
-        pageNumber:
-          type: integer
-          description: Page number (1-based). First page is 1.
-          example: 1
-        numPages:
-          type: integer
-          description: Total number of pages for the result set
-          example: 10
-        totalRecords:
-          type: integer
-          description: Total number of records for the result set
-          example: 250
     FundMark:
       type: object
       description: A mutual fund's mark-to-market valuation from SEC N-PORT filings
@@ -250,6 +235,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FundMark'
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

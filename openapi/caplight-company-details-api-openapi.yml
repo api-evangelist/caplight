@@ -84,7 +84,20 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    PublicVerticalTag:
+    PublicKeywordTag:
+      type: object
+      required:
+      - keyword
+      - attribution
+      properties:
+        keyword:
+          type: string
+          minLength: 1
+        attribution:
+          type: number
+          minimum: 0
+          maximum: 1
+    PublicSectorTag:
       type: object
       required:
       - name
@@ -126,6 +139,39 @@ components:
           format: date-time
           nullable: true
           description: ISO timestamp of the latest LLM tagging run; null if the company has never been tagged.
+    PublicVerticalTag:
+      type: object
+      required:
+      - name
+      - confidence
+      - attribution
+      properties:
+        name:
+          type: string
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        attribution:
+          type: number
+          minimum: 0
+          maximum: 1
+    FirmographicsLocation:
+      type: object
+      required:
+      - country
+      - state
+      - city
+      properties:
+        country:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
     PublicCompanyDetails:
       type: object
       required:
@@ -178,52 +224,6 @@ components:
           $ref: '#/components/schemas/FirmographicsLocation'
         tags:
           $ref: '#/components/schemas/FirmographicsTags'
-    FirmographicsLocation:
-      type: object
-      required:
-      - country
-      - state
-      - city
-      properties:
-        country:
-          type: string
-          nullable: true
-        state:
-          type: string
-          nullable: true
-        city:
-          type: string
-          nullable: true
-    PublicKeywordTag:
-      type: object
-      required:
-      - keyword
-      - attribution
-      properties:
-        keyword:
-          type: string
-          minLength: 1
-        attribution:
-          type: number
-          minimum: 0
-          maximum: 1
-    PublicSectorTag:
-      type: object
-      required:
-      - name
-      - confidence
-      - attribution
-      properties:
-        name:
-          type: string
-        confidence:
-          type: number
-          minimum: 0
-          maximum: 1
-        attribution:
-          type: number
-          minimum: 0
-          maximum: 1
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

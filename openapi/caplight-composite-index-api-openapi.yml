@@ -157,35 +157,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    CompositeIndexConstituent:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Company identifier (UUID). Same as the companyId used in other v2 endpoints.
-        name:
-          type:
-          - string
-          - 'null'
-          description: Company name
-        weight:
-          type: number
-          description: Constituent weight in the index (0-1)
-    ErrorResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          example: error
-        error:
-          type: string
-          example: sector or vertical query param is required
-    Date:
-      type: string
-      description: ISO formatted date without time
-      example: '2022-09-10'
     CompositeIndexWarning:
       type: object
       required:
@@ -213,6 +184,31 @@ components:
           - vertical-not-found
         message:
           type: string
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        error:
+          type: string
+          example: sector or vertical query param is required
+    CompositeIndexConstituent:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Company identifier (UUID). Same as the companyId used in other v2 endpoints.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Company name
+        weight:
+          type: number
+          description: Constituent weight in the index (0-1)
     CompositeIndexTimeseriesPoint:
       type: object
       properties:
@@ -243,6 +239,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CompositeIndexWarning'
+    Date:
+      type: string
+      description: ISO formatted date without time
+      example: '2022-09-10'
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

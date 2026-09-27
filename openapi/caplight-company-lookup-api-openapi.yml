@@ -143,6 +143,15 @@ components:
               type: string
               nullable: true
               description: v1 company ID, null when the company has no v1 record
+    PublicCompanyLookupResponse:
+      type: object
+      required:
+      - results
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicCompanyLookupResult'
     PublicCompanyLookupResult:
       description: The matches for one requested identifier.
       type: object
@@ -171,15 +180,6 @@ components:
           description: Every company matching the identifier, best match first. Empty when nothing matched.
           items:
             $ref: '#/components/schemas/PublicCompanyLookupMatch'
-    PublicCompanyLookupResponse:
-      type: object
-      required:
-      - results
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/PublicCompanyLookupResult'
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
