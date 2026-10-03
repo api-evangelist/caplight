@@ -184,15 +184,6 @@ components:
           - vertical-not-found
         message:
           type: string
-    ErrorResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          example: error
-        error:
-          type: string
-          example: sector or vertical query param is required
     CompositeIndexConstituent:
       type: object
       properties:
@@ -209,18 +200,19 @@ components:
         weight:
           type: number
           description: Constituent weight in the index (0-1)
-    CompositeIndexTimeseriesPoint:
+    ErrorResponse:
       type: object
       properties:
-        date:
-          $ref: '#/components/schemas/Date'
-        index:
-          type: number
-          description: Index value (rebased to 100 on start date)
-        constituents:
-          type: array
-          items:
-            $ref: '#/components/schemas/CompositeIndexConstituent'
+        status:
+          type: string
+          example: error
+        error:
+          type: string
+          example: sector or vertical query param is required
+    Date:
+      type: string
+      description: ISO formatted date without time
+      example: '2022-09-10'
     CompositeIndexResponse:
       type: object
       required:
@@ -239,10 +231,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CompositeIndexWarning'
-    Date:
-      type: string
-      description: ISO formatted date without time
-      example: '2022-09-10'
+    CompositeIndexTimeseriesPoint:
+      type: object
+      properties:
+        date:
+          $ref: '#/components/schemas/Date'
+        index:
+          type: number
+          description: Index value (rebased to 100 on start date)
+        constituents:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompositeIndexConstituent'
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

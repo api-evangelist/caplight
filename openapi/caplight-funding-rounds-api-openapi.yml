@@ -389,6 +389,29 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    FundingRoundCitation:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - url
+          - coi
+          - press_release
+          - sec_filing
+          - news
+          - other
+        url:
+          type: string
+          nullable: true
+        sourceName:
+          type: string
+          nullable: true
+        publishedAt:
+          type: string
+          nullable: true
     FundingRoundParticipant:
       type: object
       properties:
@@ -404,6 +427,20 @@ components:
           - participant
           - unknown
           description: Investor role in the round
+    PublicInvestorSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Investor ID
+        type:
+          type: string
+          enum:
+          - firm
+          - individual
+        name:
+          type: string
+          description: Investor display name
     FundingRoundUpdatesResponse:
       type: object
       properties:
@@ -419,6 +456,39 @@ components:
             $ref: '#/components/schemas/FundingRoundSnapshot'
         pagination:
           $ref: '#/components/schemas/Pagination'
+    MoneyAmount:
+      type: object
+      description: A monetary value with original currency and USD equivalent
+      properties:
+        amount:
+          type: number
+          nullable: true
+          description: Amount in the original currency
+        currency:
+          type: string
+          description: ISO 4217 currency code (e.g. USD, EUR)
+        amountUsd:
+          type: number
+          nullable: true
+          description: Amount converted to USD
+    FundingRoundsResponse:
+      type: object
+      properties:
+        fundingRounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundingRoundSnapshot'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    ApiRestrictedFields:
+      type: object
+      description: Present when one or more fields are omitted due to account field-level restrictions. The fields array lists omitted field names (e.g. amounts, valuation, pps, participants, citations). Always check for this object and handle missing fields in your integration.
+      properties:
+        fields:
+          type: array
+          items:
+            type: string
+          description: Names of fields omitted from the response due to account permissions
     FundingRoundSnapshot:
       type: object
       description: Funding round with amounts, valuation, participants, and citations
@@ -519,62 +589,6 @@ components:
               type: string
               nullable: true
               description: v1 company ID (for v1 API endpoints)
-    FundingRoundCitation:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          enum:
-          - url
-          - coi
-          - press_release
-          - sec_filing
-          - news
-          - other
-        url:
-          type: string
-          nullable: true
-        sourceName:
-          type: string
-          nullable: true
-        publishedAt:
-          type: string
-          nullable: true
-    MoneyAmount:
-      type: object
-      description: A monetary value with original currency and USD equivalent
-      properties:
-        amount:
-          type: number
-          nullable: true
-          description: Amount in the original currency
-        currency:
-          type: string
-          description: ISO 4217 currency code (e.g. USD, EUR)
-        amountUsd:
-          type: number
-          nullable: true
-          description: Amount converted to USD
-    ApiRestrictedFields:
-      type: object
-      description: Present when one or more fields are omitted due to account field-level restrictions. The fields array lists omitted field names (e.g. amounts, valuation, pps, participants, citations). Always check for this object and handle missing fields in your integration.
-      properties:
-        fields:
-          type: array
-          items:
-            type: string
-          description: Names of fields omitted from the response due to account permissions
-    FundingRoundsResponse:
-      type: object
-      properties:
-        fundingRounds:
-          type: array
-          items:
-            $ref: '#/components/schemas/FundingRoundSnapshot'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
     Pagination:
       type: object
       properties:
@@ -590,20 +604,6 @@ components:
           type: integer
           description: Total number of records for the result set
           example: 250
-    PublicInvestorSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Investor ID
-        type:
-          type: string
-          enum:
-          - firm
-          - individual
-        name:
-          type: string
-          description: Investor display name
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

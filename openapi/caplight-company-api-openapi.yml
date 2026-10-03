@@ -139,6 +139,27 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    QuarterlyMarketSummary:
+      type: object
+      properties:
+        companyMeta:
+          $ref: '#/components/schemas/CompanyMeta'
+        currentMarketPricePPS:
+          type: number
+          format: double
+          description: Current market price per share
+          example: 25.5
+          nullable: true
+        currentMarketPriceValuation:
+          type: number
+          format: int64
+          description: Current market price valuation
+          example: 2500000000
+          nullable: true
+        quarterlyMarketData:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuarterlyMarketData'
     Company:
       description: Caplight Company model
       type: object
@@ -213,6 +234,10 @@ components:
       type: string
       description: ISO formatted datetime
       example: '2023-01-26T05:56:30 +00:00'
+    Companies:
+      type: array
+      items:
+        $ref: '#/components/schemas/Company'
     ComparablePerformance:
       type: object
       properties:
@@ -222,46 +247,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PublicComparablePerformanceOverTime'
-    CompanyMeta:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Company name
-          example: Stripe
-        domain:
-          type: string
-          description: Company top-level web domain
-          example: stripe.com
-        caplightId:
-          type: string
-          description: Caplight Company ID
-          example: 12d3140kjf90
-        pitchbookId:
-          type: string
-          description: Pitchbook Company ID
-          example: 54782-29
-    QuarterlyMarketSummary:
-      type: object
-      properties:
-        companyMeta:
-          $ref: '#/components/schemas/CompanyMeta'
-        currentMarketPricePPS:
-          type: number
-          format: double
-          description: Current market price per share
-          example: 25.5
-          nullable: true
-        currentMarketPriceValuation:
-          type: number
-          format: int64
-          description: Current market price valuation
-          example: 2500000000
-          nullable: true
-        quarterlyMarketData:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuarterlyMarketData'
     QuarterlyMarketData:
       type: object
       properties:
@@ -311,19 +296,25 @@ components:
           description: Market price valuation at start of quarter
           example: 2000000000
           nullable: true
-    Companies:
-      type: array
-      items:
-        $ref: '#/components/schemas/Company'
-    PublicComparablePerformanceOverTime:
+    CompanyMeta:
       type: object
       properties:
-        date:
-          $ref: '#/components/schemas/Date'
-        percentageChangeVsTimePeriodStart:
-          type: number
-          description: Percent change negative or positive since start of time period
-          example: 20.5
+        name:
+          type: string
+          description: Company name
+          example: Stripe
+        domain:
+          type: string
+          description: Company top-level web domain
+          example: stripe.com
+        caplightId:
+          type: string
+          description: Caplight Company ID
+          example: 12d3140kjf90
+        pitchbookId:
+          type: string
+          description: Pitchbook Company ID
+          example: 54782-29
     MarketPrice:
       type: object
       properties:
@@ -351,6 +342,15 @@ components:
       type: string
       description: ISO formatted date without time
       example: '2022-09-10'
+    PublicComparablePerformanceOverTime:
+      type: object
+      properties:
+        date:
+          $ref: '#/components/schemas/Date'
+        percentageChangeVsTimePeriodStart:
+          type: number
+          description: Percent change negative or positive since start of time period
+          example: 20.5
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

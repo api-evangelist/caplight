@@ -94,10 +94,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Timestamp:
-      type: string
-      description: ISO formatted datetime
-      example: '2023-01-26T05:56:30 +00:00'
     COIDownloadStats:
       type: object
       properties:
@@ -119,6 +115,10 @@ components:
             - unlimited
         totalDownloads:
           type: number
+    Timestamp:
+      type: string
+      description: ISO formatted datetime
+      example: '2023-01-26T05:56:30 +00:00'
     COIDownloadLinks:
       type: object
       properties:
@@ -165,6 +165,10 @@ components:
             $ref: '#/components/schemas/COI'
         pagination:
           $ref: '#/components/schemas/Pagination'
+    Date:
+      type: string
+      description: ISO formatted date without time
+      example: '2022-09-10'
     Pagination:
       type: object
       properties:
@@ -206,10 +210,6 @@ components:
           $ref: '#/components/schemas/Timestamp'
         updatedAt:
           $ref: '#/components/schemas/Timestamp'
-    Date:
-      type: string
-      description: ISO formatted date without time
-      example: '2022-09-10'
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

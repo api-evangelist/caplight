@@ -35,25 +35,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    StockSplit:
-      type: object
-      properties:
-        companyMeta:
-          $ref: '#/components/schemas/CompanyMeta'
-        postSplitShares:
-          type: number
-          description: Post-stock split share count. A post-split value of 10 and pre-split value of 1 implies a 10-to-1 stock split.
-          example: 10
-        preSplitShares:
-          type: number
-          description: Pre-stock split share count. A post-split value of 10 and pre-split value of 1 implies a 10-to-1 stock split.
-          example: 1
-        stockSplitDate:
-          description: Caplight's best estimate of the date at which the stock split occurred
-          $ref: '#/components/schemas/Timestamp'
-        createdAt:
-          description: Date when Caplight first captured the stock split information
-          $ref: '#/components/schemas/Timestamp'
     Timestamp:
       type: string
       description: ISO formatted datetime
@@ -84,6 +65,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StockSplit'
+    StockSplit:
+      type: object
+      properties:
+        companyMeta:
+          $ref: '#/components/schemas/CompanyMeta'
+        postSplitShares:
+          type: number
+          description: Post-stock split share count. A post-split value of 10 and pre-split value of 1 implies a 10-to-1 stock split.
+          example: 10
+        preSplitShares:
+          type: number
+          description: Pre-stock split share count. A post-split value of 10 and pre-split value of 1 implies a 10-to-1 stock split.
+          example: 1
+        stockSplitDate:
+          description: Caplight's best estimate of the date at which the stock split occurred
+          $ref: '#/components/schemas/Timestamp'
+        createdAt:
+          description: Date when Caplight first captured the stock split information
+          $ref: '#/components/schemas/Timestamp'
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

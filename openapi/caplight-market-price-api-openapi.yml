@@ -163,39 +163,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    CompanyMeta:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Company name
-          example: Stripe
-        domain:
-          type: string
-          description: Company top-level web domain
-          example: stripe.com
-        caplightId:
-          type: string
-          description: Caplight Company ID
-          example: 12d3140kjf90
-        pitchbookId:
-          type: string
-          description: Pitchbook Company ID
-          example: 54782-29
-    CompanyMarketPrice:
-      allOf:
-      - type: object
-        properties:
-          company:
-            $ref: '#/components/schemas/CompanyMeta'
-          priceModel:
-            type: string
-            enum:
-            - secondaryMarket
-            - fundMarks
-            description: 'The MarketPrice model that produced this company''s price: "secondaryMarket" or "fundMarks". Defaults to "secondaryMarket".'
-            example: secondaryMarket
-      - $ref: '#/components/schemas/MarketPrice'
     MarketPriceHistory:
       type: object
       properties:
@@ -221,68 +188,20 @@ components:
             $ref: '#/components/schemas/MarketPrice'
         pagination:
           $ref: '#/components/schemas/Pagination'
-    Pagination:
-      type: object
-      properties:
-        pageNumber:
-          type: integer
-          description: Page number (1-based). First page is 1.
-          example: 1
-        numPages:
-          type: integer
-          description: Total number of pages for the result set
-          example: 10
-        totalRecords:
-          type: integer
-          description: Total number of records for the result set
-          example: 250
-    MarketPriceEODHistory:
-      type: object
-      properties:
-        companyMeta:
-          $ref: '#/components/schemas/CompanyMeta'
-        marketPriceData:
-          type: array
-          items:
-            $ref: '#/components/schemas/MarketPriceEODFixedWithMeta'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    AllMarketPrices:
-      type: object
-      properties:
-        allMarketPrices:
-          type: array
-          items:
-            $ref: '#/components/schemas/CompanyMarketPrice'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    MarketPrice:
-      type: object
-      properties:
-        date:
-          $ref: '#/components/schemas/Date'
-        price:
-          type: number
-          format: double
-          description: Share price USD
-          example: 15.9
-        estimatedValuation:
-          type: number
-          format: int64
-          description: Estimated valuation in USD (nullable)
-          example: 2150000000
-        priceStandardError:
-          type: number
-          format: double
-          description: Standard error of MarketPrice price estimate
-          example: 1.35
-        lastUpdated:
-          $ref: '#/components/schemas/Date'
-          description: Date the MarketPrice estimate was generated
-    Date:
-      type: string
-      description: ISO formatted date without time
-      example: '2022-09-10'
+    CompanyMarketPrice:
+      allOf:
+      - type: object
+        properties:
+          company:
+            $ref: '#/components/schemas/CompanyMeta'
+          priceModel:
+            type: string
+            enum:
+            - secondaryMarket
+            - fundMarks
+            description: 'The MarketPrice model that produced this company''s price: "secondaryMarket" or "fundMarks". Defaults to "secondaryMarket".'
+            example: secondaryMarket
+      - $ref: '#/components/schemas/MarketPrice'
     MarketPriceEODFixedWithMeta:
       type: object
       properties:
@@ -331,6 +250,87 @@ components:
               format: double
               description: Contribution (out of 1.00) of offers into MarketPrice level, derived using the leave-one-out approach
               example: 0.25
+    CompanyMeta:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Company name
+          example: Stripe
+        domain:
+          type: string
+          description: Company top-level web domain
+          example: stripe.com
+        caplightId:
+          type: string
+          description: Caplight Company ID
+          example: 12d3140kjf90
+        pitchbookId:
+          type: string
+          description: Pitchbook Company ID
+          example: 54782-29
+    MarketPriceEODHistory:
+      type: object
+      properties:
+        companyMeta:
+          $ref: '#/components/schemas/CompanyMeta'
+        marketPriceData:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketPriceEODFixedWithMeta'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    AllMarketPrices:
+      type: object
+      properties:
+        allMarketPrices:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyMarketPrice'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Date:
+      type: string
+      description: ISO formatted date without time
+      example: '2022-09-10'
+    MarketPrice:
+      type: object
+      properties:
+        date:
+          $ref: '#/components/schemas/Date'
+        price:
+          type: number
+          format: double
+          description: Share price USD
+          example: 15.9
+        estimatedValuation:
+          type: number
+          format: int64
+          description: Estimated valuation in USD (nullable)
+          example: 2150000000
+        priceStandardError:
+          type: number
+          format: double
+          description: Standard error of MarketPrice price estimate
+          example: 1.35
+        lastUpdated:
+          $ref: '#/components/schemas/Date'
+          description: Date the MarketPrice estimate was generated
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
