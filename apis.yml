@@ -479,8 +479,6 @@ apis:
   humanURL: https://www.caplight.com/products/mcp
   baseURL: https://platform.caplight.com/mcp
   tags:
-  - MarketPrice
-  tags_raw:
   - Market Price
   properties:
   - type: OpenAPI

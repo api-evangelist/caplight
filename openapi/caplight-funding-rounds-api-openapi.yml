@@ -389,6 +389,74 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    PublicCompanySummary:
+      type: object
+      description: Company summary. Companies have two IDs — v1 and v2 — both provided in caplightIds for cross-referencing across API versions.
+      properties:
+        id:
+          type: string
+          description: v2 company ID
+        name:
+          type: string
+          description: Company name
+        domain:
+          type: string
+          nullable: true
+          description: Company website domain
+        pitchbookId:
+          type: string
+          nullable: true
+          description: Pitchbook company ID
+        caplightIds:
+          type: object
+          description: Both company ID formats for cross-referencing v1 and v2 endpoints
+          properties:
+            v2Id:
+              type: string
+              description: v2 company ID (same as id)
+            v1Id:
+              type: string
+              nullable: true
+              description: v1 company ID (for v1 API endpoints)
+    ApiRestrictedFields:
+      type: object
+      description: Present when one or more fields are omitted due to account field-level restrictions. The fields array lists omitted field names (e.g. amounts, valuation, pps, participants, citations). Always check for this object and handle missing fields in your integration.
+      properties:
+        fields:
+          type: array
+          items:
+            type: string
+          description: Names of fields omitted from the response due to account permissions
+    MoneyAmount:
+      type: object
+      description: A monetary value with original currency and USD equivalent
+      properties:
+        amount:
+          type: number
+          nullable: true
+          description: Amount in the original currency
+        currency:
+          type: string
+          description: ISO 4217 currency code (e.g. USD, EUR)
+        amountUsd:
+          type: number
+          nullable: true
+          description: Amount converted to USD
+    FundingRoundParticipant:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Participation record ID
+        investor:
+          $ref: '#/components/schemas/PublicInvestorSummary'
+        role:
+          type: string
+          enum:
+          - lead
+          - participant
+          - unknown
+          description: Investor role in the round
     FundingRoundCitation:
       type: object
       properties:
@@ -412,83 +480,6 @@ components:
         publishedAt:
           type: string
           nullable: true
-    FundingRoundParticipant:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Participation record ID
-        investor:
-          $ref: '#/components/schemas/PublicInvestorSummary'
-        role:
-          type: string
-          enum:
-          - lead
-          - participant
-          - unknown
-          description: Investor role in the round
-    PublicInvestorSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Investor ID
-        type:
-          type: string
-          enum:
-          - firm
-          - individual
-        name:
-          type: string
-          description: Investor display name
-    FundingRoundUpdatesResponse:
-      type: object
-      properties:
-        updatedSince:
-          type: string
-          description: Exclusive lower bound used for this query
-        upTo:
-          type: string
-          description: Inclusive upper bound used for this query. Reuse this value as up_to when fetching pages 2..N; use as updated_since for the next batch after completing all pages.
-        fundingRounds:
-          type: array
-          items:
-            $ref: '#/components/schemas/FundingRoundSnapshot'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    MoneyAmount:
-      type: object
-      description: A monetary value with original currency and USD equivalent
-      properties:
-        amount:
-          type: number
-          nullable: true
-          description: Amount in the original currency
-        currency:
-          type: string
-          description: ISO 4217 currency code (e.g. USD, EUR)
-        amountUsd:
-          type: number
-          nullable: true
-          description: Amount converted to USD
-    FundingRoundsResponse:
-      type: object
-      properties:
-        fundingRounds:
-          type: array
-          items:
-            $ref: '#/components/schemas/FundingRoundSnapshot'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    ApiRestrictedFields:
-      type: object
-      description: Present when one or more fields are omitted due to account field-level restrictions. The fields array lists omitted field names (e.g. amounts, valuation, pps, participants, citations). Always check for this object and handle missing fields in your integration.
-      properties:
-        fields:
-          type: array
-          items:
-            type: string
-          description: Names of fields omitted from the response due to account permissions
     FundingRoundSnapshot:
       type: object
       description: Funding round with amounts, valuation, participants, and citations
@@ -560,35 +551,30 @@ components:
           type: string
           format: date-time
           description: Last update timestamp
-    PublicCompanySummary:
+    FundingRoundsResponse:
       type: object
-      description: Company summary. Companies have two IDs — v1 and v2 — both provided in caplightIds for cross-referencing across API versions.
       properties:
-        id:
+        fundingRounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundingRoundSnapshot'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    FundingRoundUpdatesResponse:
+      type: object
+      properties:
+        updatedSince:
           type: string
-          description: v2 company ID
-        name:
+          description: Exclusive lower bound used for this query
+        upTo:
           type: string
-          description: Company name
-        domain:
-          type: string
-          nullable: true
-          description: Company website domain
-        pitchbookId:
-          type: string
-          nullable: true
-          description: Pitchbook company ID
-        caplightIds:
-          type: object
-          description: Both company ID formats for cross-referencing v1 and v2 endpoints
-          properties:
-            v2Id:
-              type: string
-              description: v2 company ID (same as id)
-            v1Id:
-              type: string
-              nullable: true
-              description: v1 company ID (for v1 API endpoints)
+          description: Inclusive upper bound used for this query. Reuse this value as up_to when fetching pages 2..N; use as updated_since for the next batch after completing all pages.
+        fundingRounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundingRoundSnapshot'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
     Pagination:
       type: object
       properties:
@@ -604,6 +590,20 @@ components:
           type: integer
           description: Total number of records for the result set
           example: 250
+    PublicInvestorSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Investor ID
+        type:
+          type: string
+          enum:
+          - firm
+          - individual
+        name:
+          type: string
+          description: Investor display name
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

@@ -94,20 +94,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    PublicInvestorSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Investor ID
-        type:
-          type: string
-          enum:
-          - firm
-          - individual
-        name:
-          type: string
-          description: Investor display name
     CompanyInvestorsResponse:
       type: object
       properties:
@@ -129,6 +115,17 @@ components:
           isUndisclosedRoundInvestor:
             type: boolean
             description: True if investor is known to have invested in this company but the specific round details are unavailable. These investors have an empty roundsInvested array.
+    CompanyInvestorRound:
+      type: object
+      properties:
+        roundId:
+          type: string
+        wasLead:
+          type: boolean
+        leadPartners:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicInvestorSummary'
     Pagination:
       type: object
       properties:
@@ -144,17 +141,20 @@ components:
           type: integer
           description: Total number of records for the result set
           example: 250
-    CompanyInvestorRound:
+    PublicInvestorSummary:
       type: object
       properties:
-        roundId:
+        id:
           type: string
-        wasLead:
-          type: boolean
-        leadPartners:
-          type: array
-          items:
-            $ref: '#/components/schemas/PublicInvestorSummary'
+          description: Investor ID
+        type:
+          type: string
+          enum:
+          - firm
+          - individual
+        name:
+          type: string
+          description: Investor display name
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

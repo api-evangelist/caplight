@@ -149,21 +149,17 @@ components:
           type: string
           description: Pitchbook Company ID
           example: 54782-29
-    Pagination:
+    FundMarksResponse:
       type: object
       properties:
-        pageNumber:
-          type: integer
-          description: Page number (1-based). First page is 1.
-          example: 1
-        numPages:
-          type: integer
-          description: Total number of pages for the result set
-          example: 10
-        totalRecords:
-          type: integer
-          description: Total number of records for the result set
-          example: 250
+        companyMeta:
+          $ref: '#/components/schemas/CompanyMeta'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        fundMarks:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundMark'
     FundMark:
       type: object
       description: A mutual fund's mark-to-market valuation from SEC N-PORT filings
@@ -239,17 +235,21 @@ components:
           type: string
           description: URL to the SEC EDGAR filing
           example: https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001127110&type=N-PORT
-    FundMarksResponse:
+    Pagination:
       type: object
       properties:
-        companyMeta:
-          $ref: '#/components/schemas/CompanyMeta'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        fundMarks:
-          type: array
-          items:
-            $ref: '#/components/schemas/FundMark'
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

@@ -35,10 +35,13 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Timestamp:
-      type: string
-      description: ISO formatted datetime
-      example: '2023-01-26T05:56:30 +00:00'
+    StockSplits:
+      type: object
+      properties:
+        stockSplits:
+          type: array
+          items:
+            $ref: '#/components/schemas/StockSplit'
     CompanyMeta:
       type: object
       properties:
@@ -58,13 +61,10 @@ components:
           type: string
           description: Pitchbook Company ID
           example: 54782-29
-    StockSplits:
-      type: object
-      properties:
-        stockSplits:
-          type: array
-          items:
-            $ref: '#/components/schemas/StockSplit'
+    Timestamp:
+      type: string
+      description: ISO formatted datetime
+      example: '2023-01-26T05:56:30 +00:00'
     StockSplit:
       type: object
       properties:

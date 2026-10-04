@@ -98,27 +98,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ComparableDimension:
-      type: object
-      description: 'One similarity sub-dimension: a stable key, a human-readable label, a 0-1 score, and a short rationale.'
-      properties:
-        key:
-          type: string
-          example: product
-        label:
-          type: string
-          example: Product overlap
-        score:
-          type: number
-          format: double
-          minimum: 0
-          maximum: 1
-          example: 0.9
-        reasoning:
-          type: string
-          nullable: true
-          description: Short LLM rationale for this dimension's score; null when not available.
-          example: Both operate two-sided payment networks with overlapping enterprise customers.
     PublicCompanySummary:
       type: object
       description: Company summary. Companies have two IDs — v1 and v2 — both provided in caplightIds for cross-referencing across API versions.
@@ -213,6 +192,17 @@ components:
           type: string
           format: date-time
           description: When this comparable set was generated for the target company.
+    ComparablesResponse:
+      type: object
+      properties:
+        company:
+          $ref: '#/components/schemas/PublicCompanySummary'
+        comparables:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comparable'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
     Pagination:
       type: object
       properties:
@@ -228,17 +218,27 @@ components:
           type: integer
           description: Total number of records for the result set
           example: 250
-    ComparablesResponse:
+    ComparableDimension:
       type: object
+      description: 'One similarity sub-dimension: a stable key, a human-readable label, a 0-1 score, and a short rationale.'
       properties:
-        company:
-          $ref: '#/components/schemas/PublicCompanySummary'
-        comparables:
-          type: array
-          items:
-            $ref: '#/components/schemas/Comparable'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
+        key:
+          type: string
+          example: product
+        label:
+          type: string
+          example: Product overlap
+        score:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+          example: 0.9
+        reasoning:
+          type: string
+          nullable: true
+          description: Short LLM rationale for this dimension's score; null when not available.
+          example: Both operate two-sided payment networks with overlapping enterprise customers.
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

@@ -119,6 +119,21 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
     CompanyMeta:
       type: object
       properties:
@@ -138,21 +153,17 @@ components:
           type: string
           description: Pitchbook Company ID
           example: 54782-29
-    Pagination:
+    NewsResponse:
       type: object
       properties:
-        pageNumber:
-          type: integer
-          description: Page number (1-based). First page is 1.
-          example: 1
-        numPages:
-          type: integer
-          description: Total number of pages for the result set
-          example: 10
-        totalRecords:
-          type: integer
-          description: Total number of records for the result set
-          example: 250
+        companyMeta:
+          $ref: '#/components/schemas/CompanyMeta'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        news:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsItem'
     NewsItem:
       type: object
       description: A news article about a company
@@ -197,17 +208,6 @@ components:
           - 'false'
           description: Whether this is a high-relevance article for the company
           example: 'true'
-    NewsResponse:
-      type: object
-      properties:
-        companyMeta:
-          $ref: '#/components/schemas/CompanyMeta'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        news:
-          type: array
-          items:
-            $ref: '#/components/schemas/NewsItem'
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.

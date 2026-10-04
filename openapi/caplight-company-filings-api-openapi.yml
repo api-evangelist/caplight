@@ -94,96 +94,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    COIDownloadStats:
-      type: object
-      properties:
-        monthlyLimit:
-          oneOf:
-          - type: number
-          - type: string
-            enum:
-            - unlimited
-        netNewDownloads:
-          type: number
-        overageDownloads:
-          type: number
-        remainingDownloads:
-          oneOf:
-          - type: number
-          - type: string
-            enum:
-            - unlimited
-        totalDownloads:
-          type: number
-    Timestamp:
-      type: string
-      description: ISO formatted datetime
-      example: '2023-01-26T05:56:30 +00:00'
-    COIDownloadLinks:
-      type: object
-      properties:
-        coiMeta:
-          type: object
-          properties:
-            date:
-              type: string
-              nullable: true
-        numberOfPages:
-          type: number
-          nullable: true
-        pdfLink:
-          type: string
-          nullable: true
-        htmlLink:
-          type: string
-          nullable: true
-    CompanyMeta:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Company name
-          example: Stripe
-        domain:
-          type: string
-          description: Company top-level web domain
-          example: stripe.com
-        caplightId:
-          type: string
-          description: Caplight Company ID
-          example: 12d3140kjf90
-        pitchbookId:
-          type: string
-          description: Pitchbook Company ID
-          example: 54782-29
-    AllCOIsResponse:
-      type: object
-      properties:
-        cois:
-          type: array
-          items:
-            $ref: '#/components/schemas/COI'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-    Date:
-      type: string
-      description: ISO formatted date without time
-      example: '2022-09-10'
-    Pagination:
-      type: object
-      properties:
-        pageNumber:
-          type: integer
-          description: Page number (1-based). First page is 1.
-          example: 1
-        numPages:
-          type: integer
-          description: Total number of pages for the result set
-          example: 10
-        totalRecords:
-          type: integer
-          description: Total number of records for the result set
-          example: 250
     COI:
       type: object
       properties:
@@ -210,6 +120,96 @@ components:
           $ref: '#/components/schemas/Timestamp'
         updatedAt:
           $ref: '#/components/schemas/Timestamp'
+    COIDownloadStats:
+      type: object
+      properties:
+        monthlyLimit:
+          oneOf:
+          - type: number
+          - type: string
+            enum:
+            - unlimited
+        netNewDownloads:
+          type: number
+        overageDownloads:
+          type: number
+        remainingDownloads:
+          oneOf:
+          - type: number
+          - type: string
+            enum:
+            - unlimited
+        totalDownloads:
+          type: number
+    COIDownloadLinks:
+      type: object
+      properties:
+        coiMeta:
+          type: object
+          properties:
+            date:
+              type: string
+              nullable: true
+        numberOfPages:
+          type: number
+          nullable: true
+        pdfLink:
+          type: string
+          nullable: true
+        htmlLink:
+          type: string
+          nullable: true
+    AllCOIsResponse:
+      type: object
+      properties:
+        cois:
+          type: array
+          items:
+            $ref: '#/components/schemas/COI'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    CompanyMeta:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Company name
+          example: Stripe
+        domain:
+          type: string
+          description: Company top-level web domain
+          example: stripe.com
+        caplightId:
+          type: string
+          description: Caplight Company ID
+          example: 12d3140kjf90
+        pitchbookId:
+          type: string
+          description: Pitchbook Company ID
+          example: 54782-29
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: Page number (1-based). First page is 1.
+          example: 1
+        numPages:
+          type: integer
+          description: Total number of pages for the result set
+          example: 10
+        totalRecords:
+          type: integer
+          description: Total number of records for the result set
+          example: 250
+    Timestamp:
+      type: string
+      description: ISO formatted datetime
+      example: '2023-01-26T05:56:30 +00:00'
+    Date:
+      type: string
+      description: ISO formatted date without time
+      example: '2022-09-10'
   securitySchemes:
     api_key:
       description: Caplight API authentication is managed through an api_key header value. Please contact us if you do not yet have an API key.
