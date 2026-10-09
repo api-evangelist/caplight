@@ -66,3 +66,16 @@ deployment:
   probe: gated
   checked: '2026-08-12'
   source: catalog MCP census
+rfc9728:
+  endpoint: https://platform.caplight.com/mcp
+  metadata_url: https://platform.caplight.com/.well-known/oauth-protected-resource/mcp
+  discovered_via: WWW-Authenticate resource_metadata on an anonymous POST initialize
+  fetched: '2026-09-25'
+  http_status: 200
+  content_type: application/json
+  document:
+    resource: https://platform.caplight.com/mcp
+    authorization_servers:
+    - https://platform.caplight.com/mcp
+    bearer_methods_supported:
+    - header
