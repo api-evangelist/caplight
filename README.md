@@ -64,14 +64,149 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Caplight Technologies is a San Francisco private-markets data and trading platform for institutional
-investors, covering 50,000+ VC-backed private companies with secondary-market pricing, a live
-institutional order book, trade and order history, funding rounds, investor participation, SEC-derived
-fund marks, COI filings, comparables and composite indices. Caplight exposes the dataset through a
-versioned REST API documented with a public OpenAPI 3.1.0 definition, a hosted OAuth-protected MCP
-server for Claude, and a one-line embeddable widget.
+Caplight Technologies is a San Francisco private-markets data and trading platform for institutional investors, covering 50,000+ VC-backed private companies with secondary-market pricing, a live institutional order book, trade and order history, funding rounds with valuations and participants, investor participation, SEC-derived fund marks, COI filings, stock splits, news, company signals and comparable-company indices. Its proprietary MarketPrice(TM) estimate is implied from live bids, asks and closed secondary trades. Caplight exposes the dataset through a versioned REST API (v1 and v2, api_key header auth, documented with a public OpenAPI 3.1.0 definition rendered in Redoc), a hosted OAuth-protected MCP server for Claude, and a one-line embeddable widget. Securities are offered through Caplight Markets LLC, member FINRA/SIPC.
 
-- Website: https://www.caplight.com/
-- API reference: https://platform.caplight.com/api/documentation.html
-- OpenAPI: https://us-central1-caplight-prod.cloudfunctions.net/api/v2/spec
-- MCP server: https://platform.caplight.com/mcp
+**Areas:** Private Markets · Secondary Market · Market Data · Venture Capital · Company Data · investor-data · Funding Rounds · Pricing Data · Financial Data · Fintech · MCP · Agent-Native
+
+## Caplight on APIs.io
+
+Everything profiled for Caplight is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/caplight/](https://apis.io/providers/caplight/)** — or go straight to one of the APIs or properties below.
+
+### APIs (17)
+
+- [Caplight MCP Server](https://apis.io/apis/caplight/caplight-mcp-server/) — Hosted, remote MCP server that connects Claude.ai and Claude Desktop to the Caplight dataset. Caplight documents 15 tools spanning live MarketPrice quotes…
+- [Caplight Companies API](https://apis.io/apis/caplight/caplight-companies-api/) — The Companies API from Caplight — 1 operation(s) for companies.
+- [Caplight Company API](https://apis.io/apis/caplight/caplight-company-api/) — The Company API from Caplight — 3 operation(s) for company.
+- [Caplight Company Details API](https://apis.io/apis/caplight/caplight-company-details-api/) — Canonical Company resource: identity (name, legal name, location), descriptions, and the latest LLM-generated firmographic tags (sectors / verticals /…
+- [Caplight Company Filings API](https://apis.io/apis/caplight/caplight-company-filings-api/) — COI (Certificate of Incorporation) filings and related company documents
+- [Caplight Company Lookup API](https://apis.io/apis/caplight/caplight-company-lookup-api/) — Resolves company domains, PitchBook IDs and v1 company IDs to v2 company IDs, in batches.
+- [Caplight Composite Index API](https://apis.io/apis/caplight/caplight-composite-index-api/) — The Composite Index API from Caplight — 3 operation(s) for composite index.
+- [Caplight Comps API](https://apis.io/apis/caplight/caplight-comps-api/) — LLM-discovered comparable companies with an overall similarity score, a per-dimension breakdown, a classification, and a short rationale.
+- [Caplight Fund Marks API](https://apis.io/apis/caplight/caplight-fund-marks-api/) — Mutual fund mark-to-market valuations from SEC filings
+- [Caplight Funding Rounds API](https://apis.io/apis/caplight/caplight-funding-rounds-api/) — Funding round data including amounts, valuations, participants, and citations
+- [Caplight Investors API](https://apis.io/apis/caplight/caplight-investors-api/) — Investor participation data for companies
+- [Caplight Live Orderbook API](https://apis.io/apis/caplight/caplight-live-orderbook-api/) — The Live Orderbook API from Caplight — 1 operation(s) for live orderbook.
+- [Caplight News API](https://apis.io/apis/caplight/caplight-news-api/) — Company news articles with sentiment analysis
+- [Caplight Order History API](https://apis.io/apis/caplight/caplight-order-history-api/) — The Order History API from Caplight — 1 operation(s) for order history.
+- [Caplight Stock Splits API](https://apis.io/apis/caplight/caplight-stock-splits-api/) — The Stock Splits API from Caplight — 1 operation(s) for stock splits.
+- [Caplight Trade History API](https://apis.io/apis/caplight/caplight-trade-history-api/) — The Trade History API from Caplight — 1 operation(s) for trade history.
+- [Caplight Market Price API](https://apis.io/apis/caplight/caplight-market-price-api/) — Caplight's proprietary MarketPrice estimate, calculated using executed trades, company primary rounds, bids/offers, fund marks, 409a valuations, and comps…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [caplight](https://apis.io/servers/caplight/caplight/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Caplight Agentic Access](https://apis.io/agentic-access/caplight/caplight-agentic-access/)
+
+#### Collections (16)
+
+Postman and Open Collection request collections.
+
+- [Caplight REST Companies API](https://apis.io/collections/caplight/open-caplight-companies-api/)
+- [Caplight REST Company API](https://apis.io/collections/caplight/open-caplight-company-api/)
+- [Caplight REST Company Details API](https://apis.io/collections/caplight/open-caplight-company-details-api/)
+- [Caplight REST Company Filings API](https://apis.io/collections/caplight/open-caplight-company-filings-api/)
+- [Caplight REST Company Lookup API](https://apis.io/collections/caplight/open-caplight-company-lookup-api/)
+- [Caplight REST Composite Index API](https://apis.io/collections/caplight/open-caplight-composite-index-api/)
+- [Caplight REST Comps API](https://apis.io/collections/caplight/open-caplight-comps-api/)
+- [Caplight REST Fund Marks API](https://apis.io/collections/caplight/open-caplight-fund-marks-api/)
+- [Caplight REST Funding Rounds API](https://apis.io/collections/caplight/open-caplight-funding-rounds-api/)
+- [Caplight REST Investors API](https://apis.io/collections/caplight/open-caplight-investors-api/)
+- [Caplight REST Live Orderbook API](https://apis.io/collections/caplight/open-caplight-live-orderbook-api/)
+- [Caplight REST Market Price API](https://apis.io/collections/caplight/open-caplight-marketprice-api/)
+- [Caplight REST News API](https://apis.io/collections/caplight/open-caplight-news-api/)
+- [Caplight REST Order History API](https://apis.io/collections/caplight/open-caplight-order-history-api/)
+- [Caplight REST Stock Splits API](https://apis.io/collections/caplight/open-caplight-stock-splits-api/)
+- [Caplight REST Trade History API](https://apis.io/collections/caplight/open-caplight-trade-history-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Caplight Rest Api Overlay](https://apis.io/overlays/caplight/caplight-rest-api-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Caplight Authentication](https://apis.io/security/caplight/caplight-authentication/)
+- [Caplight Domain Security](https://apis.io/security/caplight/caplight-domain-security/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.caplight.com/)
+- [Documentation](https://platform.caplight.com/api/documentation.html)
+- [Getting started](https://www.caplight.com/products/api)
+- [API reference](https://platform.caplight.com/api/documentation.html)
+- [Sign up](https://platform.caplight.com/signup)
+- [Changelog](https://www.caplight.com/changelog)
+- [Blog](https://www.caplight.com/insights)
+- [Terms of service](https://www.caplight.com/legal/terms-of-use)
+- [Privacy policy](https://www.caplight.com/legal/privacy-policy)
+
+## API Evangelist rating
+
+**Kin Score 38.5** — thin · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 68.3 |
+| Contract quality | 51.2 |
+| Contract governance | 4.5 |
+| Operational transparency | 15.8 |
+| Developer ergonomics | 51.8 |
+| Access clarity | 27.6 |
+
+**Agent readiness 60.7** — agent-native
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | na |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | na |
+| Error Semantics | verified |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | na |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 23.1** — Securities & Market Data
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/caplight/](https://apis.io/providers/caplight/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Caplight: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/caplight/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
